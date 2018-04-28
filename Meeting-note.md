@@ -23,8 +23,12 @@
 - 讨论分工
 
 ### 界面设计
-展示初稿。未完成，后面继续画。
+Ou 展示初稿。未完成，后面继续画。
 
 Icon 网站：https://material.io/icons/
 
 ### 接口设计
+Xiong 展示[接口设计文档]("./JSON-data-format-definition.md"])。
+
+### 分工
+Liu 和 Cheng 负责前端实现，Xiong 负责后台数据库设计和实现，Ou 负责后端事务层实现和接口测试。

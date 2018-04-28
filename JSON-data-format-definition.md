@@ -1,6 +1,6 @@
 # JSON Data Format Definition
 
-##用户
+## 用户
 ```javascript
 user = {
 	"userType": 1,

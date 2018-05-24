@@ -23,3 +23,16 @@ hs_err_pid*
 
 # macOS system files
 .DS_Store
+
+# IntelliJ config
+.idea/
+course-graph.iml
+course-graph-server/course-graph-server.iml
+
+# Maven target
+course-graph-server/target/
+
+# Eclipse config
+course-graph-server/.settings/
+course-graph-server/.classpath
+course-graph-server/.project

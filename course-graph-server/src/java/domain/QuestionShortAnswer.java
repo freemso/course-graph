@@ -1,10 +1,4 @@
-package main.java.domain;
-
-import org.neo4j.ogm.annotation.GeneratedValue;
-import org.neo4j.ogm.annotation.Id;
-
-import java.util.ArrayList;
-import java.util.List;
+package java.domain;
 
 public class QuestionShortAnswer extends Question {
 

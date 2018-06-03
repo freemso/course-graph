@@ -1,8 +1,8 @@
-package main.java.repository.impl;
+package java.repository.impl;
 
-import main.java.config.Constants;
-import main.java.domain.TokenEntry;
-import main.java.repository.TokenRepository;
+import java.config.Constants;
+import java.domain.TokenEntry;
+import java.repository.TokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
@@ -31,7 +31,7 @@ public class RedisTokenRepositoryImpl implements TokenRepository {
         String token = UUID.randomUUID().toString().replace("-", "");
         TokenEntry tokenEntry = new TokenEntry(userId, token);
         // 存储到redis并设置过期时间
-        redis.boundValueOps(userId).set(token, main.java.config.Constants.TOKEN_EXPIRES_HOUR, TimeUnit.HOURS);
+        redis.boundValueOps(userId).set(token, java.config.Constants.TOKEN_EXPIRES_HOUR, TimeUnit.HOURS);
         return tokenEntry;
     }
 

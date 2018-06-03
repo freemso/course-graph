@@ -1,11 +1,11 @@
-package main.java.rest;
+package java.rest;
 
 
-import main.java.annotation.Authorization;
-import main.java.annotation.CurrentUser;
-import main.java.domain.User;
-import main.java.dto.ReqLoginDTO;
-import main.java.dto.RespLoginDTO;
+import java.annotation.Authorization;
+import java.annotation.CurrentUser;
+import java.domain.User;
+import java.dto.ReqLoginDTO;
+import java.dto.RespLoginDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

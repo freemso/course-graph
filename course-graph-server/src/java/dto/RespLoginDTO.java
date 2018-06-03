@@ -1,4 +1,4 @@
-package main.java.dto;
+package java.dto;
 
 public class RespLoginDTO {
 

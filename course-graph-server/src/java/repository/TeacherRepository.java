@@ -1,4 +1,4 @@
-package main.java.repository;
+package java.repository;
 
 public interface TeacherRepository extends UserRepository {
 

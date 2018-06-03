@@ -1,4 +1,4 @@
-package main.java.domain;
+package java.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 

@@ -1,4 +1,4 @@
-package main.java.domain;
+package java.domain;
 
 public class TokenEntry {
 

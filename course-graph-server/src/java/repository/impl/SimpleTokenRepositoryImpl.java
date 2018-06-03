@@ -1,7 +1,7 @@
-package main.java.repository.impl;
+package java.repository.impl;
 
-import main.java.domain.TokenEntry;
-import main.java.repository.TokenRepository;
+import java.domain.TokenEntry;
+import java.repository.TokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;

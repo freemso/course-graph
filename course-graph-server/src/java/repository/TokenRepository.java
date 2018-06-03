@@ -1,6 +1,6 @@
-package main.java.repository;
+package java.repository;
 
-import main.java.domain.TokenEntry;
+import java.domain.TokenEntry;
 
 public interface TokenRepository {
     /**

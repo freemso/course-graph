@@ -1,10 +1,10 @@
-package main.java.rest.impl;
+package java.rest.impl;
 
-import main.java.domain.User;
-import main.java.dto.ReqLoginDTO;
-import main.java.dto.RespLoginDTO;
-import main.java.rest.TokenController;
-import main.java.model.UserService;
+import java.domain.User;
+import java.dto.ReqLoginDTO;
+import java.dto.RespLoginDTO;
+import java.rest.TokenController;
+import java.model.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,6 +1,6 @@
-package main.java.dto;
+package java.dto;
 
-import main.java.config.ResponseStatus;
+import java.config.ResponseStatus;
 
 /**
  * Wrapper for REST response object, including status code, message, and content

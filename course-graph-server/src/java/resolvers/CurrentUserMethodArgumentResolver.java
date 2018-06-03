@@ -1,10 +1,10 @@
-package main.java.resolvers;
+package java.resolvers;
 
-import main.java.annotation.CurrentUser;
-import main.java.config.Constants;
-import main.java.config.ResponseExceptions;
-import main.java.domain.User;
-import main.java.repository.UserRepository;
+import java.annotation.CurrentUser;
+import java.config.Constants;
+import java.config.ResponseExceptions;
+import java.domain.User;
+import java.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;

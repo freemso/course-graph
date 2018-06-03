@@ -1,6 +1,6 @@
-package main.java.dto;
+package java.dto;
 
-import main.java.domain.UserType;
+import java.domain.UserType;
 
 public class RespUserPublicDTO {
     private String name;

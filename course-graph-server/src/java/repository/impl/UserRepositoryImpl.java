@@ -1,4 +1,4 @@
-package main.java.repository.impl;
+package java.repository.impl;
 
 public class UserRepositoryImpl {
 }

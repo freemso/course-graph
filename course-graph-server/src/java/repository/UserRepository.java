@@ -1,7 +1,7 @@
-package main.java.repository;
+package java.repository;
 
 
-import main.java.domain.User;
+import java.domain.User;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package main.java.model;
+package java.model;
 
 import org.springframework.stereotype.Service;
 

@@ -1,12 +1,12 @@
-package main.java.model.impl;
+package java.model.impl;
 
-import main.java.config.ResponseExceptions.EmailOrPasswordException;
-import main.java.domain.TokenEntry;
-import main.java.domain.User;
-import main.java.dto.RespLoginDTO;
-import main.java.repository.TokenRepository;
-import main.java.repository.UserRepository;
-import main.java.model.UserService;
+import java.config.ResponseExceptions.EmailOrPasswordException;
+import java.domain.TokenEntry;
+import java.domain.User;
+import java.dto.RespLoginDTO;
+import java.repository.TokenRepository;
+import java.repository.UserRepository;
+import java.model.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class UserServiceImpl implements UserService {

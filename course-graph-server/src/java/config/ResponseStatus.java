@@ -1,4 +1,4 @@
-package main.java.config;
+package java.config;
 
 public enum ResponseStatus {
     SUCCESS(100, "Success"),

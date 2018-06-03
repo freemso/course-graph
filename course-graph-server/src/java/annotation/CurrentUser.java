@@ -1,6 +1,6 @@
-package main.java.annotation;
+package java.annotation;
 
-import main.java.resolvers.CurrentUserMethodArgumentResolver;
+import java.resolvers.CurrentUserMethodArgumentResolver;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

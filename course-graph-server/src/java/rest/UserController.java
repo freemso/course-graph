@@ -1,13 +1,13 @@
-package main.java.rest;
+package java.rest;
 
 
-import main.java.annotation.Authorization;
-import main.java.annotation.CurrentUser;
-import main.java.domain.User;
-import main.java.dto.ReqRegisterDTO;
-import main.java.dto.ReqUpdateUserDTO;
-import main.java.dto.RespUserPublicDTO;
-import main.java.dto.RespUserPrivateDTO;
+import java.annotation.Authorization;
+import java.annotation.CurrentUser;
+import java.domain.User;
+import java.dto.ReqRegisterDTO;
+import java.dto.ReqUpdateUserDTO;
+import java.dto.RespUserPublicDTO;
+import java.dto.RespUserPrivateDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

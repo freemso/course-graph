@@ -1,6 +1,6 @@
-package main.java.annotation;
+package java.annotation;
 
-import main.java.interceptor.AuthorizationInterceptor;
+import java.interceptor.AuthorizationInterceptor;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

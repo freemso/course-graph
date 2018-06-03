@@ -1,12 +1,11 @@
-package main.java.repository;
+package java.repository;
 
 
-import main.java.domain.Course;
+import java.domain.Course;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.repository.query.Param;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 public interface CourseRepository extends Neo4jRepository<Course, Long> {

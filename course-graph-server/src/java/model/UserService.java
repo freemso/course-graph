@@ -1,7 +1,7 @@
-package main.java.model;
+package java.model;
 
-import main.java.domain.User;
-import main.java.dto.RespLoginDTO;
+import java.domain.User;
+import java.dto.RespLoginDTO;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,9 +1,9 @@
-package main.java.interceptor;
+package java.interceptor;
 
-import main.java.annotation.Authorization;
-import main.java.config.Constants;
-import main.java.domain.TokenEntry;
-import main.java.repository.TokenRepository;
+import java.annotation.Authorization;
+import java.config.Constants;
+import java.domain.TokenEntry;
+import java.repository.TokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;

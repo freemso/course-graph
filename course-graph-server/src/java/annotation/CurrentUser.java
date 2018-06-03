@@ -1,11 +1,7 @@
 package java.annotation;
 
+import java.lang.annotation.*;
 import java.resolvers.CurrentUserMethodArgumentResolver;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
 /**
  * User this annotation on parameter(User type to be exact) of methods in controller.
@@ -14,5 +10,6 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
+@Inherited
 public @interface CurrentUser {
 }

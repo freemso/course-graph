@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -14,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Token repository implementation using Redis
  */
-@Component
+@Repository
 public class RedisTokenRepositoryImpl implements TokenRepository {
 
     private RedisTemplate<Long, String> redis;

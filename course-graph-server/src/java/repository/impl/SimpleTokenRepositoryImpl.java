@@ -12,7 +12,6 @@ public class SimpleTokenRepositoryImpl implements TokenRepository {
     private Map<Long, String> id2token;
     private Map<String, Long> token2id;
 
-    @Autowired
     public SimpleTokenRepositoryImpl() {
         this.id2token = new HashMap<>();
         this.token2id = new HashMap<>();

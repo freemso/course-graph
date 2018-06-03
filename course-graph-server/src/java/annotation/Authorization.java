@@ -2,10 +2,7 @@ package java.annotation;
 
 import java.interceptor.AuthorizationInterceptor;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * User this annotation on methods in controller.
@@ -15,5 +12,6 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
+@Inherited
 public @interface Authorization {
 }

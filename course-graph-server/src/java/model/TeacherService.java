@@ -1,4 +1,7 @@
 package java.model;
 
-public interface TeacherService {
+import org.springframework.stereotype.Service;
+
+@Service
+public class TeacherService {
 }

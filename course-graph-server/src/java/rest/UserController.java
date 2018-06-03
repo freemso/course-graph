@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
-public interface UserController {
+public class UserController {
 
     /**
      * User registration request.
@@ -24,15 +24,20 @@ public interface UserController {
      * @return user private DTO with email field
      */
     @PostMapping
-    ResponseEntity<RespUserPrivateDTO> register(
-            @Valid @RequestBody ReqRegisterDTO reqRegisterDTO);
+    ResponseEntity<RespUserPrivateDTO> register(@Valid @RequestBody ReqRegisterDTO reqRegisterDTO) {
+        // TODO
+        return null;
+    }
 
     /**
      * Get all users in a list.
      * @return a list of user public DTO
      */
     @GetMapping
-    ResponseEntity<List<RespUserPublicDTO>> getAllUsers();
+    ResponseEntity<List<RespUserPublicDTO>> getAllUsers() {
+        // TODO
+        return null;
+    }
 
     /**
      * Get meta data of the user with id equals to {uid}.
@@ -44,7 +49,10 @@ public interface UserController {
      * @return user public/private DTO
      */
     @GetMapping("/{uid}")
-    ResponseEntity<RespUserPublicDTO> getUser(@PathVariable long uid, @CurrentUser User currentUser);
+    ResponseEntity<RespUserPublicDTO> getUser(@PathVariable long uid, @CurrentUser User currentUser) {
+        // TODO
+        return null;
+    }
 
     /**
      * Update user meta data.
@@ -57,7 +65,10 @@ public interface UserController {
     @Authorization
     ResponseEntity<RespUserPrivateDTO> updateUser(@PathVariable long uid,
                                                  @CurrentUser User currentUser,
-                                                 @RequestBody ReqUpdateUserDTO reqUpdateUserDTO);
+                                                 @RequestBody ReqUpdateUserDTO reqUpdateUserDTO){
+        // TODO
+        return null;
+    }
 
     /**
      * Delete the user with {uid}
@@ -67,5 +78,8 @@ public interface UserController {
      */
     @DeleteMapping("/{uid}")
     @Authorization
-    ResponseEntity deleteUser(@PathVariable long uid, @CurrentUser User currentUser);
+    ResponseEntity deleteUser(@PathVariable long uid, @CurrentUser User currentUser) {
+        // TODO
+        return null;
+    }
 }

@@ -12,7 +12,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
- * User Redis to manage token
+ * Token repository implementation using Redis
  */
 @Component
 public class RedisTokenRepositoryImpl implements TokenRepository {
@@ -22,17 +22,17 @@ public class RedisTokenRepositoryImpl implements TokenRepository {
     @Autowired
     public RedisTokenRepositoryImpl() {
         this.redis = new RedisTemplate<>();
-        //泛型设置成Long后必须更改对应的序列化方案
+        // 泛型设置成Long后必须更改对应的序列化方案
         this.redis.setKeySerializer(new JdkSerializationRedisSerializer());
     }
 
     public TokenEntry createToken(long userId) {
-        //使用uuid作为源token
+        // 使用uuid作为源token
         String token = UUID.randomUUID().toString().replace("-", "");
-        TokenEntry model = new TokenEntry(userId, token);
-        //存储到redis并设置过期时间
+        TokenEntry tokenEntry = new TokenEntry(userId, token);
+        // 存储到redis并设置过期时间
         redis.boundValueOps(userId).set(token, main.java.config.Constants.TOKEN_EXPIRES_HOUR, TimeUnit.HOURS);
-        return model;
+        return tokenEntry;
     }
 
     public TokenEntry getToken(String authentication) {

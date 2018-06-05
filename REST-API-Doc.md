@@ -845,7 +845,7 @@ graph_meta :
 
 - **URL**
 
-    /course/{cid}/graphs
+    /courses/{cid}/graphs
 
 - **Method:**
 
@@ -893,7 +893,7 @@ Teacher create a new graph for a course. Need authorization.
 
 - **URL**
 
-    /course/{cid}/graphs
+    /courses/{cid}/graphs
 
 - **Method:**
 
@@ -947,7 +947,7 @@ Teacher create a new graph for a course. Need authorization.
 
 - **URL**
 
-    /graph/{gid}
+    /graphs/{gid}
 
 - **Method:**
 
@@ -1008,7 +1008,7 @@ node_meta :
 
 - **URL**
 
-    /node/{nid}
+    /nodes/{nid}
 
 - **Method:**
 
@@ -1060,7 +1060,7 @@ node_meta :
 
 - **URL**
 
-    /resource/{rid}
+    /resources/{rid}
 
 - **Method:**
 
@@ -1112,7 +1112,7 @@ node_meta :
 
 - **URL**
 
-    /lecture/{lid}
+    /lectures/{lid}
 
 - **Method:**
 
@@ -1164,7 +1164,7 @@ node_meta :
 
 - **URL**
 
-    /question/{qid}
+    /questions/{qid}
 
 - **Method:**
 
@@ -1216,7 +1216,7 @@ node_meta :
 
 - **URL**
 
-    /answer/{aid}
+    /answers/{aid}
 
 - **Method:**
 

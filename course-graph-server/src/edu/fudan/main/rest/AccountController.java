@@ -3,12 +3,11 @@ package edu.fudan.main.rest;
 import edu.fudan.main.annotation.Authorization;
 import edu.fudan.main.annotation.CurrentUser;
 import edu.fudan.main.domain.User;
+import edu.fudan.main.dto.request.UpdateUserReq;
+import edu.fudan.main.dto.response.UserPrivateResp;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import edu.fudan.main.dto.request.UpdateUserReq;
-import edu.fudan.main.dto.response.UserPrivateResp;
 
 @Controller
 @RequestMapping("/account")

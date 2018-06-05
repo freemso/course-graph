@@ -1,15 +1,14 @@
 package edu.fudan.main.model;
 
-import edu.fudan.main.domain.User;
-import edu.fudan.main.exception.EmailOrPasswordException;
-import edu.fudan.main.repository.TokenRepository;
-import edu.fudan.main.repository.UserRepository;
 import edu.fudan.main.domain.TokenEntry;
+import edu.fudan.main.domain.User;
 import edu.fudan.main.dto.response.AuthenticationResp;
 import edu.fudan.main.dto.response.UserPrivateResp;
 import edu.fudan.main.dto.response.UserPublicResp;
+import edu.fudan.main.exception.EmailOrPasswordException;
 import edu.fudan.main.exception.UserNotFoundException;
-
+import edu.fudan.main.repository.TokenRepository;
+import edu.fudan.main.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

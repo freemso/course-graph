@@ -1,9 +1,7 @@
 package edu.fudan.main.repository;
 
 
-import edu.fudan.main.config.RedisConfig;
 import edu.fudan.main.domain.TokenEntry;
-import edu.fudan.main.repository.TokenRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +11,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = RedisConfig.class)
+@SpringBootTest
 public class RedisTokenRepositoryTest {
 
     @Autowired

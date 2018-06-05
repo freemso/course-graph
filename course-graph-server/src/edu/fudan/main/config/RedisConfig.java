@@ -1,6 +1,5 @@
 package edu.fudan.main.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
@@ -15,11 +14,10 @@ public class RedisConfig {
         return new JedisConnectionFactory();
     }
 
-    @Autowired
     @Bean
-    RedisTemplate<Long, String> redisTemplate(JedisConnectionFactory jedisConnectionFactory) {
-        final RedisTemplate<Long, String> template = new RedisTemplate<>();
-        template.setConnectionFactory(jedisConnectionFactory);
+    RedisTemplate<Long, String> redisTemplate() {
+        RedisTemplate<Long, String> template = new RedisTemplate<>();
+        template.setConnectionFactory(jedisConnectionFactory());
         template.setKeySerializer(new JdkSerializationRedisSerializer());
         return template;
     }

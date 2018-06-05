@@ -7,7 +7,6 @@ import edu.fudan.main.domain.User;
 import edu.fudan.main.dto.request.LoginReq;
 import edu.fudan.main.dto.response.AuthenticationResp;
 import edu.fudan.main.model.UserService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

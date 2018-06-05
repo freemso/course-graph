@@ -1,9 +1,9 @@
 package edu.fudan.main.interceptor;
 
-import edu.fudan.main.repository.TokenRepository;
 import edu.fudan.main.annotation.Authorization;
 import edu.fudan.main.config.Constants;
 import edu.fudan.main.domain.TokenEntry;
+import edu.fudan.main.repository.TokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;

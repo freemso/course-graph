@@ -1,12 +1,11 @@
 package edu.fudan.main.repository.impl;
 
+import edu.fudan.main.config.Constants;
+import edu.fudan.main.domain.TokenEntry;
 import edu.fudan.main.repository.TokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
-
-import edu.fudan.main.config.Constants;
-import edu.fudan.main.domain.TokenEntry;
 
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;

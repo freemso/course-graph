@@ -1,7 +1,8 @@
 package edu.fudan.main.annotation;
 
-import java.lang.annotation.*;
 import edu.fudan.main.rest.CurrentUserMethodArgumentResolver;
+
+import java.lang.annotation.*;
 
 /**
  * User this annotation on parameter(User type to be exact) of methods in controller.

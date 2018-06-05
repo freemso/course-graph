@@ -1,16 +1,16 @@
 package edu.fudan.main.rest;
 
+import edu.fudan.main.annotation.CurrentUser;
+import edu.fudan.main.domain.User;
+import edu.fudan.main.dto.request.RegisterReq;
+import edu.fudan.main.dto.response.UserPrivateResp;
+import edu.fudan.main.dto.response.UserPublicResp;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import edu.fudan.main.annotation.CurrentUser;
-import edu.fudan.main.domain.User;
-import edu.fudan.main.dto.request.RegisterReq;
-import edu.fudan.main.dto.response.UserPrivateResp;
-import edu.fudan.main.dto.response.UserPublicResp;
 
 @Controller
 @RequestMapping("/users")

@@ -56,7 +56,7 @@ public class RedisTokenRepositoryImpl implements TokenRepository {
             return false;
         }
         String token = redis.boundValueOps(tokenEntry.getId()).get();
-        if (!token.equals(tokenEntry.getToken())) {
+        if (token == null || !token.equals(tokenEntry.getToken())) {
             return false;
         }
 

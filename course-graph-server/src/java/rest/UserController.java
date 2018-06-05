@@ -1,40 +1,28 @@
 package java.rest;
 
-
-import java.annotation.Authorization;
-import java.annotation.CurrentUser;
-import java.domain.User;
-import java.dto.ReqRegisterDTO;
-import java.dto.ReqUpdateUserDTO;
-import java.dto.RespUserPublicDTO;
-import java.dto.RespUserPrivateDTO;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
+import java.annotation.CurrentUser;
+import java.domain.User;
+import java.dto.request.RegisterReq;
+import java.dto.response.UserPrivateResp;
+import java.dto.response.UserPublicResp;
 
-@RestController
+@Controller
 @RequestMapping("/users")
 public class UserController {
 
     /**
      * User registration request.
-     * @param reqRegisterDTO, required register form data
+     * @param registerReq, required register form data
      * @return user private DTO with email field
      */
     @PostMapping
-    ResponseEntity<RespUserPrivateDTO> register(@Valid @RequestBody ReqRegisterDTO reqRegisterDTO) {
-        // TODO
-        return null;
-    }
-
-    /**
-     * Get all users in a list.
-     * @return a list of user public DTO
-     */
-    @GetMapping
-    ResponseEntity<List<RespUserPublicDTO>> getAllUsers() {
+    ResponseEntity<UserPrivateResp> register(@Valid @RequestBody RegisterReq registerReq) {
         // TODO
         return null;
     }
@@ -49,37 +37,10 @@ public class UserController {
      * @return user public/private DTO
      */
     @GetMapping("/{uid}")
-    ResponseEntity<RespUserPublicDTO> getUser(@PathVariable long uid, @CurrentUser User currentUser) {
+    ResponseEntity<UserPublicResp> getUser(@PathVariable long uid, @Nullable @CurrentUser User currentUser) {
         // TODO
         return null;
     }
 
-    /**
-     * Update user meta data.
-     * @param uid, id of the user to be updated
-     * @param currentUser, current login user
-     * @param reqUpdateUserDTO, data fields to update
-     * @return updated user private DTO
-     */
-    @PutMapping("/{uid}")
-    @Authorization
-    ResponseEntity<RespUserPrivateDTO> updateUser(@PathVariable long uid,
-                                                 @CurrentUser User currentUser,
-                                                 @RequestBody ReqUpdateUserDTO reqUpdateUserDTO){
-        // TODO
-        return null;
-    }
 
-    /**
-     * Delete the user with {uid}
-     * @param uid, id of the user to be deleted
-     * @param currentUser, current login user
-     * @return empty response body
-     */
-    @DeleteMapping("/{uid}")
-    @Authorization
-    ResponseEntity deleteUser(@PathVariable long uid, @CurrentUser User currentUser) {
-        // TODO
-        return null;
-    }
 }

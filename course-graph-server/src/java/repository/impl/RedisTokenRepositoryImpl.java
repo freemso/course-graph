@@ -1,14 +1,12 @@
 package java.repository.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Repository;
+
 import java.config.Constants;
 import java.domain.TokenEntry;
 import java.repository.TokenRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
-
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -21,10 +19,8 @@ public class RedisTokenRepositoryImpl implements TokenRepository {
     private RedisTemplate<Long, String> redis;
 
     @Autowired
-    public RedisTokenRepositoryImpl() {
-        this.redis = new RedisTemplate<>();
-        // 泛型设置成Long后必须更改对应的序列化方案
-        this.redis.setKeySerializer(new JdkSerializationRedisSerializer());
+    public RedisTokenRepositoryImpl(RedisTemplate<Long, String> redis) {
+        this.redis = redis;
     }
 
     public TokenEntry createToken(long userId) {

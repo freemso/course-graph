@@ -1,9 +1,12 @@
 package java.model;
 
-import java.config.ResponseExceptions.EmailOrPasswordException;
 import java.domain.TokenEntry;
 import java.domain.User;
-import java.dto.RespLoginDTO;
+import java.dto.response.AuthenticationResp;
+import java.dto.response.UserPrivateResp;
+import java.dto.response.UserPublicResp;
+import java.exception.EmailOrPasswordException;
+import java.exception.UserNotFoundException;
 import java.repository.TokenRepository;
 import java.repository.UserRepository;
 
@@ -24,10 +27,15 @@ public class UserService {
         this.tokenRepository = tokenRepository;
     }
 
-
-    public RespLoginDTO login(String email, String password) {
+    /**
+     * Given email and password, create a token entry and return it as a authentication response
+     * @param email, email of the account
+     * @param password, password of the account
+     * @return a string of authentication
+     */
+    public AuthenticationResp login(String email, String password) {
         User user = this.userRepository.findByEmail(email).orElseThrow(
-                EmailOrPasswordException::new // User does not exist
+                EmailOrPasswordException::new // Email does not exist
         );
 
         if (!user.getPassword().equals(password)) {  // Wrong password
@@ -40,10 +48,40 @@ public class UserService {
         // Generate authentication from this token
         String authentication = tokenRepository.getAuthentication(tokenEntry);
 
-        return new RespLoginDTO(authentication, user.getId());
+        return new AuthenticationResp(authentication, new UserPublicResp(user));
     }
 
-    public void logout(User currentUser) {
-        tokenRepository.deleteToken(currentUser.getId());
+    /**
+     * Given the user id, delete the token from repository
+     * @param userId, id of the current user
+     */
+    public void logout(long userId) {
+        tokenRepository.deleteToken(userId);
+    }
+
+    /**
+     * Get user public data by id.
+     * @param userId, id of the user to query
+     * @return the public data of the user
+     */
+    public UserPublicResp getUserPublic(long userId) {
+        User user = this.userRepository.findById(userId).orElseThrow(
+                () -> new UserNotFoundException(userId) // User not found
+        );
+
+        return new UserPublicResp(user);
+    }
+
+    /**
+     * Get user private data by id
+     * @param userId, id of the user
+     * @return the private data of the user
+     */
+    public UserPrivateResp getUserPrivate(long userId) {
+        User user = this.userRepository.findById(userId).orElseThrow(
+                () -> new UserNotFoundException(userId) // User not found
+        );
+
+        return new UserPrivateResp(user);
     }
 }

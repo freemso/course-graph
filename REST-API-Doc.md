@@ -1,5 +1,5 @@
-# RESTful Server API Docuement
-This is the document of the RESTful server.
+# REST Server API Document
+This is the document of the REST server.
 
 ## Note
 The difference between POST and PUT is that POST is often used to create a new resource and PUT is often used to update a resource. In this project, resources are internally identified by their *id*s. Thus, we use POST method to create a new resource with a newly generated id and use PUT method to update an old resource with a known id.
@@ -7,72 +7,74 @@ The difference between POST and PUT is that POST is often used to create a new r
 All fields in **Data Params** are REQUIRED except explicitly tagged OPTIONAL.
 
 
-## Resourses Path
+## Resources Path
 Here we list all the resources and supported operations on them.
 
 The plural form of the resource refer to the set of the resource. GET method on them will return a list of the resources. POST method on them will try to create a new resource.
 
-`/_resource_/{id}` often refer to a specific resource. GET method returns the data of the resource. DELETE method deletes the resource. And PUT method will try to update the resource with new data.
+`/<resources>/{id}` often refer to a specific resource. GET method returns the data of the resource. DELETE method deletes the resource. And PUT method will try to update the resource with new data.
 
 - `/courses`
-    - GET, all courses, support filtering by user(that the student takes or the teacher teaches)
+    - GET, all courses
     - POST, a new course, with specified teacher
-- `/course/{cid}`
+- `/courses/{cid}`
     - GET, data of the course, meta data mostly
     - DELETE, the course
     - PUT, the updated data of the course
-- `/course/{cid}/graphs`
+- `/courses/{cid}/graphs`
     - GET, all graphs of the course
     - POST, a new graph to the course
-- `/course/{cid}/students`
+- `/courses/{cid}/students`
     - GET, all students of the course
     - POST, a new student to the course, a.k.a. a student join the course
-- `/graph/{gid}`
+- `/graphs/{gid}`
     - GET, data of the course, without nodes
     - DELETE, the graph
     - PUT, the updated data of the graph
-- `/graph/{gid}/nodes`
+- `/graphs/{gid}/nodes`
     - GET, all nodes of the graph
     - POST, a new node to the graph, with specified parent node
-- `/node/{nid}`
+- `/nodes/{nid}`
     - GET, data of the node, including parent node, children nodes, and some meta data
     - DELETE, the node
     - PUT, the updated node info
-- `/node/{nid}/questions`
+- `/nodes/{nid}/questions`
     - GET, all questions of a node
     - POST, a new question to the node
-- `/node/{nid}/lectures`
+- `/nodes/{nid}/lectures`
     - GET, all lectures of a node
     - POST, a new lecture to the node
-- `/node/{nid}/resources`
+- `/nodes/{nid}/resources`
     - GET, all resources of a node
     - POST, a new resource to the node
-- `/question/{qid}`
+- `/questions/{qid}`
     - GET, data of the question
     - PUT, the updated question
     - DELETE, the question
-- `/question/{qid}/answers`
+- `/questions/{qid}/answers`
     - GET, all answers of the question
     - POST, a new answer to this question
-- `/answer/{aid}`
+- `/answers/{aid}`
     - GET, the data of the answer
     - PUT, the updated answer, restricted for that students are not allowed to edit their answers
     - DELETE, the answer
-- `/lecture/{lid}`
+- `/lectures/{lid}`
     - GET, the data of the lecture
     - PUT, the updated lecture
     - DELETE, the lecture
-- `/resource/{rid}`
+- `/resources/{rid}`
     - GET, the data of the resource
     - PUT, the updated resource
     - DELETE, the resource
 - `/users`
-    - GET, all users, support filtering
-    - POST, a new user, registeration
-- `/user/{uid}`
-    - GET, data of the user
+    - GET, all users
+    - POST, a new user, registration
+- `/users/{uid}`
+    - GET, public available data of the user, such as name, id or type
+- `/account` # This is related to login user
+    - GET, private data of the user himself, including email
     - PUT, the updated data of the user
-    - DELETE, the user
+    - DELETE, the user account
 - `/token`
     - POST, a new token, used to authorization, login
     - DELETE, this token, logout
@@ -422,7 +424,7 @@ Get a list of students of a course.
     ```
     {
         students: [
-            <user_meta>,
+            <user_public>,
             ...
         ],
         student_num : <integer>
@@ -547,28 +549,17 @@ User login. Return a newly created token if success.
       **Content:** 
     ```
     {
-        user : <user_meta>,
+        user : <user_private>,
         token : <string> # access token
     }
     ```
  
 - **Error Response:**
 
-    - **Code:** 400 BAD REUQEST <br>
-      **Content:** `{ error : "Email Invalid" }` <br>
-      **Condition:** Email is invalid.
-    
-    OR
-
-    - **Code:** 404 NOT FOUND <br>
-      **Content:** `{ error : "User Not Found"}` <br>
-      **Condition:** Email is valid but user does not exist.
-    
-    OR
-
     - **Code:** 422 UNPROCESSABLE ENTRY <br>
-      **Content:** `{ error : "Wrong Password" }` <br>
-      **Condition:** User exists but password is wrong.
+      **Content:** `{ error : "Email is invalid or password is wrong." }` <br>
+      **Condition:** User does not exist OR password is wrong.
+       Do not differentiate these two errors for security concern.
 
 - **Notes:**
 
@@ -608,8 +599,8 @@ User logout. Delete a token.
 - **Error Response:**
 
     - **Code:** 401 UNAUTHORIZED <br>
-      **Content:** `{ error : "Unauthorized" }` <br>
-      **Conditon:** User not login. 
+      **Content:** None. <br>
+      **Condition:** User not login. 
 
 - **Notes:**
 
@@ -620,9 +611,9 @@ User logout. Delete a token.
 ----
 
 ## User Related
-Meta data structure of a user:
+Private data of a user:
 ```
-user_meta :
+user_private :
 {
     name : <string>,
     id : <integer>,
@@ -630,9 +621,19 @@ user_meta :
     type : <string>
 }
 ```
+
+Public data of a user:
+```
+user_public :
+{
+    name : <string>,
+    id : <integer>,
+    type : <string>
+}
+```
 ### Register
 
-Create a user. Do **NOT** log in the user after successful registeration.
+Create a user. Do **NOT** log in the user after successful registration.
 
 - **URL**
 
@@ -675,11 +676,11 @@ Create a user. Do **NOT** log in the user after successful registeration.
 - **Success Response:**
 
     - **Code:** 201 CREATED <br>
-      **Content:** `{ id : <integer> }`, User id, used internally to identify the user
+      **Content:** `<user_private>`, User private data
  
 - **Error Response:**
 
-    - **Code:** 400 BAD REUQEST <br>
+    - **Code:** 400 BAD REQUEST <br>
       **Content:** `{ error : "Invalid field" }` <br>
       **Condition:** There is any invalid field.
     
@@ -696,10 +697,13 @@ Create a user. Do **NOT** log in the user after successful registeration.
     Already registered email will result in a 409 error.
 
 ----
-### Delete Acount
+### Delete Account
+
+Delete the account. Login required.
+
 - **URL**
 
-    /user/{uid}
+    /account
 
 - **Method:**
 
@@ -709,7 +713,7 @@ Create a user. Do **NOT** log in the user after successful registeration.
 
     **Required:**
 
-    `uid=<integer>`
+    None.
 
     **Optional:**
 
@@ -728,13 +732,7 @@ Create a user. Do **NOT** log in the user after successful registeration.
 
     - **Code:** 401 UNAUTHORIZED <br>
       **Content:** `{ error : "Unauthorized" }` <br>
-      **Condition:** User not login or `uid` does not match token.
-    
-    OR
-
-    - **Code:** 404 NOT FOUND <br>
-      **Content:** `{ error : "User not found" }` <br>
-      **Condition:** User id invalid.
+      **Condition:** User not login.
 
 - **Notes:**
 
@@ -742,8 +740,139 @@ Create a user. Do **NOT** log in the user after successful registeration.
 
 ----
 ### Update user profile
-### Get user profile
-### List all users
+
+Update user profile. Note that only fields that are included in the request body are to be updated.
+Fields that are not within the request remain unchanged.
+
+- **URL**
+
+    /account
+
+- **Method:**
+
+    `PUT`
+
+- **URL Params**
+
+    **Required:**
+
+    None.
+
+    **Optional:**
+
+    None.
+
+- **Data Params**
+    
+    ```
+    {
+        email : <string>, # OPTIONAL, user email, unique across all users, will be checked for uniqueness
+        name : <string>, # OPTIONAL, user name, used for showing on the page, allow duplication
+        password : <string>, # REQUIRED, user old password
+        newPassword : <string> # OPTIONAL, user new password
+    }
+    ```
+
+- **Success Response:**
+
+    - **Code:** 204 NO CONTENT <br>
+      **Content:** None.
+ 
+- **Error Response:**
+
+    - **Code:** 401 UNAUTHORIZED <br>
+      **Content:** `{ error : "Unauthorized" }` <br>
+      **Condition:** User not login.
+
+- **Notes:**
+
+    None.
+
+----
+### Get user private profile
+
+Get user profile. Login required.
+
+- **URL**
+
+    /account
+
+- **Method:**
+
+    `GET`
+
+- **URL Params**
+
+    **Required:**
+
+    None.
+
+    **Optional:**
+
+    None.
+
+- **Data Params**
+    
+    None.
+
+- **Success Response:**
+
+    - **Code:** 200 <br>
+      **Content:** `<user_private>`, private data of the user
+ 
+- **Error Response:**
+
+    - **Code:** 401 UNAUTHORIZED <br>
+      **Content:** `{ error : "Unauthorized" }` <br>
+      **Condition:** User not login.
+
+- **Notes:**
+
+    None.
+
+----
+### Get user public data
+
+Get user public profile.
+
+- **URL**
+
+    /users/{uid}
+
+- **Method:**
+
+    `GET`
+
+- **URL Params**
+
+    **Required:**
+
+    `uid=<integer>`
+
+    **Optional:**
+
+    None.
+
+- **Data Params**
+    
+    None.
+
+- **Success Response:**
+
+    - **Code:** 200 <br>
+      **Content:** `<user_public>`, public data of the user
+ 
+- **Error Response:**
+
+    - **Code:** 404 NOT FOUND <br>
+      **Content:** `{ error : "User not found" }` <br>
+      **Condition:** User not found.
+
+- **Notes:**
+
+    None.
+
+----
 
 ## Graph Related
 Meta data structure of a graph:

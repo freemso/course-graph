@@ -16,6 +16,9 @@ public class Course {
     @Property
     private String name;
 
+    @Property
+    private String code;
+
     @Relationship(type = "GRAPH_OF", direction = Relationship.INCOMING)
     List<CourseGraph> courseGraphList;
 

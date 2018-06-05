@@ -4,8 +4,8 @@ package java.rest;
 import java.annotation.Authorization;
 import java.annotation.CurrentUser;
 import java.domain.User;
-import java.dto.ReqLoginDTO;
-import java.dto.RespLoginDTO;
+import java.dto.request.LoginReq;
+import java.dto.response.AuthenticationResp;
 import java.model.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,21 +22,21 @@ public class TokenController {
     private final UserService userService;
 
     @Autowired
-    TokenController(UserService userService) {
+    public TokenController(UserService userService) {
         this.userService = userService;
     }
 
     /**
      * User login request.
-     * @param reqLoginDTO, required login form data
+     * @param loginReq, required login form data
      * @return login response DTO
      */
     @PostMapping
-    ResponseEntity<RespLoginDTO> login(@Valid @RequestBody ReqLoginDTO reqLoginDTO) {
-        RespLoginDTO respLoginDTO = userService.login(
-                reqLoginDTO.getEmail(), reqLoginDTO.getPassword());
+    ResponseEntity<AuthenticationResp> login(@Valid @RequestBody LoginReq loginReq) {
+        AuthenticationResp authenticationResp = userService.login(
+                loginReq.getEmail(), loginReq.getPassword());
 
-        return new ResponseEntity<>(respLoginDTO, HttpStatus.CREATED);
+        return new ResponseEntity<>(authenticationResp, HttpStatus.CREATED);
     }
 
     /**
@@ -44,10 +44,10 @@ public class TokenController {
      * @param currentUser, authorized current user
      * @return response with empty body
      */
-    @DeleteMapping
     @Authorization
+    @DeleteMapping
     ResponseEntity logout(@CurrentUser User currentUser) {
-        userService.logout(currentUser);
+        userService.logout(currentUser.getId());
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

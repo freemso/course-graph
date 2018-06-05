@@ -1,8 +1,9 @@
-package java.dto;
+package java.dto.response;
 
+import java.domain.User;
 import java.domain.UserType;
 
-public class RespUserPrivateDTO extends RespUserPublicDTO {
+public class UserPrivateResp extends UserPublicResp {
 
     /**
      * Email is not public data.
@@ -11,9 +12,14 @@ public class RespUserPrivateDTO extends RespUserPublicDTO {
     private String email;
 
 
-    public RespUserPrivateDTO(String name, long id, UserType type, String email) {
+    public UserPrivateResp(String name, long id, UserType type, String email) {
         super(name, id, type);
         this.email = email;
+    }
+
+    public UserPrivateResp(User user) {
+        super(user);
+        this.email = user.getEmail();
     }
 
     public String getEmail() {

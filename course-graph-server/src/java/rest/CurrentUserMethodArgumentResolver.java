@@ -1,12 +1,13 @@
-package java.resolvers;
+package java.rest;
 
 import java.annotation.CurrentUser;
 import java.config.Constants;
-import java.config.ResponseExceptions;
 import java.domain.User;
+import java.exception.UserNotFoundException;
 import java.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -38,14 +39,13 @@ public class CurrentUserMethodArgumentResolver implements HandlerMethodArgumentR
         // Get current user id that we added when do the authorization checking
         Long currentUserId = (Long) webRequest.getAttribute(
                 Constants.CURRENT_USER_ID, RequestAttributes.SCOPE_REQUEST);
-
         if (currentUserId == null) {
             // Does not have this attribute, in other words, not login
             return null;
         } else {
             // Get from repository
             return userRepository.findById(currentUserId).orElseThrow(
-                    () -> new ResponseExceptions.UserIdNotFoundException(currentUserId)
+                    () -> new UserNotFoundException(currentUserId)
             );
         }
 

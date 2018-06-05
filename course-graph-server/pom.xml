@@ -8,7 +8,6 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<title>course-graph-server</title>
 	<description>Course project</description>
 
 	<parent>
@@ -63,6 +62,12 @@
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-redis</artifactId>
             <version>2.0.7.RELEASE</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+            <version>2.0.2.RELEASE</version>
         </dependency>
 	</dependencies>
 

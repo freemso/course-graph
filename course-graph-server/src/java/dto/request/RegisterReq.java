@@ -1,10 +1,10 @@
-package java.dto;
+package java.dto.request;
 
 import java.domain.UserType;
 
 import javax.validation.constraints.NotNull;
 
-public class ReqRegisterDTO {
+public class RegisterReq {
 
     @NotNull
     private String email;
@@ -18,8 +18,8 @@ public class ReqRegisterDTO {
     @NotNull
     private UserType type;
 
-    public ReqRegisterDTO(@NotNull String email, @NotNull String name,
-                          @NotNull String password, @NotNull UserType type) {
+    public RegisterReq(@NotNull String email, @NotNull String name,
+                       @NotNull String password, @NotNull UserType type) {
         this.email = email;
         this.name = name;
         this.password = password;

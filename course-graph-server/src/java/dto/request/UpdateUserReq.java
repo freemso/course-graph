@@ -1,4 +1,4 @@
-package java.dto;
+package java.dto.request;
 
 
 import javax.validation.constraints.NotNull;
@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
  * Must provide password to proceed this request.
  * Fields that are null will NOT be updated.
  */
-public class ReqUpdateUserDTO {
+public class UpdateUserReq {
 
     private String name;
 
@@ -19,8 +19,8 @@ public class ReqUpdateUserDTO {
 
     private String newPassword;
 
-    public ReqUpdateUserDTO(String name, String email,
-                            @NotNull String password, String newPassword) {
+    public UpdateUserReq(String name, String email,
+                         @NotNull String password, String newPassword) {
         this.name = name;
         this.email = email;
         this.password = password;

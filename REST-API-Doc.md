@@ -15,7 +15,6 @@ The plural form of the resource refer to the set of the resource. GET method on 
 `/<resources>/{id}` often refer to a specific resource. GET method returns the data of the resource. DELETE method deletes the resource. And PUT method will try to update the resource with new data.
 
 - `/courses`
-    - GET, all courses
     - POST, a new course, with specified teacher
 - `/courses/{cid}`
     - GET, data of the course, meta data mostly
@@ -67,7 +66,6 @@ The plural form of the resource refer to the set of the resource. GET method on 
     - PUT, the updated resource
     - DELETE, the resource
 - `/users`
-    - GET, all users
     - POST, a new user, registration
 - `/users/{uid}`
     - GET, public available data of the user, such as name, id or type
@@ -75,6 +73,8 @@ The plural form of the resource refer to the set of the resource. GET method on 
     - GET, private data of the user himself, including email
     - PUT, the updated data of the user
     - DELETE, the user account
+- `/account/courses`
+    - GET, get a list of the course that the user is related to
 - `/token`
     - POST, a new token, used to authorization, login
     - DELETE, this token, logout
@@ -161,7 +161,7 @@ Teacher delete a course. Needs authorization.
 
 - **URL**
 
-    /course/{cid}
+    /courses/{cid}
 
 - **Method:**
 
@@ -203,60 +203,13 @@ Teacher delete a course. Needs authorization.
     None.
 
 ----
-### List all courses
-
-List all courses availble.
-
-- **URL**
-
-    /courses
-
-- **Method:**
-
-    `GET`
-
-- **URL Params**
-
-    **Required:**
-
-    None.
-
-    **Optional:**
-
-    None.
-
-- **Data Params**
-    None.
-
-- **Success Response:**
-
-    - **Code:** 200 <br>
-      **Content:** 
-    ```
-    {
-        courses : [
-            <course_meta>,
-            ...
-        ],
-        course_num : <integer>
-    }
-    ```
- 
-- **Error Response:**
-    None.
-
-- **Notes:**
-
-    None.
-
-----
 ### List courses of a user
 
 List all courses that a student takes or a teacher teaches. Needs Authorization.
 
 - **URL**
 
-    /courses?u={uid}
+    /account/courses
 
 - **Method:**
 
@@ -266,13 +219,14 @@ List all courses that a student takes or a teacher teaches. Needs Authorization.
 
     **Required:**
 
-    `uid=<integer>`, user id
+    None.
 
     **Optional:**
 
     None.
 
 - **Data Params**
+
     None.
 
 - **Success Response:**
@@ -304,7 +258,7 @@ List all courses that a student takes or a teacher teaches. Needs Authorization.
 
 - **URL**
 
-    /course/{cid}
+    /courses/{cid}
 
 - **Method:**
 
@@ -345,7 +299,7 @@ Update the meta of the course. Only include the fields that need to be updated(r
 
 - **URL**
 
-    /course/{cid}
+    /courses/{cid}
 
 - **Method:**
 
@@ -398,7 +352,7 @@ Get a list of students of a course.
 
 - **URL**
 
-    /course/{cid}/students
+    /courses/{cid}/students
 
 - **Method:**
 
@@ -448,7 +402,7 @@ Student join a course. Or add a student to a course.
 
 - **URL**
 
-    /course/{cid}/students
+    /courses/{cid}/students
 
 - **Method:**
 

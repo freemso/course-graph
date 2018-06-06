@@ -10,7 +10,7 @@ import org.neo4j.ogm.annotation.Relationship;
 public abstract class AnswerEntry {
 
     @Id
-    private long id;
+    private Long id;
 
     /**
      * The student who submitted this answer entry

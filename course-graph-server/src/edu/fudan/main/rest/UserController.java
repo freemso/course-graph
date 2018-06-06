@@ -5,6 +5,9 @@ import edu.fudan.main.domain.User;
 import edu.fudan.main.dto.request.RegisterReq;
 import edu.fudan.main.dto.response.UserPrivateResp;
 import edu.fudan.main.dto.response.UserPublicResp;
+import edu.fudan.main.model.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
@@ -16,6 +19,13 @@ import javax.validation.Valid;
 @RequestMapping("/users")
 public class UserController {
 
+    private UserService userService;
+
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
     /**
      * User registration request.
      * @param registerReq, required register form data
@@ -23,8 +33,10 @@ public class UserController {
      */
     @PostMapping
     ResponseEntity<UserPrivateResp> register(@Valid @RequestBody RegisterReq registerReq) {
-        // TODO
-        return null;
+        UserPrivateResp userPrivateResp = this.userService.register(registerReq.getEmail(),
+                registerReq.getName(), registerReq.getPassword(), registerReq.getType());
+
+        return new ResponseEntity<>(userPrivateResp, HttpStatus.CREATED);
     }
 
     /**

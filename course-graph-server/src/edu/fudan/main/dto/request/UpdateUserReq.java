@@ -1,7 +1,9 @@
 package edu.fudan.main.dto.request;
 
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
+import static edu.fudan.main.config.Constants.PASSWORD_REGEX;
 
 /**
  * Data that needs update.
@@ -14,13 +16,12 @@ public class UpdateUserReq {
 
     private String email;
 
-    @NotNull
+    @Pattern(regexp = PASSWORD_REGEX, message = "invalid password.")
     private String password;
 
     private String newPassword;
 
-    public UpdateUserReq(String name, String email,
-                         @NotNull String password, String newPassword) {
+    public UpdateUserReq(String name, String email, String password, String newPassword) {
         this.name = name;
         this.email = email;
         this.password = password;

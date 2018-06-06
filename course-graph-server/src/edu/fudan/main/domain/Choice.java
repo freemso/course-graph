@@ -9,7 +9,7 @@ import org.neo4j.ogm.annotation.Property;
 public class Choice {
     @Id
     @GeneratedValue
-    private long id;
+    private Long id;
 
     @Property
     private String key;

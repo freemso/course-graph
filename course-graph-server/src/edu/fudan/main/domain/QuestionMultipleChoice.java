@@ -6,6 +6,7 @@ import org.neo4j.ogm.annotation.Relationship;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class QuestionMultipleChoice extends Question {
 
     @Relationship(type = "HAS_CHOICE")

@@ -7,9 +7,9 @@ public class ErrorResp {
     private String details;
     private Date timestamp;
 
-    public ErrorResp(String error, String details, Date timestamp) {
+    public ErrorResp(String error, String details) {
         this.error = error;
         this.details = details;
-        this.timestamp = timestamp;
+        this.timestamp = new Date();
     }
 }

@@ -11,5 +11,5 @@ public interface UserRepository extends Neo4jRepository<User, Long> {
     @Override
     Optional<User> findById(Long id);
 
-    Optional<User> findByEmail(String username);
+    Optional<User> findByEmail(String email);
 }

@@ -1,14 +1,15 @@
 package edu.fudan.main.model;
 
-import edu.fudan.main.domain.TokenEntry;
-import edu.fudan.main.domain.User;
+import edu.fudan.main.domain.*;
 import edu.fudan.main.dto.response.AuthenticationResp;
 import edu.fudan.main.dto.response.UserPrivateResp;
 import edu.fudan.main.dto.response.UserPublicResp;
+import edu.fudan.main.exception.EmailConflictException;
 import edu.fudan.main.exception.EmailOrPasswordException;
 import edu.fudan.main.exception.UserNotFoundException;
 import edu.fudan.main.repository.TokenRepository;
 import edu.fudan.main.repository.UserRepository;
+import edu.fudan.main.util.RandomIdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -82,5 +83,47 @@ public class UserService {
         );
 
         return new UserPrivateResp(user);
+    }
+
+    public UserPrivateResp register(String email, String name, String password, UserType type) {
+        // Check if the email exists
+        if (this.userRepository.findByEmail(email).isPresent()) {
+            throw new EmailConflictException(email);
+        }
+
+        // Create a new id for user
+        long newUserId = this.generateRandomId();
+
+        // Create a new user based on the user type
+        User newUser = null;
+        switch (type) {
+            case STUDENT:
+                newUser = new Student(newUserId, name, password, email);
+                break;
+            case TEACHER:
+                newUser = new Teacher(newUserId, name, password, email);
+                break;
+        }
+
+        // Add this newly created user to user repository
+        User savedUser = this.userRepository.save(newUser);
+
+        // Return a user private data
+        return new UserPrivateResp(savedUser);
+    }
+
+
+    /**
+     * Generate a unique user id
+     * @return a user id
+     */
+    private long generateRandomId() {
+        while (true) {
+            long randomLong = RandomIdGenerator.getInstance().generateRandomLongId();
+            // Check if the id exists as a user id
+            if (!this.userRepository.findById(randomLong).isPresent()) {
+                return randomLong;
+            }
+        }
     }
 }

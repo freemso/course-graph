@@ -3,18 +3,38 @@ package edu.fudan.main.config;
 public class Constants {
 
     /**
-     * 存储当前登录用户id的字段名
+     * Field name in request attributes that holds current user id
      */
     public static final String CURRENT_USER_ID = "CURRENT_USER_ID";
 
     /**
-     * token有效期（小时）
+     * TTL for a authorization token in hour
      */
     public static final int TOKEN_EXPIRES_HOUR = 72;
 
     /**
-     * 存放Authorization的header字段
+     * Field name in request header that holds authorization token
      */
     public static final String AUTHORIZATION = "authorization";
+
+    /**
+     * Length of the id of the resources
+     */
+    public static final int ID_LENGTH = 7;
+
+    /**
+     * Regex for password validation
+     *
+     * Explanation:
+     * ^                 # start-of-string
+     * (?=.*[0-9])       # a digit must occur at least once
+     * (?=.*[a-z])       # a lower case letter must occur at least once
+     * (?=.*[A-Z])       # an upper case letter must occur at least once
+     * (?=.*[@#$%^&+=])  # a special character must occur at least once
+     * (?=\S+$)          # no whitespace allowed in the entire string
+     * .{8,}             # anything, at least eight places though
+     * $                 # end-of-string
+     */
+    public static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
 
 }

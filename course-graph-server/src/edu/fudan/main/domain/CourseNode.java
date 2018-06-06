@@ -13,7 +13,7 @@ import java.util.List;
 public class CourseNode {
 
     @Id
-    private long id;
+    private Long id;
 
     @Property
     private String title;

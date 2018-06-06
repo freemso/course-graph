@@ -11,7 +11,7 @@ import java.util.Set;
 @NodeEntity
 public class Course {
     @Id
-    private long id;
+    private Long id;
 
     @Property
     private String name;

@@ -3,8 +3,8 @@ package edu.fudan.main.domain;
 
 import org.neo4j.ogm.annotation.Property;
 
-public class AnswerEntryMultipleChoice extends AnswerEntry {
 
+public class AnswerEntryMultipleChoice extends AnswerEntry {
     @Property
     private boolean correct;
 

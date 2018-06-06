@@ -12,7 +12,7 @@ import java.util.List;
 public abstract class Question {
 
     @Id
-    private long id;
+    private Long id;
 
     @Property
     private String description;

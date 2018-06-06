@@ -10,7 +10,7 @@ import org.neo4j.ogm.annotation.Relationship;
 public abstract class AnswerEntry {
 
     @Id
-    private Long id;
+    private Long answerEntryId;
 
     /**
      * The student who submitted this answer entry
@@ -25,18 +25,18 @@ public abstract class AnswerEntry {
     private String content;
 
     public AnswerEntry(long id, Student submitter, Question question, String content) {
-        this.id = id;
+        this.answerEntryId = id;
         this.submitter = submitter;
         this.question = question;
         this.content = content;
     }
 
     public long getId() {
-        return id;
+        return answerEntryId;
     }
 
     public void setId(long id) {
-        this.id = id;
+        this.answerEntryId = id;
     }
 
     public Student getSubmitter() {

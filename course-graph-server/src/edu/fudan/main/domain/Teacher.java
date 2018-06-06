@@ -9,7 +9,10 @@ public class Teacher extends User {
     @Relationship(type = "TEACHER_OF", direction = Relationship.OUTGOING)
     private List<Course> courseList;
 
+    public Teacher(){
+    }
+
     public Teacher(long id, String name, String password, String email) {
-        super(id, name, password, email, UserType.TEACHER);
+        super(id, name, password, email,UserType.TEACHER);
     }
 }

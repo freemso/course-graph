@@ -1,6 +1,6 @@
 package edu.fudan.main.repository;
 
-public interface TeacherRepository {
+public interface TeacherRepository extends UserRepository{
 
 
 }

@@ -1,6 +1,7 @@
 package edu.fudan.main.domain;
 
 import org.neo4j.ogm.annotation.Id;
+import org.neo4j.ogm.annotation.Index;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
 
@@ -8,7 +9,7 @@ import org.neo4j.ogm.annotation.Property;
 public abstract class User {
 
     @Id
-    private Long id;
+    private Long userId;
 
     @Property
     private String name;
@@ -22,12 +23,16 @@ public abstract class User {
     @Property
     private UserType type;
 
-    public User(long id, String name, String password, String email, UserType type) {
-        this.id = id;
+    public User(Long id, String name, String password, String email, UserType type) {
+        this.userId = id;
         this.name = name;
         this.password = password;
         this.email = email;
         this.type = type;
+    }
+
+    public User() {
+
     }
 
     public UserType getType() {
@@ -63,10 +68,10 @@ public abstract class User {
     }
 
     public long getId() {
-        return id;
+        return userId;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setId(Long id) {
+        this.userId = id;
     }
 }

@@ -42,7 +42,7 @@
     $(function () {
         function search() {
             var query=$("#search").find("input[title=search]").val();
-            $.get("/teacher/mindmap?id=" + encodeURIComponent(query),
+            $.get("/users/user",
                     function (data) {
                         //var t = $("table#results tbody").empty();
                         if (!data) return;

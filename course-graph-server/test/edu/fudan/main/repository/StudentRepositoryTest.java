@@ -15,29 +15,27 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 @Transactional
-public class UserRepositoryTest {
-
-    @Autowired
-    private UserRepository userRepository;
+public class StudentRepositoryTest {
     @Autowired
     private StudentRepository studentRepository;
-    @Test
-    public void testCreateUser() {
-        assertThat(userRepository.findById(1L).isPresent()).isFalse();
-
-        Student user = new Student(1, "2", "3", "4");
-        studentRepository.save(user);
-        assertTrue(userRepository.findById((long) 1).isPresent());
-        assertThat(userRepository.findById(1L).isPresent()).isTrue();
-        assertThat(userRepository.findById(2L).isPresent()).isFalse();
+    private Student student;
+    @Before
+    public void init(){
+        student =  new Student(1212, "junit_test_student", "1", "1");
     }
 
+    @Test
+    public void testFindById(){
+        Optional<User> user = studentRepository.findById((long) 1212);
+        assertTrue(user.isPresent());
+        assertEquals(student, (Student)user.get());
+    }
 }

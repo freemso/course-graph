@@ -69,7 +69,7 @@ public interface CourseRepository extends Neo4jRepository<Course, Long> {
 
 
     @Query("MATCH (course:Course)<-[r:TEACHER_OF]-(teacher:Teacher) " +
-            "WHERE course.id = {id} " +
+            "WHERE course.courseId = {id} " +
             "RETURN teacher")
     Teacher findTeacherByCourseId(@Param("id") long id);
 
@@ -85,7 +85,7 @@ public interface CourseRepository extends Neo4jRepository<Course, Long> {
 
 
     @Query("MATCH (course:Course)<-[r:GRAPH_OF]-(courseGraph:CourseGraph) " +
-            "WHERE course.id = {id} " +
+            "WHERE course.courseId = {id} " +
             "RETURN courseGraph ORDER BY courseGraph.name")
     List<CourseGraph> findGraphById(@Param("id") long id);
 
@@ -98,9 +98,6 @@ public interface CourseRepository extends Neo4jRepository<Course, Long> {
             "WHERE course.code = {code} " +
             "RETURN courseGraph ORDER BY courseGraph.name")
     List<CourseGraph> findGraphByCode(@Param("code") String code);
-
-
-
 
 }
 

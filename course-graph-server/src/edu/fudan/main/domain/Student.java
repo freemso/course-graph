@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Student extends User {
 
-    @Relationship(type = "STUDENT_OF")
+    @Relationship(type = "STUDENT_OF", direction = Relationship.OUTGOING)
     private List<Course> courseList;
 
     public Student(){
@@ -17,12 +17,15 @@ public class Student extends User {
         super(id, name, password, email, UserType.STUDENT);
     }
 
+    public void selectCourse(Course course){
+        this.courseList.add(course);
+    }
+
+
     @Override
     public boolean equals(Object o) {
         return super.equals(o);
     }
-
-
 
 
 }

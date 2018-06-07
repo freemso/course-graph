@@ -16,6 +16,12 @@ public class Teacher extends User {
         super(id, name, password, email,UserType.TEACHER);
     }
 
+    public void addCourse(Course course){
+        this.courseList.add(course);
+    }
+
+
+
     @Override
     public boolean equals(Object o){
         return super.equals(o);

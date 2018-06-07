@@ -1,9 +1,6 @@
 package edu.fudan.main.domain;
 
-import org.neo4j.ogm.annotation.Id;
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Property;
-import org.neo4j.ogm.annotation.Relationship;
+import org.neo4j.ogm.annotation.*;
 
 import java.util.List;
 import java.util.Set;
@@ -16,7 +13,7 @@ public class Course {
     @Property
     private String name;
 
-    @Property
+    @Property@Index(unique = true)
     private String code;
 
     @Relationship(type = "GRAPH_OF", direction = Relationship.INCOMING)

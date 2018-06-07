@@ -1,9 +1,7 @@
 package edu.fudan.main.domain;
 
-import org.neo4j.ogm.annotation.Id;
-import org.neo4j.ogm.annotation.Index;
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Property;
+import org.neo4j.ogm.annotation.*;
+
 
 @NodeEntity
 public abstract class User {
@@ -17,7 +15,7 @@ public abstract class User {
     @Property
     private String password;
 
-    @Property
+    @Property@Index(unique = true)
     private String email;
 
     @Property
@@ -73,5 +71,13 @@ public abstract class User {
 
     public void setId(Long id) {
         this.userId = id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        if (this.userId.equals(((User) o).userId)) return true;
+        return false;
     }
 }

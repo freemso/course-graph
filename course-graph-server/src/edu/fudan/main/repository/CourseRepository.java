@@ -9,13 +9,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.neo4j.annotation.Query;
+import org.springframework.data.neo4j.annotation.QueryResult;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.repository.query.Param;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public interface CourseRepository extends Neo4jRepository<Course, Long> {
 
@@ -99,5 +97,26 @@ public interface CourseRepository extends Neo4jRepository<Course, Long> {
             "RETURN courseGraph ORDER BY courseGraph.name")
     List<CourseGraph> findGraphByCode(@Param("code") String code);
 
+
+    
+    @Query( "MATCH (course:Course) " +
+            "WHERE course.courseId = {id} " +
+            "MATCH (course)<-[STUDENT_OF]-(student:Student)"+
+            "MATCH (course)<-[r:TEACHER_OF]-(teacher:Teacher)"+
+            "RETURN course.name AS name, course.courseId AS id, teacher AS teacher," +
+            "course.createdTime AS createdTime, course.modifiedTime AS modifiedTime" +
+            "count(student)")
+    CourseMeta getCourseMetaById(@Param("id")Long id);
+
+    @QueryResult
+    public class CourseMeta {
+        String name;
+        Long id;
+        Teacher teacher;
+        Date createdTime;
+        Date modifiedTime;
+        int studentNum;
+    }
 }
+
 

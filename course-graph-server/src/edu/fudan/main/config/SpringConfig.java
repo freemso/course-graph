@@ -23,6 +23,7 @@ public class SpringConfig {
 
     private static final String NEO4J_URL = "http://localhost:7474";
 
+
     @Bean
     public org.neo4j.ogm.config.Configuration configuration() {
         return new org.neo4j.ogm.config.Configuration.Builder()

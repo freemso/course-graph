@@ -12,7 +12,7 @@ import java.util.List;
 public abstract class Question {
 
     @Id
-    private Long id;
+    private Long questionId;
 
     @Property
     private String description;
@@ -24,7 +24,7 @@ public abstract class Question {
     private List<AnswerEntry> answerEntryList;
 
     public Question(long id, String description, QuestionType questionType) {
-        this.id = id;
+        this.questionId = id;
         this.description = description;
         this.questionType = questionType;
         this.answerEntryList = new ArrayList<>();

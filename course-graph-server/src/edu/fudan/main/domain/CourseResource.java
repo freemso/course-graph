@@ -8,7 +8,7 @@ import org.neo4j.ogm.annotation.Property;
 public class CourseResource {
 
     @Id
-    private Long id;
+    private Long courseResourceId;
 
     @Property
     private String title;

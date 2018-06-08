@@ -10,7 +10,7 @@ import java.util.Set;
 @NodeEntity
 public class CourseGraph {
     @Id
-    private Long id;
+    private Long courseGraphId;
 
     @Relationship(type = "HAS_NODE")
     private Set<CourseNode> nodeSet;

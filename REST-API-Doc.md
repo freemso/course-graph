@@ -737,6 +737,12 @@ Fields that are not within the request remain unchanged.
     - **Code:** 401 UNAUTHORIZED <br>
       **Content:** `{ error : "Unauthorized" }` <br>
       **Condition:** User not login.
+      
+    OR
+    
+    - **Code:** 422 UNPROCESSABLE ENTRY <br>
+      **Content:** `{ error : "Password is wrong." }` <br>
+      **Condition:** Password is wrong.
 
 - **Notes:**
 

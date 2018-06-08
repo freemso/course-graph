@@ -2,19 +2,12 @@ package edu.fudan.main.repository;
 
 import edu.fudan.main.domain.Student;
 import edu.fudan.main.domain.User;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.neo4j.ogm.config.Configuration;
-import org.neo4j.ogm.session.Session;
-import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.io.File;
-import java.util.Collection;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,6 +19,7 @@ public class UserRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
+
 
     @Test
     public void testCreateUser() {

@@ -28,6 +28,7 @@ public class UserController {
      * @param registerReq, required register form data
      * @return user private DTO with email field
      */
+    @CrossOrigin
     @PostMapping
     ResponseEntity<UserPrivateResp> register(@Valid @RequestBody RegisterReq registerReq) {
         UserPrivateResp userPrivateResp = this.userService.register(registerReq.getEmail(),

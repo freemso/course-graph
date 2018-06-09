@@ -1,6 +1,9 @@
 package edu.fudan.main.domain;
 
+import edu.fudan.main.repository.UserRepository;
+import edu.fudan.main.util.RandomIdGenerator;
 import org.neo4j.ogm.annotation.*;
+import org.springframework.stereotype.Indexed;
 
 
 @NodeEntity
@@ -79,5 +82,15 @@ public abstract class User {
         if (!(o instanceof User)) return false;
         if (this.userId.equals(((User) o).userId)) return true;
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = userId.hashCode();
+        result = 31 * result + name.hashCode();
+        result = 31 * result + password.hashCode();
+        result = 31 * result + email.hashCode();
+        result = 31 * result + type.hashCode();
+        return result;
     }
 }

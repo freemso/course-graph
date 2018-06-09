@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.InvalidPropertiesFormatException;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import static edu.fudan.main.config.Constants.EMAIL_REGEX;
@@ -132,6 +133,7 @@ public class UserService {
         return new UserPrivateResp(savedUser);
     }
 
+
     public UserPrivateResp updateUser(User currentUser, String name, String email, String password, String newPassword) {
         // Check if the password matches
         if (! currentUser.getPassword().equals(password)) {
@@ -140,7 +142,13 @@ public class UserService {
 
         if (name != null) {
             // Change name
-            currentUser = userRepository.updateNameOfUserWithId(currentUser.getId(), name).orElse(currentUser);
+            User user = userRepository.findById(currentUser.getId()).orElse(null);
+            if(user == null)
+                return null;
+            user.setName(name);
+            userRepository.save(user, 0);
+            //Optional<User> user = userRepository.findById(currentUser.getId());
+//            currentUser = userRepository.updateNameOfUserWithId(currentUser.getId(), name).orElse(currentUser);
         }
 
 //        if (email != null) {

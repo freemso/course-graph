@@ -1,7 +1,5 @@
 package edu.fudan.main.rest;
 
-import edu.fudan.main.annotation.CurrentUser;
-import edu.fudan.main.domain.User;
 import edu.fudan.main.dto.request.RegisterReq;
 import edu.fudan.main.dto.response.UserPrivateResp;
 import edu.fudan.main.dto.response.UserPublicResp;
@@ -9,7 +7,6 @@ import edu.fudan.main.model.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,13 +42,13 @@ public class UserController {
      * Only authorized currentUser with the same id as {uid} could get
      * user private data. Others get public data.
      * @param uid, id of the user to get
-     * @param currentUser, nullable current authorized user
-     * @return user public/private DTO
+     * @return user public data
      */
     @GetMapping("/{uid}")
-    ResponseEntity<UserPublicResp> getUser(@PathVariable long uid, @Nullable @CurrentUser User currentUser) {
-        // TODO
-        return null;
+    ResponseEntity<UserPublicResp> getUser(@PathVariable long uid) {
+        UserPublicResp userPublicResp = this.userService.getUserPublic(uid);
+
+        return new ResponseEntity<>(userPublicResp, HttpStatus.OK);
     }
 
 

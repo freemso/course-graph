@@ -58,6 +58,7 @@ public class UserRepositoryTest {
         assertEquals(teacher, user2.get());
     }
 
+
     @Test
     public void testFindByName(){
         List<User> users1 = userRepository.findByName("test_student");

@@ -5,6 +5,7 @@ import edu.fudan.main.domain.Course;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.neo4j.annotation.Query;
+import org.springframework.data.neo4j.annotation.QueryResult;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
@@ -23,4 +24,15 @@ public interface StudentRepository extends UserRepository{
                     "WHERE stu.userId = {userId} " +
                     "RETURN count(*)")
     Page<Course> findCourse(@Param("userId")long userId, Pageable pageable);
+
+
+    @Query("MATCH (stu:Student)-[r:STUDENT_OF]->(course:Course) " +
+            "WHERE stu.userId = {userId} " +
+            "RETURN course as courses, count(*) as courseNum ")
+    UserCourses findUserCourseInfo(@Param("userId")long userId);
+    @QueryResult
+    public class UserCourses{
+        List<Course> courses;
+        int courseNum;
+    }
 }

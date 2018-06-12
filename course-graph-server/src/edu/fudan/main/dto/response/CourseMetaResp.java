@@ -1,6 +1,7 @@
 package edu.fudan.main.dto.response;
 
 import edu.fudan.main.domain.Teacher;
+import edu.fudan.main.repository.TeacherRepository;
 import org.springframework.data.neo4j.annotation.QueryResult;
 
 import java.util.Date;
@@ -9,15 +10,17 @@ import java.util.Date;
 public class CourseMetaResp {
     String name;
     Long id;
-    Teacher teacher;
+    String teacherName;
+    Long teacherId;
     Date createdTime;
     Date modifiedTime;
     int studentNum;
 
-    public CourseMetaResp(String name, Long id, Teacher teacher, Date createdTime, Date modifiedTime, int studentNum) {
+    public CourseMetaResp(String name, Long id, String teacherName, Long teacherId , Date createdTime, Date modifiedTime, int studentNum) {
         this.name = name;
         this.id = id;
-        this.teacher = teacher;
+        this.teacherName = teacherName;
+        this.teacherId = teacherId;
         this.createdTime = createdTime;
         this.modifiedTime = modifiedTime;
         this.studentNum = studentNum;
@@ -31,8 +34,12 @@ public class CourseMetaResp {
         return id;
     }
 
-    public Teacher getTeacher() {
-        return teacher;
+    public String getTeacherName() {
+        return teacherName;
+    }
+
+    public Long getTeacherId(){
+        return teacherId;
     }
 
     public Date getCreatedTime() {

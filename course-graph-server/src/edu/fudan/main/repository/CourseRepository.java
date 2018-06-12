@@ -105,10 +105,17 @@ public interface CourseRepository extends Neo4jRepository<Course, Long> {
             "WHERE course.courseId = {id} " +
             "MATCH (course)<-[STUDENT_OF]-(student:Student)"+
             "MATCH (course)<-[r:TEACHER_OF]-(teacher:Teacher)"+
-            "RETURN course.name AS name, course.courseId AS id, teacher AS teacher," +
-            "course.createdTime AS createdTime, course.modifiedTime AS modifiedTime" +
+            "RETURN course.name AS name, course.courseId AS id, teacher.name AS teacherName," +
+            "teacher.userId AS teacherId, course.createdTime AS createdTime, course.modifiedTime AS modifiedTime" +
             "count(student)")
     CourseMetaResp getCourseMetaById(@Param("id")Long id);
+
+
+    @Query("MATCH (course:Course)" +
+            "WHERE course.courseId = {id}+" +
+            "MATCH (course)")
+    void deleteById(@Param("id") Long courseId);
+
 
 }
 

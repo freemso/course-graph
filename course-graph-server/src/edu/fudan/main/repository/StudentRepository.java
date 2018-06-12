@@ -2,13 +2,16 @@ package edu.fudan.main.repository;
 
 
 import edu.fudan.main.domain.Course;
+import edu.fudan.main.domain.Student;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.annotation.QueryResult;
+import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface StudentRepository extends UserRepository{
 
@@ -35,4 +38,5 @@ public interface StudentRepository extends UserRepository{
         List<Course> courses;
         int courseNum;
     }
+
 }

@@ -51,4 +51,39 @@ public class Course {
         this.modifiedTime = Calendar.getInstance().getTime();
     }
 
+    public Long getCourseId() {
+        return courseId;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public Date getCreatedTime() {
+        return createdTime;
+    }
+
+    public Date getModifiedTime() {
+        return modifiedTime;
+    }
+
+    public List<CourseGraph> getCourseGraphList() {
+        return courseGraphList;
+    }
+
+    public Set<Student> getStudents() {
+        return students;
+    }
+
+    public Teacher getTeacher() {
+        return teacher;
+    }
 }

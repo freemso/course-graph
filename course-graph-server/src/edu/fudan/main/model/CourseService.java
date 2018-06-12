@@ -66,6 +66,7 @@ public class CourseService {
             throw new CourseNotFoundException(courseId);
 
         courseRepository.deleteById(courseId);
+        //todo
         return true;
     }
 

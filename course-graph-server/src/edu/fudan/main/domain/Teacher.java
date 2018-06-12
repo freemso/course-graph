@@ -2,6 +2,7 @@ package edu.fudan.main.domain;
 
 import org.neo4j.ogm.annotation.Relationship;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Teacher extends User {
@@ -21,6 +22,10 @@ public class Teacher extends User {
     }
 
 
+    public List<Course> getCourseList() {
+        List<Course> courses = new ArrayList<>(courseList);
+        return courses;
+    }
 
     @Override
     public boolean equals(Object o){

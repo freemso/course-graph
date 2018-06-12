@@ -62,17 +62,17 @@ public class UserRepositoryTest {
     @Test
     public void testFindByName(){
         List<User> users1 = userRepository.findByName("test_student");
-        assertTrue(users1.size() == 1);
+        assertEquals(1, users1.size());
         assertEquals(users1.get(0), student);
 
         List<User> users2 = userRepository.findByName("test_teacher");
-        assertTrue(users2.size() == 1);
+        assertEquals(1, users2.size());
         assertEquals(users2.get(0), teacher);
 
         student.setName("test_teacher");
         userRepository.save(student);
         List<User> users3 = userRepository.findByName("test_teacher");
-        assertTrue(users3.size() == 2);
+        assertEquals(2, users3.size());
         if(users3.get(0).equals(student))
             assertEquals(users3.get(1), (teacher));
         else if(users3.get(0).equals(teacher))

@@ -16,6 +16,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/token")
+@CrossOrigin
 public class TokenController {
 
     private final UserService userService;

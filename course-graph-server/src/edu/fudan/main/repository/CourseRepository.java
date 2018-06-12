@@ -5,6 +5,7 @@ import edu.fudan.main.domain.Course;
 import edu.fudan.main.domain.CourseGraph;
 import edu.fudan.main.domain.Student;
 import edu.fudan.main.domain.Teacher;
+import edu.fudan.main.dto.response.CourseMetaResp;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +22,10 @@ public interface CourseRepository extends Neo4jRepository<Course, Long> {
     Optional<Course> findByName(String name);
 
     Optional<Course> findById(Long id);
+
+    boolean existsById(Long id);
+
+    boolean existsByCode(String courseCode);
 
     Optional<Course> findByCode(String code);
 
@@ -81,24 +86,21 @@ public interface CourseRepository extends Neo4jRepository<Course, Long> {
             "RETURN teacher")
     Teacher findTeacherByName(@Param("name") String name);
 
-
     @Query("MATCH (course:Course)<-[r:GRAPH_OF]-(courseGraph:CourseGraph) " +
             "WHERE course.courseId = {id} " +
             "RETURN courseGraph ORDER BY courseGraph.name")
-    List<CourseGraph> findGraphById(@Param("id") long id);
+    List<CourseGraph> findGraphsById(@Param("id") long id);
 
     @Query("MATCH (course:Course)<-[r:GRAPH_OF]-(courseGraph:CourseGraph) " +
             "WHERE course.name = {name} " +
             "RETURN courseGraph ORDER BY courseGraph.name")
-    List<CourseGraph> findGraphByName(@Param("name") String name);
+    List<CourseGraph> findGraphsByName(@Param("name") String name);
 
     @Query("MATCH (course:Course)<-[r:GRAPH_OF]-(courseGraph:CourseGraph) " +
             "WHERE course.code = {code} " +
             "RETURN courseGraph ORDER BY courseGraph.name")
     List<CourseGraph> findGraphByCode(@Param("code") String code);
 
-
-    
     @Query( "MATCH (course:Course) " +
             "WHERE course.courseId = {id} " +
             "MATCH (course)<-[STUDENT_OF]-(student:Student)"+
@@ -106,17 +108,8 @@ public interface CourseRepository extends Neo4jRepository<Course, Long> {
             "RETURN course.name AS name, course.courseId AS id, teacher AS teacher," +
             "course.createdTime AS createdTime, course.modifiedTime AS modifiedTime" +
             "count(student)")
-    CourseMeta getCourseMetaById(@Param("id")Long id);
+    CourseMetaResp getCourseMetaById(@Param("id")Long id);
 
-    @QueryResult
-    public class CourseMeta {
-        String name;
-        Long id;
-        Teacher teacher;
-        Date createdTime;
-        Date modifiedTime;
-        int studentNum;
-    }
 }
 
 

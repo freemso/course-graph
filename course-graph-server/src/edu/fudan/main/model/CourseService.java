@@ -1,12 +1,10 @@
 package edu.fudan.main.model;
 
-import edu.fudan.main.domain.Course;
-import edu.fudan.main.domain.Student;
-import edu.fudan.main.domain.Teacher;
-import edu.fudan.main.domain.User;
+import edu.fudan.main.domain.*;
 import edu.fudan.main.dto.response.CourseMetaResp;
 import edu.fudan.main.exception.CourseConflictException;
 import edu.fudan.main.exception.CourseNotFoundException;
+import edu.fudan.main.exception.UserNotFoundException;
 import edu.fudan.main.repository.CourseRepository;
 import edu.fudan.main.repository.StudentRepository;
 import edu.fudan.main.repository.TeacherRepository;
@@ -71,8 +69,24 @@ public class CourseService {
     }
 
 
-    public List<CourseMetaResp> listAllCourses(Student student){
-        List<Course> courses = student.getCourseList();
+//    public List<CourseMetaResp> listAllCourses(Student student){
+//        List<Course> courses = student.getCourseList();
+//        List<CourseMetaResp> courseMetaResps = new ArrayList<>();
+//        for(Course c: courses){
+//            courseMetaResps.add(courseRepository.getCourseMetaById(c.getCourseId()));
+//        }
+//        return courseMetaResps;
+//    }
+
+    public List<CourseMetaResp> listAllCourses(User user){
+        List<Course> courses = new ArrayList<>();
+        if(user.getType().equals(UserType.STUDENT)){
+            Optional<Student> student = studentRepository.findById(user.getId());
+            courses = student.get().getCourseList();
+        }else{
+            Optional<Teacher> teacher = teacherRepository.findById(user.getId());
+            courses = teacher.get().getCourseList();
+        }
         List<CourseMetaResp> courseMetaResps = new ArrayList<>();
         for(Course c: courses){
             courseMetaResps.add(courseRepository.getCourseMetaById(c.getCourseId()));

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @Controller
+@CrossOrigin
 @RequestMapping("/users")
 public class UserController {
 
@@ -25,13 +26,12 @@ public class UserController {
 
     /**
      * User registration request.
-     * @param registerReq, required register form data
+     * @param registerReq, required createUser form data
      * @return user private DTO with email field
      */
-    @CrossOrigin
     @PostMapping
     ResponseEntity<UserPrivateResp> register(@Valid @RequestBody RegisterReq registerReq) {
-        UserPrivateResp userPrivateResp = this.userService.register(registerReq.getEmail(),
+        UserPrivateResp userPrivateResp = this.userService.createUser(registerReq.getEmail(),
                 registerReq.getName(), registerReq.getPassword(), registerReq.getType());
 
         return new ResponseEntity<>(userPrivateResp, HttpStatus.CREATED);

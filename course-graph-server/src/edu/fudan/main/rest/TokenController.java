@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/token")
 public class TokenController {
 
@@ -26,27 +27,27 @@ public class TokenController {
     }
 
     /**
-     * User login request.
-     * @param loginReq, required login form data
-     * @return login response DTO
+     * User createToken request.
+     * @param loginReq, required createToken form data
+     * @return createToken response DTO
      */
     @PostMapping
     ResponseEntity<AuthenticationResp> login(@Valid @RequestBody LoginReq loginReq) {
-        AuthenticationResp authenticationResp = userService.login(
+        AuthenticationResp authenticationResp = userService.createToken(
                 loginReq.getEmail(), loginReq.getPassword());
 
         return new ResponseEntity<>(authenticationResp, HttpStatus.CREATED);
     }
 
     /**
-     * User logout request.
+     * User deleteToken request.
      * @param currentUser, authorized current user
      * @return response with empty body
      */
     @Authorization
     @DeleteMapping
     ResponseEntity logout(@CurrentUser User currentUser) {
-        userService.logout(currentUser.getId());
+        userService.deleteToken(currentUser.getId());
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

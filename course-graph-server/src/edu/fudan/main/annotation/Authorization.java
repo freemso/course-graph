@@ -6,7 +6,7 @@ import java.lang.annotation.*;
 
 /**
  * User this annotation on methods in controller.
- * It will check if the user is in login status.
+ * It will check if the user is in createToken status.
  * If not, return 401 UNAUTHORIZED error
  * @see AuthorizationInterceptor
  */

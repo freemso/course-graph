@@ -44,7 +44,7 @@ public class UserServiceTest {
 
     @Test
     public void testLogin() {
-        //stu login
+        //stu createToken
         //wrong email
         loginFailAssertion("stu@sjtu.edu.cn", "1234");
         //wrong password
@@ -52,39 +52,59 @@ public class UserServiceTest {
         //wrong email and password
         loginFailAssertion("stu@sjtu.edu.cn", "2");
         //succeed
-        AuthenticationResp resp = userService.login("stu@fudan.edu.cn", "1234");
-        assertNotNull(userService.login("stu@fudan.edu.cn", "1234"));
-        TokenEntry tokenEntry = new TokenEntry(1, resp.getToken());
+        AuthenticationResp resp = userService.createToken("stu@fudan.edu.cn", "1234");
+//        assertNotNull(userService.createToken("stu@fudan.edu.cn", "1234"));
+        // Every time we create a token, the old token related to that user is deleted
+        assertNotNull(resp);
+
+        // The token in AuthenticationResp is actually the combination of token and id
+        // so we only need to pass it to getToken() to get the tokenEntry
+        TokenEntry tokenEntry = tokenRepository.getToken(resp.getToken());
         assertTrue(tokenRepository.checkToken(tokenEntry));
+
+        // Test token override
+        // create a token again
+        assertNotNull(userService.createToken("stu@fudan.edu.cn", "1234"));
+        TokenEntry oldTokenEntry = tokenRepository.getToken(resp.getToken());
+        // old token will be invalid
+        assertFalse(tokenRepository.checkToken(oldTokenEntry));
     }
 
     @Test
     public void testLogout() {
-        //login
-        AuthenticationResp resp = userService.login("stu@fudan.edu.cn", "1234");
+        //createToken
+        AuthenticationResp resp = userService.createToken("stu@fudan.edu.cn", "1234");
         assertNotNull(resp);
-        TokenEntry tokenEntry = new TokenEntry(1, resp.getToken());
+
+        TokenEntry tokenEntry = tokenRepository.getToken(resp.getToken());
         assertTrue(tokenRepository.checkToken(tokenEntry));
-        //logout
-        userService.logout(1);
-        assertFalse(tokenRepository.checkToken(tokenEntry));
+
+        //deleteToken
+        userService.deleteToken(1);
+        TokenEntry oldTokenEntry = tokenRepository.getToken(resp.getToken());
+        assertFalse(tokenRepository.checkToken(oldTokenEntry));
     }
 
 
     @Test
     public void testUpdate() {
-        //update
-        User currentUser = userRepository.findById(1L).get();
+        User currentUser = userRepository.findById(1L).orElse(null);
         assertNotNull(currentUser);
-        //update failed
-        UserPrivateResp resp = userService.updateUser(currentUser, "newName", "newMail", "12345", "12345");
-        User modifiedUser = userRepository.findById(1L).get();
+
+        //update failed, wrong password
+        try {
+            userService.updateUser(currentUser, "newName", "newMail", "12345", "12345");
+            fail();
+        } catch (EmailOrPasswordException ignored) {
+            // ignore it
+        }
+        User modifiedUser = userRepository.findById(1L).orElse(null);
         assertNotNull(modifiedUser);
         assertEquals(currentUser.hashCode(), modifiedUser.hashCode());
 
         //update succeeded
-        resp = userService.updateUser(currentUser, "newName", "newMail", "1234", "12345");
-        modifiedUser = userRepository.findById(1L).get();
+        userService.updateUser(currentUser, "newName", "newEmail", "1234", "12345");
+        modifiedUser = userRepository.findById(1L).orElse(null);
         assertNotNull(modifiedUser);
         assertEquals(modifiedUser.getName(), "newName");
         assertEquals(modifiedUser.getEmail(), "newEmail");
@@ -94,18 +114,18 @@ public class UserServiceTest {
     @Test
     public void testRegister() {
 
-        //register failure caused by duplicate email
+        //createUser failure caused by duplicate email
         try {
-            userService.register("stu@fudan.edu.cn", "x", "12", UserType.STUDENT);
-            assert false;
-        }catch(EmailConflictException e){
-            assert true;
+            userService.createUser("stu@fudan.edu.cn", "x", "12", UserType.STUDENT);
+            fail();
+        } catch(EmailConflictException ignore){
+            // ignore it
         }
 
-        //register successfully
-        UserPrivateResp resp = userService.register("stu2@fudan.edu.cn", "x", "12", UserType.STUDENT);
+        //createUser successfully
+        UserPrivateResp resp = userService.createUser("stu2@fudan.edu.cn", "x", "12", UserType.STUDENT);
         assertNotNull(resp);
-        User user = userRepository.findByEmail("stu2@fudan.edu.cn").get();
+        User user = userRepository.findByEmail("stu2@fudan.edu.cn").orElse(null);
         assertNotNull(user);
         assertEquals(user.getPassword(), "12");
         assertEquals(user.getEmail(), "stu2@fudan.edu.cn");
@@ -117,15 +137,16 @@ public class UserServiceTest {
     public void testGetUserPublicData() {
         try {
             userService.getUserPublic(0);
-            assert false;
-        }catch(UserNotFoundException e){
-            assert true;
+            fail();
+        } catch(UserNotFoundException ignore){
+            // ignore it
         }
 
         UserPublicResp resp = userService.getUserPublic(1);
-        User user = userRepository.findById(1L).get();
-        assertNotNull(user);
         assertNotNull(resp);
+
+        User user = userRepository.findById(1L).orElse(null);
+        assertNotNull(user);
         assertEquals(user.getName(), resp.getName());
         assertEquals(user.getId(), resp.getId());
         assertEquals(user.getType(), resp.getType());
@@ -137,12 +158,12 @@ public class UserServiceTest {
     public void testGerUserPrivateData() {
         try {
             userService.getUserPrivate(0);
-            assert false;
-        }catch(UserNotFoundException e){
-            assert true;
+            fail();
+        } catch(UserNotFoundException ignore){
+            // ignore it
         }
         UserPrivateResp resp = userService.getUserPrivate(1);
-        User user = userRepository.findById(1L).get();
+        User user = userRepository.findById(1L).orElse(null);
         assertNotNull(user);
         assertNotNull(resp);
         assertEquals(user.getEmail(), resp.getEmail());
@@ -151,8 +172,8 @@ public class UserServiceTest {
 
     private void loginFailAssertion(String email, String password) {
         try {
-            userService.login(email, password);
-            assertTrue(false);
+            userService.createToken(email, password);
+            fail();
         } catch (EmailOrPasswordException e) {
             assertTrue(true);
         }

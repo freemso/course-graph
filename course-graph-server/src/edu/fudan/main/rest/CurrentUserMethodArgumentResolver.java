@@ -39,7 +39,7 @@ public class CurrentUserMethodArgumentResolver implements HandlerMethodArgumentR
         Long currentUserId = (Long) webRequest.getAttribute(
                 Constants.CURRENT_USER_ID, RequestAttributes.SCOPE_REQUEST);
         if (currentUserId == null) {
-            // Does not have this attribute, in other words, not login
+            // Does not have this attribute, in other words, not createToken
             return null;
         } else {
             // Get from repository

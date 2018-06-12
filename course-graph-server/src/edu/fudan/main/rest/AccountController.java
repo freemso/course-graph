@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
+@CrossOrigin
 @RequestMapping("/account")
 public class AccountController {
 
@@ -26,7 +27,7 @@ public class AccountController {
 
     /**
      * Get user private data.
-     * @param currentUser, current login user
+     * @param currentUser, current createToken user
      * @return user private data
      */
     @GetMapping
@@ -39,27 +40,27 @@ public class AccountController {
 
     /**
      * Update user profile.
-     * @param currentUser, current login user
+     * @param currentUser, current createToken user
      * @param updateUserReq, data fields to update
      * @return updated user private data
      */
     @PutMapping
     @Authorization
-    ResponseEntity<UserPrivateResp> updateUser(@CurrentUser User currentUser,
-                                               @RequestBody UpdateUserReq updateUserReq) {
-        // TODO
-        return null;
+    ResponseEntity updateUser(@CurrentUser User currentUser, @RequestBody UpdateUserReq updateUserReq) {
+        userService.updateUser(currentUser, updateUserReq.getName(), updateUserReq.getEmail(),
+                updateUserReq.getPassword(), updateUserReq.getNewPassword());
+        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
     }
 
     /**
      * Delete the user with {uid}
-     * @param currentUser, current login user
+     * @param currentUser, current createToken user
      * @return empty response body
      */
     @DeleteMapping
     @Authorization
     ResponseEntity deleteUser(@CurrentUser User currentUser) {
-        // TODO
-        return null;
+        userService.deleteUser(currentUser);
+        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
     }
 }

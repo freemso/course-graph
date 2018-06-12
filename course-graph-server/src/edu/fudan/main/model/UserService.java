@@ -49,7 +49,7 @@ public class UserService {
      * @return a string of authentication
      * @throws EmailOrPasswordException, when email not exists or password not match
      */
-    public AuthenticationResp login(String email, String password) {
+    public AuthenticationResp createToken(String email, String password) {
         User user = this.userRepository.findByEmail(email).orElseThrow(
                 EmailOrPasswordException::new // Email does not exist
         );
@@ -71,7 +71,7 @@ public class UserService {
      * Given the user id, delete the token from repository
      * @param userId, id of the current user
      */
-    public void logout(long userId) {
+    public void deleteToken(long userId) {
         tokenRepository.deleteToken(userId);
     }
 
@@ -102,11 +102,11 @@ public class UserService {
     }
 
     /**
-     * User registration
+     * Create a new user
      * @return user private data
      * @throws EmailConflictException, when email already existed
      */
-    public UserPrivateResp register(String email, String name, String password, UserType type) {
+    public UserPrivateResp createUser(String email, String name, String password, UserType type) {
         // Check if the email exists
         if (this.userRepository.findByEmail(email).isPresent()) {
             throw new EmailConflictException(email);
@@ -134,7 +134,7 @@ public class UserService {
     }
 
 
-    public UserPrivateResp updateUser(User currentUser, String name, String email, String password, String newPassword) {
+    public void updateUser(User currentUser, String name, String email, String password, String newPassword) {
         // Check if the password matches
         if (! currentUser.getPassword().equals(password)) {
             throw new EmailOrPasswordException();
@@ -142,25 +142,35 @@ public class UserService {
 
         if (name != null) {
             // Change name
-            User user = userRepository.findById(currentUser.getId()).orElse(null);
-            if(user == null)
-                return null;
-            user.setName(name);
-            userRepository.save(user, 0);
+            currentUser.setName(name);
             //Optional<User> user = userRepository.findById(currentUser.getId());
 //            currentUser = userRepository.updateNameOfUserWithId(currentUser.getId(), name).orElse(currentUser);
         }
 
-//        if (email != null) {
-//            // Check email pattern
-//            if (! emailPattern.matcher(email).matches()) {
-//                throw new MethodArgumentNotValidException(new MethodParameter());
-//            }
-//
-//        }
-        // TODO
-        return null;
+        if (email != null) {
+            // Do NOT need to check email pattern, because controller has done the job
+            // Change email
+            currentUser.setEmail(email);
+        }
 
+        if (newPassword != null) {
+            // Change password
+            currentUser.setPassword(newPassword);
+
+            // Remove authentication token to deleteToken user
+            tokenRepository.deleteToken(currentUser.getId());
+        }
+
+        // Save the result to database
+        userRepository.save(currentUser, 0);
+    }
+
+    public void deleteUser(User currentUser) {
+        // Delete token
+        tokenRepository.deleteToken(currentUser.getId());
+
+        // Delete user
+        userRepository.delete(currentUser);
     }
 
 

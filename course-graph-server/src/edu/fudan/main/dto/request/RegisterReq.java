@@ -11,12 +11,14 @@ import static edu.fudan.main.config.Constants.PASSWORD_REGEX;
 public class RegisterReq {
 
     @Email(message = "invalid email.")
+    @NotBlank
     private String email;
 
     @NotBlank(message = "name can't be empty")
     private String name;
 
     @Pattern(regexp = PASSWORD_REGEX, message = "invalid password.")
+    @NotBlank
     private String password;
 
     @NotBlank(message = "type can't be empty")

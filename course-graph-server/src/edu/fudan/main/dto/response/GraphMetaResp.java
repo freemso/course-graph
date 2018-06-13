@@ -1,6 +1,7 @@
 package edu.fudan.main.dto.response;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.fudan.main.domain.Graph;
 
 import java.util.Date;
@@ -13,8 +14,10 @@ public class GraphMetaResp {
 
     private String description;
 
+    @JsonProperty("created_time")
     private Date createdTime;
 
+    @JsonProperty("modified_time")
     private Date modifiedTime;
 
     public GraphMetaResp() {

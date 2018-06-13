@@ -1,5 +1,6 @@
 package edu.fudan.main.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.fudan.main.domain.Course;
 
 import java.util.Date;
@@ -12,14 +13,19 @@ public class CourseMetaResp {
 
     private String code;
 
+    @JsonProperty("teacher_name")
     private String teacherName;
 
+    @JsonProperty("teacher_id")
     private long teacherId;
 
+    @JsonProperty("created_time")
     private Date createdTime;
 
+    @JsonProperty("modified_time")
     private Date modifiedTime;
 
+    @JsonProperty("student_num")
     private int studentNum;
 
     public CourseMetaResp() {

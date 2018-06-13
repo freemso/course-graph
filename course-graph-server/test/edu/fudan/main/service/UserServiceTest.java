@@ -29,7 +29,6 @@ import static org.junit.Assert.*;
 @Transactional
 public class UserServiceTest {
 
-
     @Autowired
     private UserService userService;
     @Autowired
@@ -38,7 +37,7 @@ public class UserServiceTest {
     private TokenRepository tokenRepository;
 
     @Before
-    public void set() {
+    public void setup() {
         User student = new Student(1, "user1", "1234", "stu@fudan.edu.cn");
         userRepository.save(student);
     }

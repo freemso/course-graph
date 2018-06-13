@@ -2,6 +2,7 @@ package edu.fudan.main.model;
 
 import edu.fudan.main.domain.*;
 import edu.fudan.main.dto.response.CourseMetaResp;
+import edu.fudan.main.dto.response.UserPublicResp;
 import edu.fudan.main.exception.CourseConflictException;
 import edu.fudan.main.exception.CourseNotFoundException;
 import edu.fudan.main.exception.PermissionDeniedException;
@@ -106,7 +107,6 @@ public class CourseService {
                 break;
         }
 
-
         List<CourseMetaResp> courseMetaRespList = new ArrayList<>();
 
         for (Course c : courses) {
@@ -119,7 +119,8 @@ public class CourseService {
 
     /**
      *
-     * @param courseId
+     * Get meta data of a course
+     * @param courseId, id of the course
      * @return course meta info
      */
     public CourseMetaResp getCourseData(Long courseId){
@@ -131,55 +132,57 @@ public class CourseService {
 
     /**
      *
-     * @param courseId
+     * Update course meta data
+     * @param courseId, id of the course
      * @param name course name #optimal
      * @param code course code #optimal
-     * @return
      */
-    public CourseMetaResp updateCourse(Long courseId, String name, String code){
-        Optional<Course> course = courseRepository.findById(courseId);
-        if(!course.isPresent())
-            throw new CourseNotFoundException(courseId);
+    public void updateCourse(User currentUser, Long courseId, String name, String code){
+        // First the course must exist
+        Course course = courseRepository.findById(courseId).orElseThrow(
+                () -> new CourseNotFoundException(courseId)
+        );
 
-        Course course1 = course.get();
-        if(name != null)
-            course1.setName(name);
-        if(code != null){
-            if(courseRepository.existsByCode(code))
-                throw new CourseConflictException(code);
-            course1.setCode(code);
+        // Current user must be the owner/teacher of the course
+        if (currentUser.getType() != UserType.TEACHER || !course.getTeacher().equals(currentUser)) {
+            throw new PermissionDeniedException();
         }
-        courseRepository.save(course1);
-        return null;
+
+        if (name != null) {
+            course.setName(name);
+        }
+
+        if (code != null) {
+            // Check if code is conflict with other courses
+            if (courseRepository.existsByCode(code)) {
+                throw new CourseConflictException(code);
+            }
+            course.setCode(code);
+        }
+
+        // Save the change
+        courseRepository.save(course);
+
     }
 
 
     /**
-     * get all students of this course
-     * @param courseId
+     * Get all students of this course
+     * @param courseId, id of the course
      * @return all students of this course
      */
-    public Set<Student> listAllStudents(long courseId){
-        Optional<Course> course = courseRepository.findById(courseId);
-        if(!course.isPresent())
-            throw new CourseNotFoundException(courseId);
-        return courseRepository.findStudentsById(courseId);
-    }
+    public List<UserPublicResp> listAllStudents(long courseId){
+        // First course must exist
+        Course course = courseRepository.findById(courseId).orElseThrow(
+                () -> new CourseNotFoundException(courseId)
+        );
 
+        List<UserPublicResp> results = new ArrayList<>();
 
-    /**
-     * Generate a unique course id
-     *
-     * @return a user id
-     */
-    private long generateRandomId() {
-        while (true) {
-            long randomLong = RandomIdGenerator.getInstance().generateRandomLongId();
-            // Check if the id exists as a course id
-            if (!this.courseRepository.existsById(randomLong)) {
-                return randomLong;
-            }
+        for (User u : course.getStudents()) {
+            results.add(new UserPublicResp(u));
         }
+        return results;
     }
 
 }

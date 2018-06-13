@@ -22,6 +22,7 @@ public interface CourseRepository extends Neo4jRepository<Course, Long> {
 
     /**
      * List all courses that a student takes, ordered by course name
+     *
      * @param studentId, user id of the student
      * @return a list of courses
      */
@@ -29,10 +30,11 @@ public interface CourseRepository extends Neo4jRepository<Course, Long> {
             "WHERE student.userId = {id} " +
             "RETURN course ORDER BY course.name")
     @Depth(value = 1)
-    List<Course> findCoursesOfStudent(@Param("id")long studentId);
+    List<Course> findCoursesOfStudent(@Param("id") long studentId);
 
     /**
      * List all courses that a teacher teaches, ordered by course name
+     *
      * @param teacherId, user id of the teacher
      * @return a list of courses
      */
@@ -40,7 +42,5 @@ public interface CourseRepository extends Neo4jRepository<Course, Long> {
             "WHERE teacher.userId = {id} " +
             "RETURN course ORDER BY course.name")
     @Depth(value = 1)
-    List<Course> findCoursesOfTeacher(@Param("id")long teacherId);
+    List<Course> findCoursesOfTeacher(@Param("id") long teacherId);
 }
-
-

@@ -145,6 +145,9 @@ public class UserService {
         if (email != null) {
             // Do NOT need to check email pattern, because controller has done the job
             // Change email
+            if (userRepository.existsByEmail(email)) {
+                throw new EmailConflictException(email);
+            }
             currentUser.setEmail(email);
         }
 
@@ -157,7 +160,7 @@ public class UserService {
         }
 
         // Save the result to database
-        userRepository.save(currentUser, 0);
+        userRepository.save(currentUser);
     }
 
     public void deleteUser(User currentUser) {

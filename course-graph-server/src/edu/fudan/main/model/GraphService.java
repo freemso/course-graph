@@ -8,9 +8,12 @@ import edu.fudan.main.exception.CourseNotFoundException;
 import edu.fudan.main.repository.CourseRepository;
 import edu.fudan.main.repository.GraphRepository;
 import edu.fudan.main.util.RandomIdGenerator;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,7 +44,6 @@ public class GraphService {
         CourseGraph courseGraph = new CourseGraph(courseGraphId, courseGraphName);
         graphRepository.save(courseGraph, 0);
         return new CourseGraphMeta(courseGraphId, courseId, courseGraphName);
-        //todo
     }
 
     /**
@@ -50,7 +52,6 @@ public class GraphService {
      * @param jsMindData mind map json string
      */
     public void updateGraph(Long courseGraphId, String jsMindData){
-        //todo
         Optional<CourseGraph> courseGraph = graphRepository.findById(courseGraphId);
         if(!courseGraph.isPresent())
             throw new CourseGraphNotFoundException(courseGraphId);
@@ -75,6 +76,13 @@ public class GraphService {
     }
 
 
+//    private void updateNodes(String jsMindData){
+//        Gso
+//    }
 
-
+//    private void updateNodes(String jsMindData){
+//        JSONObject mindObj = new JSONObject(jsMindData);
+//        List<String> newNodeIds = new ArrayList<>();
+//
+//    }
 }

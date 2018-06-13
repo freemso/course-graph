@@ -27,6 +27,7 @@ public class QuestionMultipleChoice extends Question {
     }
 
     public List<Choice> getChoices() {
+        List<Choice> choices = new ArrayList<>(this.choices);
         return choices;
     }
 

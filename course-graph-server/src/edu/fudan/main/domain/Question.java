@@ -32,4 +32,20 @@ public abstract class Question {
         this.questionType = questionType;
         this.answerEntryList = new ArrayList<>();
     }
+
+    public Long getQuestionId() {
+        return questionId;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public QuestionType getQuestionType() {
+        return questionType;
+    }
+
+    public List<AnswerEntry> getAnswerEntryList() {
+        return answerEntryList;
+    }
 }

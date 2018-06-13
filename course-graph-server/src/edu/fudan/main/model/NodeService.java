@@ -1,7 +1,9 @@
 package edu.fudan.main.model;
 
-import edu.fudan.main.domain.Node;
+import edu.fudan.main.domain.*;
+import edu.fudan.main.dto.response.QuestionResp;
 import edu.fudan.main.exception.GraphNotFoundException;
+import edu.fudan.main.exception.NodeNotFoundException;
 import edu.fudan.main.repository.GraphRepository;
 import edu.fudan.main.repository.NodeRepository;
 import org.json.JSONObject;
@@ -80,5 +82,34 @@ public class NodeService {
         return;
     }
 
+    /**
+     * list all questions of the user
+     *
+     * @param currentUser
+     * @param nodeId
+     * @return list of question information
+     */
+    public List<QuestionResp> getAllQuestionsOfNode(User currentUser, String nodeId) {
+        //get course node
+        Node node = nodeRepository.findById(nodeId).orElseThrow(
+                NodeNotFoundException::new
+        );
 
+        //get all questions related to the node
+        List<Question> questions = node.getQuestionList();
+
+        //generate question response
+        List<QuestionResp> questionRespList = new ArrayList<>();
+        for (Question q : questions) {
+            QuestionResp questionResp = new QuestionResp(q, currentUser.getType());
+            questionRespList.add(questionResp);
+        }
+
+        return questionRespList;
+    }
+
+
+    public void addNewQuestionOfNode(String nodeId) {
+
+    }
 }

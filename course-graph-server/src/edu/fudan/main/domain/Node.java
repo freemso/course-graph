@@ -41,4 +41,23 @@ public class Node {
     public String getNodeId() {
         return nodeId;
     }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public List<Resource> getResourceList() {
+        List<Resource> resources = new ArrayList<>(resourceList);
+        return resources;
+    }
+
+    public List<Lecture> getLectureList() {
+        List<Lecture> lectures = new ArrayList<>(lectureList);
+        return lectures;
+    }
+
+    public List<Question> getQuestionList() {
+        List<Question> questions = new ArrayList<>(questionList);
+        return questions;
+    }
 }

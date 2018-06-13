@@ -1,10 +1,7 @@
 package edu.fudan.main.repository;
 
 
-import edu.fudan.main.domain.Course;
-import edu.fudan.main.domain.CourseGraph;
-import edu.fudan.main.domain.Student;
-import edu.fudan.main.domain.Teacher;
+import edu.fudan.main.domain.*;
 import edu.fudan.main.dto.response.CourseMetaResp;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -110,7 +107,7 @@ public interface CourseRepository extends Neo4jRepository<Course, Long> {
             "RETURN course.name AS name, course.courseId AS id, teacher.name AS teacherName," +
             "teacher.userId AS teacherId, course.createdTime AS createdTime, course.modifiedTime AS modifiedTime" +
             "count(student)")
-    CourseMetaResp getCourseMetaById(@Param("id")Long id);
+    CourseMeta getCourseMetaById(@Param("id")Long id);
 
 
     @Query("MATCH (course:Course)" +

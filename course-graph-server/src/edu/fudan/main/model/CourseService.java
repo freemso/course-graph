@@ -1,7 +1,6 @@
 package edu.fudan.main.model;
 
 import edu.fudan.main.domain.*;
-import edu.fudan.main.dto.response.CourseMetaResp;
 import edu.fudan.main.exception.CourseConflictException;
 import edu.fudan.main.exception.CourseNotFoundException;
 import edu.fudan.main.repository.CourseRepository;
@@ -39,9 +38,9 @@ public class CourseService {
      * @param courseName name of the new course
      * @param courseCode code of the new course
      * @param teacher
-     * @return CourseMetaResp
+     * @return CourseMeta
      */
-    public CourseMetaResp addCourse(String courseName, String courseCode, Teacher teacher) {
+    public CourseMeta addCourse(String courseName, String courseCode, Teacher teacher) {
         if (courseRepository.existsByCode(courseCode))
             throw new CourseConflictException(courseCode);
         long courseId = generateRandomId();
@@ -68,16 +67,16 @@ public class CourseService {
     }
 
 
-//    public List<CourseMetaResp> listAllCourses(Student student){
+//    public List<CourseMeta> listAllCourses(Student student){
 //        List<Course> courses = student.getCourseList();
-//        List<CourseMetaResp> courseMetaResps = new ArrayList<>();
+//        List<CourseMeta> CourseMetas = new ArrayList<>();
 //        for(Course c: courses){
-//            courseMetaResps.add(courseRepository.getCourseMetaById(c.getCourseId()));
+//            CourseMetas.add(courseRepository.getCourseMetaById(c.getCourseId()));
 //        }
-//        return courseMetaResps;
+//        return CourseMetas;
 //    }
 
-    public List<CourseMetaResp> listAllCourses(User user){
+    public List<CourseMeta> listAllCourses(User user){
         List<Course> courses = new ArrayList<>();
         if(user.getType().equals(UserType.STUDENT)){
             Optional<Student> student = studentRepository.findById(user.getId());
@@ -86,11 +85,11 @@ public class CourseService {
             Optional<Teacher> teacher = teacherRepository.findById(user.getId());
             courses = teacher.get().getCourseList();
         }
-        List<CourseMetaResp> courseMetaResps = new ArrayList<>();
+        List<CourseMeta> CourseMetas = new ArrayList<>();
         for(Course c: courses){
-            courseMetaResps.add(courseRepository.getCourseMetaById(c.getCourseId()));
+            CourseMetas.add(courseRepository.getCourseMetaById(c.getCourseId()));
         }
-        return courseMetaResps;
+        return CourseMetas;
     }
 
 
@@ -99,7 +98,7 @@ public class CourseService {
      * @param courseId
      * @return course meta info
      */
-    public CourseMetaResp getCourseData(Long courseId){
+    public CourseMeta getCourseData(Long courseId){
         if(!courseRepository.findById(courseId).isPresent())
             throw new CourseNotFoundException(courseId);
         return courseRepository.getCourseMetaById(courseId);
@@ -113,7 +112,7 @@ public class CourseService {
      * @param code course code #optimal
      * @return
      */
-    public CourseMetaResp updateCourse(Long courseId, String name, String code){
+    public CourseMeta updateCourse(Long courseId, String name, String code){
         Optional<Course> course = courseRepository.findById(courseId);
         if(!course.isPresent())
             throw new CourseNotFoundException(courseId);

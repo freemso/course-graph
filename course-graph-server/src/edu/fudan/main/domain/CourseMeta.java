@@ -1,10 +1,10 @@
-package edu.fudan.main.dto.response;
+package edu.fudan.main.domain;
 
 import org.springframework.data.neo4j.annotation.QueryResult;
 
 import java.util.Date;
-
-public class CourseMetaResp {
+@QueryResult
+public class CourseMeta {
     private String name;
     private Long id;
     private String teacherName;
@@ -13,7 +13,7 @@ public class CourseMetaResp {
     private Date modifiedTime;
     private int studentNum;
 
-    public CourseMetaResp(String name, Long id, String teacherName, Long teacherId , Date createdTime, Date modifiedTime, int studentNum) {
+    public CourseMeta(String name, Long id, String teacherName, Long teacherId , Date createdTime, Date modifiedTime, int studentNum) {
         this.name = name;
         this.id = id;
         this.teacherName = teacherName;
@@ -50,5 +50,4 @@ public class CourseMetaResp {
     public int getStudentNum() {
         return studentNum;
     }
-
 }

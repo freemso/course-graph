@@ -1,8 +1,9 @@
 package edu.fudan.main.model;
 
 import edu.fudan.main.domain.CourseGraph;
-import edu.fudan.main.dto.response.CourseGraphMetaResp;
+import edu.fudan.main.domain.CourseGraphMeta;
 import edu.fudan.main.exception.CourseGraphConflictException;
+import edu.fudan.main.exception.CourseGraphNotFoundException;
 import edu.fudan.main.exception.CourseNotFoundException;
 import edu.fudan.main.repository.CourseRepository;
 import edu.fudan.main.repository.GraphRepository;
@@ -10,8 +11,8 @@ import edu.fudan.main.util.RandomIdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -31,7 +32,7 @@ public class GraphService {
      * @param courseGraphName
      * @param courseId
      */
-    public CourseGraphMetaResp addNewGraph(String courseGraphName, long courseId){
+    public CourseGraphMeta addNewGraph(String courseGraphName, long courseId){
         if(!courseRepository.existsById(courseId))
             throw new CourseNotFoundException(courseId);
         if(graphRepository.existsByCourseName(courseGraphName, courseId))
@@ -39,7 +40,7 @@ public class GraphService {
         long courseGraphId = RandomIdGenerator.getInstance().generateRandomLongId(graphRepository);
         CourseGraph courseGraph = new CourseGraph(courseGraphId, courseGraphName);
         graphRepository.save(courseGraph, 0);
-        return new CourseGraphMetaResp(courseGraphId, courseId, courseGraphName);
+        return new CourseGraphMeta(courseGraphId, courseId, courseGraphName);
         //todo
     }
 
@@ -50,16 +51,23 @@ public class GraphService {
      */
     public void updateGraph(Long courseGraphId, String jsMindData){
         //todo
+        Optional<CourseGraph> courseGraph = graphRepository.findById(courseGraphId);
+        if(!courseGraph.isPresent())
+            throw new CourseGraphNotFoundException(courseGraphId);
+        CourseGraph courseGraph1 = courseGraph.get();
+        courseGraph1.setJsMindData(jsMindData);
+        graphRepository.save(courseGraph1, 0);
     }
 
-    public List<CourseGraphMetaResp> listAllGraphs(long courseId){
-        //todo
-        return null;
+    public List<CourseGraphMeta> listAllGraphs(long courseId){
+        return graphRepository.listAllGraphs(courseId);
     }
 
     public String getJsMindData(long courseGraphId){
-        //todo
-        return null;
+        Optional<CourseGraph> courseGraph = graphRepository.findById(courseGraphId);
+        if(!courseGraph.isPresent())
+            throw new CourseGraphNotFoundException(courseGraphId);
+        return courseGraph.get().getJsMindData();
     }
 
     public void deleteGraph(long courseGraphId){

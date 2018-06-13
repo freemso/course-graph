@@ -18,6 +18,11 @@ public class CourseGraph {
     @Property
     private String jsMindData;
 
+    public CourseGraph(Long courseGraphId, String name) {
+        this.courseGraphId = courseGraphId;
+        this.name = name;
+    }
+
     public Long getCourseGraphId() {
         return courseGraphId;
     }

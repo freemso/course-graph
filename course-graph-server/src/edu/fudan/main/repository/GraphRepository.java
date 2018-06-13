@@ -16,7 +16,10 @@ public interface GraphRepository extends Neo4jRepository<CourseGraph, Long> {
     GraphMetaResp getGraphMetaById(@Param("id")long id);
 
 
-    boolean existsByName(String courseName);
+    @Query("MATCH (c:Course)<-[r:GRAPH_OF]-(g:CourseGraph)" +
+            "WHERE c.courseId = courseId and g.name = courseName" +
+            "return count(g) > 0")
+    boolean existsByCourseName(String courseName, long courseId);
 
 
 }

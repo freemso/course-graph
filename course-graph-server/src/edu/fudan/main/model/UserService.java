@@ -10,9 +10,11 @@ import edu.fudan.main.exception.UserNotFoundException;
 import edu.fudan.main.repository.TokenRepository;
 import edu.fudan.main.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.NotNull;
 import java.util.regex.Pattern;
 
 import static edu.fudan.main.config.Constants.EMAIL_REGEX;
@@ -128,8 +130,19 @@ public class UserService {
         return new UserPrivateResp(savedUser);
     }
 
-
-    public void updateUser(User currentUser, String name, String email, String password, String newPassword) {
+    /**
+     * Update the user meta data
+     * @param currentUser, id of the user
+     * @param name of the user
+     * @param email of the user
+     * @param password, old password, required
+     * @param newPassword, new password
+     */
+    public void updateUser(User currentUser,
+                           @Nullable String name,
+                           @Nullable String email,
+                           @NotNull String password,
+                           @Nullable String newPassword) {
         // Check if the password matches
         if (! currentUser.getPassword().equals(password)) {
             throw new EmailOrPasswordException();
@@ -138,8 +151,6 @@ public class UserService {
         if (name != null) {
             // Change name
             currentUser.setName(name);
-            //Optional<User> user = userRepository.findById(currentUser.getId());
-//            currentUser = userRepository.updateNameOfUserWithId(currentUser.getId(), name).orElse(currentUser);
         }
 
         if (email != null) {
@@ -163,6 +174,10 @@ public class UserService {
         userRepository.save(currentUser);
     }
 
+    /**
+     * Delete the user.
+     * @param currentUser, current login user
+     */
     public void deleteUser(User currentUser) {
         // Delete token
         tokenRepository.deleteToken(currentUser.getId());

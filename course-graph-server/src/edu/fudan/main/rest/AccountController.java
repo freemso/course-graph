@@ -73,6 +73,6 @@ public class AccountController {
     @GetMapping("/courses")
     @Authorization
     ResponseEntity<List<CourseMetaResp>> getCoursesOfUser(@CurrentUser User currentUser) {
-        return new ResponseEntity<>(courseService.listAllCoursesOfUser(currentUser), HttpStatus.OK);
+        return new ResponseEntity<>(courseService.getAllCoursesOfUser(currentUser), HttpStatus.OK);
     }
 }

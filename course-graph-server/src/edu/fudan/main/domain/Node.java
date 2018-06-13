@@ -13,7 +13,7 @@ import java.util.List;
 public class Node {
 
     @Id
-    private Long nodeId;
+    private String nodeId;
 
     @Property
     private String title;
@@ -30,7 +30,7 @@ public class Node {
     public Node() {
     }
 
-    public Node(long id, String title) {
+    public Node(String id, String title) {
         this.nodeId = id;
         this.title = title;
         this.resourceList = new ArrayList<>();
@@ -38,7 +38,7 @@ public class Node {
         this.questionList = new ArrayList<>();
     }
 
-    public Long getNodeId() {
+    public String getNodeId() {
         return nodeId;
     }
 }

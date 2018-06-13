@@ -1,9 +1,9 @@
 package edu.fudan.main.domain;
 
-import edu.fudan.main.repository.UserRepository;
-import edu.fudan.main.util.RandomIdGenerator;
-import org.neo4j.ogm.annotation.*;
-import org.springframework.stereotype.Indexed;
+import org.neo4j.ogm.annotation.Id;
+import org.neo4j.ogm.annotation.Index;
+import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Property;
 
 
 @NodeEntity
@@ -80,8 +80,7 @@ public abstract class User {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof User)) return false;
-        if (this.userId.equals(((User) o).userId)) return true;
-        return false;
+        return this.userId.equals(((User) o).userId);
     }
 
     @Override

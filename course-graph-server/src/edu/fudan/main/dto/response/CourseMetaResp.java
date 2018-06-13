@@ -1,20 +1,18 @@
 package edu.fudan.main.dto.response;
 
-import edu.fudan.main.domain.Teacher;
-import edu.fudan.main.repository.TeacherRepository;
 import org.springframework.data.neo4j.annotation.QueryResult;
 
 import java.util.Date;
 
 @QueryResult
 public class CourseMetaResp {
-    String name;
-    Long id;
-    String teacherName;
-    Long teacherId;
-    Date createdTime;
-    Date modifiedTime;
-    int studentNum;
+    private String name;
+    private Long id;
+    private String teacherName;
+    private Long teacherId;
+    private Date createdTime;
+    private Date modifiedTime;
+    private int studentNum;
 
     public CourseMetaResp(String name, Long id, String teacherName, Long teacherId , Date createdTime, Date modifiedTime, int studentNum) {
         this.name = name;

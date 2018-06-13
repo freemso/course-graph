@@ -1,7 +1,9 @@
 package edu.fudan.main.repository;
 
 import edu.fudan.main.domain.TokenEntry;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface TokenRepository {
     /**
      * Create a token with given user id

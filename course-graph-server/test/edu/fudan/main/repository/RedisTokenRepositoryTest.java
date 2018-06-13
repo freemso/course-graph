@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
@@ -20,6 +20,7 @@ public class RedisTokenRepositoryTest {
     @Test
     public void testCreateToken() {
         TokenEntry tokenEntry = tokenRepository.createToken(1);
+        assertThat(tokenEntry).isNotNull();
     }
 
     @Test
@@ -29,7 +30,6 @@ public class RedisTokenRepositoryTest {
         TokenEntry tokenEntry_fake2 = new TokenEntry(2, "anotherfaketoken");
         TokenEntry tokenEntry_fake3 = new TokenEntry(1, null);
         TokenEntry tokenEntry_fake4 = new TokenEntry(1, "");
-        TokenEntry tokenEntry_empty = null;
 
         assertThat(tokenRepository.checkToken(tokenEntry)).isTrue();
 
@@ -37,7 +37,7 @@ public class RedisTokenRepositoryTest {
         assertThat(tokenRepository.checkToken(tokenEntry_fake2)).isFalse();
         assertThat(tokenRepository.checkToken(tokenEntry_fake3)).isFalse();
         assertThat(tokenRepository.checkToken(tokenEntry_fake4)).isFalse();
-        assertThat(tokenRepository.checkToken(tokenEntry_empty)).isFalse();
+        assertThat(tokenRepository.checkToken(null)).isFalse();
     }
 
     @Test

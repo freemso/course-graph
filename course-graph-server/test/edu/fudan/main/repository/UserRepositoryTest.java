@@ -3,7 +3,6 @@ package edu.fudan.main.repository;
 import edu.fudan.main.domain.Student;
 import edu.fudan.main.domain.Teacher;
 import edu.fudan.main.domain.User;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,7 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)

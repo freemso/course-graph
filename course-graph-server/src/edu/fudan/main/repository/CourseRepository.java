@@ -6,16 +6,18 @@ import edu.fudan.main.domain.CourseGraph;
 import edu.fudan.main.domain.Student;
 import edu.fudan.main.domain.Teacher;
 import edu.fudan.main.dto.response.CourseMetaResp;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.neo4j.annotation.Query;
-import org.springframework.data.neo4j.annotation.QueryResult;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
+@Repository
 public interface CourseRepository extends Neo4jRepository<Course, Long> {
 
     //find course

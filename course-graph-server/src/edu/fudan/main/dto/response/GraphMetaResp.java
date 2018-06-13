@@ -4,11 +4,11 @@ import org.springframework.data.neo4j.annotation.QueryResult;
 
 @QueryResult
 public class GraphMetaResp {
-    String name;
-    Long id;
-    String description;
-    String createdTime;
-    String modifiedTime;
+    private String name;
+    private Long id;
+    private String description;
+    private String createdTime;
+    private String modifiedTime;
 
     public GraphMetaResp(String name, Long id, String description, String createdTime, String modifiedTime) {
         this.name = name;

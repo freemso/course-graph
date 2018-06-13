@@ -9,7 +9,6 @@ public class CourseGraph {
     @Id
     private Long courseGraphId;
 
-
     @Relationship(type = "HAS_NODE")
     private Set<CourseNode> nodeSet;
 

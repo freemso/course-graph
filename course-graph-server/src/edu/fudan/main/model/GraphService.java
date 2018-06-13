@@ -28,7 +28,7 @@ public class GraphService {
     public void addNewGraph(String courseGraphName, Long courseGraphId){
         if(graphRepository.existsById(courseGraphId))
             throw new CourseGraphConflictException(courseGraphId);
-        if(graphRepository.existsByCourseName(courseGraphName))
+        if(graphRepository.existsByName(courseGraphName))
             throw new CourseGraphConflictException(courseGraphName);
         //todo
 

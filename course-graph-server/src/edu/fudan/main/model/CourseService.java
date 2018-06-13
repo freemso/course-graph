@@ -3,7 +3,6 @@ package edu.fudan.main.model;
 import edu.fudan.main.domain.Course;
 import edu.fudan.main.domain.Student;
 import edu.fudan.main.domain.Teacher;
-import edu.fudan.main.domain.User;
 import edu.fudan.main.dto.response.CourseMetaResp;
 import edu.fudan.main.exception.CourseConflictException;
 import edu.fudan.main.exception.CourseNotFoundException;

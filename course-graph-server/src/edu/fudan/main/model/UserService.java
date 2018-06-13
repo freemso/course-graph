@@ -11,13 +11,9 @@ import edu.fudan.main.repository.TokenRepository;
 import edu.fudan.main.repository.UserRepository;
 import edu.fudan.main.util.RandomIdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
-import java.util.InvalidPropertiesFormatException;
-import java.util.Optional;
 import java.util.regex.Pattern;
 
 import static edu.fudan.main.config.Constants.EMAIL_REGEX;

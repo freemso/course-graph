@@ -1,6 +1,9 @@
 package edu.fudan.main.service;
 
-import edu.fudan.main.domain.*;
+import edu.fudan.main.domain.Student;
+import edu.fudan.main.domain.TokenEntry;
+import edu.fudan.main.domain.User;
+import edu.fudan.main.domain.UserType;
 import edu.fudan.main.dto.response.AuthenticationResp;
 import edu.fudan.main.dto.response.UserPrivateResp;
 import edu.fudan.main.dto.response.UserPublicResp;
@@ -17,8 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-
-
 
 import static org.junit.Assert.*;
 

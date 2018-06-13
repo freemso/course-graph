@@ -5,7 +5,6 @@ import edu.fudan.main.annotation.CurrentUser;
 import edu.fudan.main.domain.User;
 import edu.fudan.main.dto.request.UpdateUserReq;
 import edu.fudan.main.dto.response.UserPrivateResp;
-import edu.fudan.main.dto.response.UserPublicResp;
 import edu.fudan.main.model.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

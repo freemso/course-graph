@@ -10,25 +10,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 @NodeEntity
-public class CourseNode {
+public class Node {
 
     @Id
-    private Long courseNodeId;
+    private Long nodeId;
 
     @Property
     private String title;
 
     @Relationship(type = "HAS_RESOURCE")
-    private List<CourseResource> resourceList;
+    private List<Resource> resourceList;
 
     @Relationship(type = "HAS_LECTURE")
-    private List<CourseLecture> lectureList;
+    private List<Lecture> lectureList;
 
     @Relationship(type = "HAS_QUESTION")
     private List<Question> questionList;
 
-    public CourseNode(long id, String title) {
-        this.courseNodeId = id;
+    public Node(long id, String title) {
+        this.nodeId = id;
         this.title = title;
         this.resourceList = new ArrayList<>();
         this.lectureList = new ArrayList<>();

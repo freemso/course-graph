@@ -1,7 +1,6 @@
 package edu.fudan.main.repository;
 
-import edu.fudan.main.domain.CourseGraph;
-import edu.fudan.main.domain.CourseGraphMeta;
+import edu.fudan.main.domain.Graph;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.repository.query.Param;
@@ -10,28 +9,28 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface GraphRepository extends Neo4jRepository<CourseGraph, Long> {
+public interface GraphRepository extends Neo4jRepository<Graph, Long> {
 
-    @Query("MATCH (graph:CourseGraph) " +
-            "WHERE graph.id = {id} " +
-            "graph.id AS id, graph.name AS name")
-    CourseGraphMeta getGraphMetaById(@Param("id")long id);
-
-
-    @Query("MATCH (c:Course)<-[r:GRAPH_OF]-(g:CourseGraph)" +
-            "WHERE c.courseId = {courseId} and g.name = courseName" +
+    @Query("MATCH (c:Course)<-[r:GRAPH_OF]-(g:Graph)" +
+            "WHERE c.courseId = courseId and g.name = courseName" +
             "return count(g) > 0")
-    boolean existsByCourseName(String courseName, long courseId);
+    boolean existsByName(String name, long courseId);
 
 
-    @Query("MATCH (c:Course)<-[r:GRAPH_OF]-(g:CourseGraph)" +
-            "WHERE c.courseId = {courseId}" +
-            "return g.courseGraphId as courseGraphId, c.courseId as courseId," +
-            "g.courseGraphName as courseGraphName")
-    List<CourseGraphMeta> listAllGraphs(@Param("courseId")long courseId);
+    @Query("MATCH (course:Course)<-[r:GRAPH_OF]-(courseGraph:Graph) " +
+            "WHERE course.courseId = {id} " +
+            "RETURN courseGraph ORDER BY courseGraph.name")
+    List<Graph> findGraphsByCourseId(@Param("id") long id);
+
+    @Query("MATCH (course:Course)<-[r:GRAPH_OF]-(courseGraph:Graph) " +
+            "WHERE course.name = {name} " +
+            "RETURN courseGraph ORDER BY courseGraph.name")
+    List<Graph> findGraphsByCourseName(@Param("name") String name);
+
+    @Query("MATCH (course:Course)<-[r:GRAPH_OF]-(courseGraph:Graph) " +
+            "WHERE course.code = {code} " +
+            "RETURN courseGraph ORDER BY courseGraph.name")
+    List<Graph> findGraphsByCourseCode(@Param("code") String code);
 
 
-    //todo
-    @Query()
-    void deleteCourseGraphByCourseGraphId(@Param("courseGraphId")long courseGraphId);
 }

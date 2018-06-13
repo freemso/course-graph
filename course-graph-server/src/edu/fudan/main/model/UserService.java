@@ -9,7 +9,6 @@ import edu.fudan.main.exception.EmailOrPasswordException;
 import edu.fudan.main.exception.UserNotFoundException;
 import edu.fudan.main.repository.TokenRepository;
 import edu.fudan.main.repository.UserRepository;
-import edu.fudan.main.util.RandomIdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -146,6 +145,9 @@ public class UserService {
         if (email != null) {
             // Do NOT need to check email pattern, because controller has done the job
             // Change email
+            if (userRepository.existsByEmail(email)) {
+                throw new EmailConflictException(email);
+            }
             currentUser.setEmail(email);
         }
 
@@ -158,7 +160,7 @@ public class UserService {
         }
 
         // Save the result to database
-        userRepository.save(currentUser, 0);
+        userRepository.save(currentUser);
     }
 
     public void deleteUser(User currentUser) {

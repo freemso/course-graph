@@ -1,12 +1,16 @@
 package edu.fudan.main.model;
 
 import edu.fudan.main.domain.*;
+import edu.fudan.main.dto.response.CourseMetaResp;
+import edu.fudan.main.dto.response.UserPublicResp;
 import edu.fudan.main.exception.CourseConflictException;
 import edu.fudan.main.exception.CourseNotFoundException;
+import edu.fudan.main.exception.PermissionDeniedException;
+import edu.fudan.main.exception.UserNotFoundException;
 import edu.fudan.main.repository.CourseRepository;
 import edu.fudan.main.repository.StudentRepository;
 import edu.fudan.main.repository.TeacherRepository;
-import edu.fudan.main.util.RandomIdGenerator;
+import edu.fudan.main.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,142 +24,165 @@ import java.util.Set;
 @Transactional
 public class CourseService {
     private final CourseRepository courseRepository;
-    private final TeacherRepository teacherRepository;
     private final StudentRepository studentRepository;
+    private final TeacherRepository teacherRepository;
+
+    private final GraphService graphService;
 
     @Autowired
-    public CourseService(CourseRepository courseRepository,
-                         TeacherRepository teacherRepository, StudentRepository studentRepository) {
+    public CourseService(CourseRepository courseRepository, GraphService graphService,
+                         StudentRepository studentRepository, TeacherRepository teacherRepository) {
         this.courseRepository = courseRepository;
+        this.graphService = graphService;
         this.studentRepository = studentRepository;
-        this.teacherRepository =  teacherRepository;
+        this.teacherRepository = teacherRepository;
     }
 
 
     /**
-     * teacher add a new course
+     * Create a new course
      *
+     * @param currentUser current login user, must be a teacher
      * @param courseName name of the new course
      * @param courseCode code of the new course
-     * @param teacher
-     * @return CourseMeta
+     * @return CourseMetaResp
      */
-    public CourseMeta addCourse(String courseName, String courseCode, Teacher teacher) {
-        if (courseRepository.existsByCode(courseCode))
+    public CourseMetaResp addCourse(User currentUser, String courseName, String courseCode) {
+        // Current user must be a teacher
+        if (currentUser.getType() != UserType.TEACHER) {
+            throw new PermissionDeniedException();
+        }
+
+        // Course code must be unique
+        if (courseRepository.existsByCode(courseCode)) {
             throw new CourseConflictException(courseCode);
-        long courseId = generateRandomId();
-        Course course = new Course(courseCode, courseName, courseId);
-        teacher.addCourse(course);
-        courseRepository.save(course);
-        teacherRepository.save(teacher, 0);
-        return courseRepository.getCourseMetaById(courseId);
+        }
+
+        // Generate a new id for the course
+        long newCourseId = RandomIdGenerator.getInstance().generateRandomLongId(courseRepository);
+
+        Course course = courseRepository.save(new Course(courseCode, courseName, newCourseId, (Teacher) currentUser));
+
+        return new CourseMetaResp(course);
     }
 
     /**
-     * delete a course by course id
-     * @param courseId
-     * @return true if succeeds else return false
+     * Delete a course by course id
+     * @param currentUser, current login user
+     * @param courseId, id of the course to delete
      */
-    public boolean deleteCourse(Long courseId){
-        Optional<Course> course = courseRepository.findById(courseId);
-        if(!course.isPresent())
-            throw new CourseNotFoundException(courseId);
+    public void deleteCourse(User currentUser, long courseId){
+        // The course must first exist
+        Course course = courseRepository.findById(courseId).orElseThrow(
+                () -> new CourseNotFoundException(courseId)
+        );
 
+        // Current user must be the owner/teacher of the course
+        if (currentUser.getType() != UserType.TEACHER || !course.getTeacher().equals(currentUser)) {
+            throw new PermissionDeniedException();
+        }
+
+        // Delete all graphs of the course
+        for (Graph g : course.getGraphList()) {
+            graphService.deleteGraph(g.getGraphId());
+        }
+
+        // Delete the course
         courseRepository.deleteById(courseId);
-        //todo
-        return true;
     }
 
-
-//    public List<CourseMeta> listAllCourses(Student student){
-//        List<Course> courses = student.getCourseList();
-//        List<CourseMeta> CourseMetas = new ArrayList<>();
-//        for(Course c: courses){
-//            CourseMetas.add(courseRepository.getCourseMetaById(c.getCourseId()));
-//        }
-//        return CourseMetas;
-//    }
-
-    public List<CourseMeta> listAllCourses(User user){
+    public List<CourseMetaResp> listAllCourses(User currentUser){
         List<Course> courses = new ArrayList<>();
-        if(user.getType().equals(UserType.STUDENT)){
-            Optional<Student> student = studentRepository.findById(user.getId());
-            courses = student.get().getCourseList();
-        }else{
-            Optional<Teacher> teacher = teacherRepository.findById(user.getId());
-            courses = teacher.get().getCourseList();
+
+        switch (currentUser.getType()) {
+            case TEACHER:
+                courses = teacherRepository.findById(currentUser.getId()).orElseThrow(
+                        UserNotFoundException::new
+                ).getCourseList();
+                break;
+            case STUDENT:
+                courses = studentRepository.findById(currentUser.getId()).orElseThrow(
+                        UserNotFoundException::new
+                ).getCourseList();
+                break;
         }
-        List<CourseMeta> CourseMetas = new ArrayList<>();
-        for(Course c: courses){
-            CourseMetas.add(courseRepository.getCourseMetaById(c.getCourseId()));
+
+        List<CourseMetaResp> courseMetaRespList = new ArrayList<>();
+
+        for (Course c : courses) {
+            courseMetaRespList.add(new CourseMetaResp(c));
         }
-        return CourseMetas;
+
+        return courseMetaRespList;
     }
 
 
     /**
      *
-     * @param courseId
+     * Get meta data of a course
+     * @param courseId, id of the course
      * @return course meta info
      */
-    public CourseMeta getCourseData(Long courseId){
-        if(!courseRepository.findById(courseId).isPresent())
-            throw new CourseNotFoundException(courseId);
-        return courseRepository.getCourseMetaById(courseId);
+    public CourseMetaResp getCourseData(Long courseId){
+        Course course = courseRepository.findById(courseId).orElseThrow(
+                () -> new CourseNotFoundException(courseId)
+        );
+        return new CourseMetaResp(course);
     }
-    //for students
 
     /**
      *
-     * @param courseId
+     * Update course meta data
+     * @param courseId, id of the course
      * @param name course name #optimal
      * @param code course code #optimal
-     * @return
      */
-    public CourseMeta updateCourse(Long courseId, String name, String code){
-        Optional<Course> course = courseRepository.findById(courseId);
-        if(!course.isPresent())
-            throw new CourseNotFoundException(courseId);
+    public void updateCourse(User currentUser, Long courseId, String name, String code){
+        // First the course must exist
+        Course course = courseRepository.findById(courseId).orElseThrow(
+                () -> new CourseNotFoundException(courseId)
+        );
 
-        Course course1 = course.get();
-        if(name != null)
-            course1.setName(name);
-        if(code != null){
-            if(courseRepository.existsByCode(code))
-                throw new CourseConflictException(code);
-            course1.setCode(code);
+        // Current user must be the owner/teacher of the course
+        if (currentUser.getType() != UserType.TEACHER || !course.getTeacher().equals(currentUser)) {
+            throw new PermissionDeniedException();
         }
-        courseRepository.save(course1);
-        return null;
+
+        if (name != null) {
+            course.setName(name);
+        }
+
+        if (code != null) {
+            // Check if code is conflict with other courses
+            if (courseRepository.existsByCode(code)) {
+                throw new CourseConflictException(code);
+            }
+            course.setCode(code);
+        }
+
+        // Save the change
+        courseRepository.save(course);
+
     }
 
 
     /**
-     * get all students of this course
-     * @param courseId
+     * Get all students of this course
+     * @param courseId, id of the course
      * @return all students of this course
      */
-    public Set<Student> listAllStudents(long courseId){
-        Optional<Course> course = courseRepository.findById(courseId);
-        if(!course.isPresent())
-            throw new CourseNotFoundException(courseId);
-        return courseRepository.findStudentsById(courseId);
-    }
+    public List<UserPublicResp> listAllStudents(long courseId){
+        // First course must exist
+        Course course = courseRepository.findById(courseId).orElseThrow(
+                () -> new CourseNotFoundException(courseId)
+        );
 
+        List<UserPublicResp> results = new ArrayList<>();
 
-    /**
-     * Generate a unique course id
-     *
-     * @return a user id
-     */
-    private long generateRandomId() {
-        while (true) {
-            long randomLong = RandomIdGenerator.getInstance().generateRandomLongId();
-            // Check if the id exists as a course id
-            if (!this.courseRepository.existsById(randomLong)) {
-                return randomLong;
-            }
+        for (User u : course.getStudents()) {
+            results.add(new UserPublicResp(u));
         }
+        return results;
     }
 
 }

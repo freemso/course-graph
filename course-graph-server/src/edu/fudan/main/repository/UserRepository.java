@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface   UserRepository extends Neo4jRepository<User, Long>{
+public interface UserRepository extends Neo4jRepository<User, Long>{
     Optional<User> findByEmail(String email);
 
-    List<User> findByName(String name);
+    boolean existsByEmail(String email);
 
-    //List<User> findByType(UserType type);
+    List<User> findByName(String name);
 
 }

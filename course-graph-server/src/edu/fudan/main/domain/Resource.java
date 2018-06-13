@@ -5,10 +5,10 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
 
 @NodeEntity(label = "resource")
-public class CourseResource {
+public class Resource {
 
     @Id
-    private Long courseResourceId;
+    private Long resourceId;
 
     @Property
     private String title;

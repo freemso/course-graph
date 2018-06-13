@@ -7,11 +7,8 @@ import java.util.List;
 
 public class Teacher extends User {
 
-    @Relationship(type = "TEACHER_OF", direction = Relationship.OUTGOING)
+    @Relationship(type = "TEACHER_OF")
     private List<Course> courseList;
-
-    public Teacher(){
-    }
 
     public Teacher(long id, String name, String password, String email) {
         super(id, name, password, email,UserType.TEACHER);
@@ -23,12 +20,6 @@ public class Teacher extends User {
 
 
     public List<Course> getCourseList() {
-        List<Course> courses = new ArrayList<>(courseList);
-        return courses;
-    }
-
-    @Override
-    public boolean equals(Object o){
-        return super.equals(o);
+        return courseList;
     }
 }

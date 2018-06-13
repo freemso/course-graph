@@ -8,29 +8,19 @@ import java.util.List;
 
 public class Student extends User {
 
-    @Relationship(type = "STUDENT_OF", direction = Relationship.OUTGOING)
+    @Relationship(type = "STUDENT_OF")
     private List<Course> courseList;
-
-    public Student(){
-    }
 
     public Student(long id, String name, String password, String email) {
         super(id, name, password, email, UserType.STUDENT);
+        courseList = new ArrayList<>();
     }
 
-    public void selectCourse(Course course){
+    public void addCourse(Course course){
         this.courseList.add(course);
     }
 
     public List<Course> getCourseList() {
-        List courses = new ArrayList(courseList);
-        return courses;
+        return courseList;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
-    }
-
-
 }

@@ -18,7 +18,8 @@ public abstract class User {
     @Property
     private String password;
 
-    @Property@Index(unique = true)
+    @Property
+    @Index(unique = true)
     private String email;
 
     @Property
@@ -30,10 +31,6 @@ public abstract class User {
         this.password = password;
         this.email = email;
         this.type = type;
-    }
-
-    public User() {
-
     }
 
     public UserType getType() {

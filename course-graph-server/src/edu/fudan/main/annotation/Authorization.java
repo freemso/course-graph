@@ -1,6 +1,6 @@
 package edu.fudan.main.annotation;
 
-import edu.fudan.main.interceptor.AuthorizationInterceptor;
+import edu.fudan.main.rest.AuthorizationInterceptor;
 
 import java.lang.annotation.*;
 

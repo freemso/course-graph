@@ -1,20 +1,26 @@
 package edu.fudan.main.dto.response;
 
-import org.springframework.data.neo4j.annotation.QueryResult;
+import edu.fudan.main.domain.Course;
 
 import java.util.Date;
 
-@QueryResult
 public class CourseMetaResp {
+
     private String name;
-    private Long id;
+
+    private long id;
+
     private String teacherName;
-    private Long teacherId;
+
+    private long teacherId;
+
     private Date createdTime;
+
     private Date modifiedTime;
+
     private int studentNum;
 
-    public CourseMetaResp(String name, Long id, String teacherName, Long teacherId , Date createdTime, Date modifiedTime, int studentNum) {
+    public CourseMetaResp(String name, long id, String teacherName, long teacherId , Date createdTime, Date modifiedTime, int studentNum) {
         this.name = name;
         this.id = id;
         this.teacherName = teacherName;
@@ -24,11 +30,21 @@ public class CourseMetaResp {
         this.studentNum = studentNum;
     }
 
+    public CourseMetaResp(Course course) {
+        this.name = course.getName();
+        this.id = course.getCourseId();
+        this.teacherName = course.getTeacher().getName();
+        this.teacherId = course.getTeacher().getId();
+        this.createdTime = course.getCreatedTime();
+        this.modifiedTime = course.getModifiedTime();
+        this.studentNum = course.getStudents().size();
+    }
+
     public String getName() {
         return name;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
@@ -36,7 +52,7 @@ public class CourseMetaResp {
         return teacherName;
     }
 
-    public Long getTeacherId(){
+    public long getTeacherId(){
         return teacherId;
     }
 

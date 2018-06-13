@@ -1,16 +1,23 @@
 package edu.fudan.main.dto.response;
 
-import org.springframework.data.neo4j.annotation.QueryResult;
 
-@QueryResult
+import edu.fudan.main.domain.Graph;
+
+import java.util.Date;
+
 public class GraphMetaResp {
-    private String name;
-    private Long id;
-    private String description;
-    private String createdTime;
-    private String modifiedTime;
 
-    public GraphMetaResp(String name, Long id, String description, String createdTime, String modifiedTime) {
+    private String name;
+
+    private long id;
+
+    private String description;
+
+    private Date createdTime;
+
+    private Date modifiedTime;
+
+    public GraphMetaResp(String name, long id, String description, Date createdTime, Date modifiedTime) {
         this.name = name;
         this.id = id;
         this.description = description;
@@ -18,11 +25,19 @@ public class GraphMetaResp {
         this.modifiedTime = modifiedTime;
     }
 
+    public GraphMetaResp(Graph graph) {
+        this.name = graph.getName();
+        this.id = graph.getGraphId();
+        this.description = graph.getDescription();
+        this.createdTime = graph.getCreatedTime();
+        this.modifiedTime = graph.getModifiedTime();
+    }
+
     public String getName() {
         return name;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
@@ -30,31 +45,11 @@ public class GraphMetaResp {
         return description;
     }
 
-    public String getCreatedTime() {
+    public Date getCreatedTime() {
         return createdTime;
     }
 
-    public String getModifiedTime() {
+    public Date getModifiedTime() {
         return modifiedTime;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setCreatedTime(String createdTime) {
-        this.createdTime = createdTime;
-    }
-
-    public void setModifiedTime(String modifiedTime) {
-        this.modifiedTime = modifiedTime;
     }
 }

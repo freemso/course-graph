@@ -1,4 +1,4 @@
-package edu.fudan.main.interceptor;
+package edu.fudan.main.rest;
 
 import edu.fudan.main.annotation.Authorization;
 import edu.fudan.main.config.Constants;

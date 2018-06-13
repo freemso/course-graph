@@ -1,4 +1,4 @@
-package edu.fudan.main.util;
+package edu.fudan.main.model;
 
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 
@@ -21,10 +21,10 @@ public class RandomIdGenerator {
     }
 
     public long generateRandomLongId(Neo4jRepository repository){
-        long id = 0;
-        do{
+        long id;
+        do {
             id = generateRandomLongId();
-        }while(repository.existsById(id));
+        } while(repository.existsById(id));
         return id;
     }
 }

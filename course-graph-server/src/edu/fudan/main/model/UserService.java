@@ -9,7 +9,6 @@ import edu.fudan.main.exception.EmailOrPasswordException;
 import edu.fudan.main.exception.UserNotFoundException;
 import edu.fudan.main.repository.TokenRepository;
 import edu.fudan.main.repository.UserRepository;
-import edu.fudan.main.util.RandomIdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

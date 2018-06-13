@@ -4,10 +4,12 @@ import edu.fudan.main.domain.*;
 import edu.fudan.main.dto.response.CourseMetaResp;
 import edu.fudan.main.exception.CourseConflictException;
 import edu.fudan.main.exception.CourseNotFoundException;
+import edu.fudan.main.exception.PermissionDeniedException;
+import edu.fudan.main.exception.UserNotFoundException;
 import edu.fudan.main.repository.CourseRepository;
 import edu.fudan.main.repository.StudentRepository;
 import edu.fudan.main.repository.TeacherRepository;
-import edu.fudan.main.util.RandomIdGenerator;
+import edu.fudan.main.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,76 +23,97 @@ import java.util.Set;
 @Transactional
 public class CourseService {
     private final CourseRepository courseRepository;
-    private final TeacherRepository teacherRepository;
     private final StudentRepository studentRepository;
+    private final TeacherRepository teacherRepository;
+
+    private final GraphService graphService;
 
     @Autowired
-    public CourseService(CourseRepository courseRepository,
-                         TeacherRepository teacherRepository, StudentRepository studentRepository) {
+    public CourseService(CourseRepository courseRepository, GraphService graphService,
+                         StudentRepository studentRepository, TeacherRepository teacherRepository) {
         this.courseRepository = courseRepository;
+        this.graphService = graphService;
         this.studentRepository = studentRepository;
-        this.teacherRepository =  teacherRepository;
+        this.teacherRepository = teacherRepository;
     }
 
 
     /**
-     * teacher add a new course
+     * Create a new course
      *
+     * @param currentUser current login user, must be a teacher
      * @param courseName name of the new course
      * @param courseCode code of the new course
-     * @param teacher
      * @return CourseMetaResp
      */
-    public CourseMetaResp addCourse(String courseName, String courseCode, Teacher teacher) {
-        if (courseRepository.existsByCode(courseCode))
+    public CourseMetaResp addCourse(User currentUser, String courseName, String courseCode) {
+        // Current user must be a teacher
+        if (currentUser.getType() != UserType.TEACHER) {
+            throw new PermissionDeniedException();
+        }
+
+        // Course code must be unique
+        if (courseRepository.existsByCode(courseCode)) {
             throw new CourseConflictException(courseCode);
-        long courseId = generateRandomId();
-        Course course = new Course(courseCode, courseName, courseId);
-        teacher.addCourse(course);
-        courseRepository.save(course);
-        teacherRepository.save(teacher, 0);
-        return courseRepository.getCourseMetaById(courseId);
+        }
+
+        // Generate a new id for the course
+        long newCourseId = RandomIdGenerator.getInstance().generateRandomLongId(courseRepository);
+
+        Course course = courseRepository.save(new Course(courseCode, courseName, newCourseId, (Teacher) currentUser));
+
+        return new CourseMetaResp(course);
     }
 
     /**
-     * delete a course by course id
-     * @param courseId
-     * @return true if succeeds else return false
+     * Delete a course by course id
+     * @param currentUser, current login user
+     * @param courseId, id of the course to delete
      */
-    public boolean deleteCourse(Long courseId){
-        Optional<Course> course = courseRepository.findById(courseId);
-        if(!course.isPresent())
-            throw new CourseNotFoundException(courseId);
+    public void deleteCourse(User currentUser, long courseId){
+        // The course must first exist
+        Course course = courseRepository.findById(courseId).orElseThrow(
+                () -> new CourseNotFoundException(courseId)
+        );
 
+        // Current user must be the owner/teacher of the course
+        if (currentUser.getType() != UserType.TEACHER || !course.getTeacher().equals(currentUser)) {
+            throw new PermissionDeniedException();
+        }
+
+        // Delete all graphs of the course
+        for (Graph g : course.getGraphList()) {
+            graphService.deleteGraph(g.getGraphId());
+        }
+
+        // Delete the course
         courseRepository.deleteById(courseId);
-        //todo
-        return true;
     }
 
-
-//    public List<CourseMetaResp> listAllCourses(Student student){
-//        List<Course> courses = student.getCourseList();
-//        List<CourseMetaResp> courseMetaResps = new ArrayList<>();
-//        for(Course c: courses){
-//            courseMetaResps.add(courseRepository.getCourseMetaById(c.getCourseId()));
-//        }
-//        return courseMetaResps;
-//    }
-
-    public List<CourseMetaResp> listAllCourses(User user){
+    public List<CourseMetaResp> listAllCourses(User currentUser){
         List<Course> courses = new ArrayList<>();
-        if(user.getType().equals(UserType.STUDENT)){
-            Optional<Student> student = studentRepository.findById(user.getId());
-            courses = student.get().getCourseList();
-        }else{
-            Optional<Teacher> teacher = teacherRepository.findById(user.getId());
-            courses = teacher.get().getCourseList();
+
+        switch (currentUser.getType()) {
+            case TEACHER:
+                courses = teacherRepository.findById(currentUser.getId()).orElseThrow(
+                        UserNotFoundException::new
+                ).getCourseList();
+                break;
+            case STUDENT:
+                courses = studentRepository.findById(currentUser.getId()).orElseThrow(
+                        UserNotFoundException::new
+                ).getCourseList();
+                break;
         }
-        List<CourseMetaResp> courseMetaResps = new ArrayList<>();
-        for(Course c: courses){
-            courseMetaResps.add(courseRepository.getCourseMetaById(c.getCourseId()));
+
+
+        List<CourseMetaResp> courseMetaRespList = new ArrayList<>();
+
+        for (Course c : courses) {
+            courseMetaRespList.add(new CourseMetaResp(c));
         }
-        return courseMetaResps;
+
+        return courseMetaRespList;
     }
 
 
@@ -100,11 +123,11 @@ public class CourseService {
      * @return course meta info
      */
     public CourseMetaResp getCourseData(Long courseId){
-        if(!courseRepository.findById(courseId).isPresent())
-            throw new CourseNotFoundException(courseId);
-        return courseRepository.getCourseMetaById(courseId);
+        Course course = courseRepository.findById(courseId).orElseThrow(
+                () -> new CourseNotFoundException(courseId)
+        );
+        return new CourseMetaResp(course);
     }
-    //for students
 
     /**
      *

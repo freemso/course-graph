@@ -1,12 +1,14 @@
 package edu.fudan.main.model;
 
-import edu.fudan.main.domain.CourseGraph;
-import edu.fudan.main.dto.response.CourseGraphMetaResp;
+import edu.fudan.main.domain.Course;
+import edu.fudan.main.domain.Graph;
+import edu.fudan.main.domain.User;
+import edu.fudan.main.dto.response.GraphMetaResp;
 import edu.fudan.main.exception.CourseGraphConflictException;
 import edu.fudan.main.exception.CourseNotFoundException;
+import edu.fudan.main.exception.PermissionDeniedException;
 import edu.fudan.main.repository.CourseRepository;
 import edu.fudan.main.repository.GraphRepository;
-import edu.fudan.main.util.RandomIdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,20 +29,34 @@ public class GraphService {
     }
 
     /**
-     * add a new graph to the course
-     * @param courseGraphName
-     * @param courseId
+     * Create a new graph and add it to the course
+     * @param currentUser, current login user
+     * @param name of the graph
+     * @param courseId, id of the course
      */
-    public CourseGraphMetaResp addNewGraph(String courseGraphName, long courseId){
-        if(!courseRepository.existsById(courseId))
-            throw new CourseNotFoundException(courseId);
-        if(graphRepository.existsByCourseName(courseGraphName, courseId))
-            throw new CourseGraphConflictException(courseGraphName);
-        long courseGraphId = RandomIdGenerator.getInstance().generateRandomLongId(graphRepository);
-        CourseGraph courseGraph = new CourseGraph(courseGraphId, courseGraphName);
-        graphRepository.save(courseGraph, 0);
-        return new CourseGraphMetaResp(courseGraphId, courseId, courseGraphName);
-        //todo
+    public GraphMetaResp createNewGraph(User currentUser, String name, long courseId) {
+        // Course must first exist
+        Course course = courseRepository.findById(courseId).orElseThrow(
+                () -> new CourseNotFoundException(courseId)
+        );
+
+        // Current user must be the teacher of the course
+        if(!course.getTeacher().equals(currentUser)) {
+            throw new PermissionDeniedException();
+        }
+
+        // New graph must have a unique name
+        if(graphRepository.existsByName(name, courseId)) {
+            throw new CourseGraphConflictException(name);
+        }
+
+        // Generate a new id for the graph
+        long newGraphId = RandomIdGenerator.getInstance().generateRandomLongId(graphRepository);
+
+        // Save it to database
+        Graph graph = graphRepository.save(new Graph(newGraphId, name, course));
+
+        return new GraphMetaResp(graph);
     }
 
     /**
@@ -52,7 +68,7 @@ public class GraphService {
         //todo
     }
 
-    public List<CourseGraphMetaResp> listAllGraphs(long courseId){
+    public List<GraphMetaResp> listAllGraphs(long courseId){
         //todo
         return null;
     }

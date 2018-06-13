@@ -2,6 +2,8 @@ package edu.fudan.main.domain;
 
 import org.neo4j.ogm.annotation.*;
 import org.neo4j.ogm.annotation.typeconversion.DateString;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -16,34 +18,33 @@ public class Course {
     @Property
     private String name;
 
-    @Property@Index(unique = true)
+    @Property
+    @Index(unique = true)
     private String code;
 
     @Property
-    @DateString("yyyy-MM-dd’T’HH:mm:ss")
+    @CreatedDate
     private Date createdTime;
 
     @Property
+    @LastModifiedDate
     private Date modifiedTime;
 
-
-
     @Relationship(type = "GRAPH_OF", direction = Relationship.INCOMING)
-    List<CourseGraph> courseGraphList;
+    private List<Graph> graphList;
 
     @Relationship(type = "STUDENT_OF", direction = Relationship.INCOMING)
-    Set<Student> students;
+    private Set<Student> students;
 
     @Relationship(type = "TEACHER_OF", direction = Relationship.INCOMING)
-    Teacher teacher;
+    private Teacher teacher;
 
 
-    public Course(String code, String name, Long courseId){
+    public Course(String code, String name, Long courseId, Teacher teacher){
         this.courseId = courseId;
         this.name = name;
         this.code = code;
-        this.createdTime = Calendar.getInstance().getTime();
-        this.modifiedTime = this.createdTime;
+        this.teacher = teacher;
     }
 
     public void setName(String name){
@@ -75,8 +76,8 @@ public class Course {
         return modifiedTime;
     }
 
-    public List<CourseGraph> getCourseGraphList() {
-        return courseGraphList;
+    public List<Graph> getGraphList() {
+        return graphList;
     }
 
     public Set<Student> getStudents() {

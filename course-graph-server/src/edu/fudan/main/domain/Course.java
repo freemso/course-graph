@@ -4,10 +4,7 @@ import org.neo4j.ogm.annotation.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @NodeEntity
 public class Course {
@@ -87,5 +84,13 @@ public class Course {
 
     public Teacher getTeacher() {
         return teacher;
+    }
+
+    public void addAStudent(Student student) {
+        if (students == null) {
+            students = new HashSet<>();
+        }
+
+        students.add(student);
     }
 }

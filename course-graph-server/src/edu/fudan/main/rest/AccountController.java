@@ -4,7 +4,9 @@ import edu.fudan.main.annotation.Authorization;
 import edu.fudan.main.annotation.CurrentUser;
 import edu.fudan.main.domain.User;
 import edu.fudan.main.dto.request.UpdateUserReq;
+import edu.fudan.main.dto.response.CourseMetaResp;
 import edu.fudan.main.dto.response.UserPrivateResp;
+import edu.fudan.main.model.CourseService;
 import edu.fudan.main.model.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,16 +14,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @CrossOrigin
 @RequestMapping("/account")
 public class AccountController {
 
-    private UserService userService;
+    private final UserService userService;
+
+    private final CourseService courseService;
 
     @Autowired
-    public AccountController(UserService userService) {
+    public AccountController(UserService userService, CourseService courseService) {
         this.userService = userService;
+        this.courseService = courseService;
     }
 
     /**
@@ -61,5 +68,11 @@ public class AccountController {
     ResponseEntity deleteUser(@CurrentUser User currentUser) {
         userService.deleteUser(currentUser);
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/courses")
+    @Authorization
+    ResponseEntity<List<CourseMetaResp>> getCoursesOfUser(@CurrentUser User currentUser) {
+        return new ResponseEntity<>(courseService.listAllCoursesOfUser(currentUser), HttpStatus.OK);
     }
 }

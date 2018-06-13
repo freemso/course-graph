@@ -29,13 +29,6 @@ public class UpdateUserReq {
     public UpdateUserReq() {
     }
 
-    public UpdateUserReq(String name, String email, String password, String newPassword) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.newPassword = newPassword;
-    }
-
     public String getName() {
         return name;
     }

@@ -83,7 +83,7 @@ public class GraphService {
      * @param courseGraphId id of the course graph to be updated
      * @param jsMindData    mind map json string
      */
-    public void updateGraph(Long courseGraphId, String jsMindData) {
+    public GraphMetaResp updateGraph(Long courseGraphId, String jsMindData) {
         //todo
 //        Optional<CourseGraph> courseGraph = graphRepository.findById(courseGraphId);
 //        if(!courseGraph.isPresent())
@@ -91,6 +91,7 @@ public class GraphService {
 //        CourseGraph courseGraph1 = courseGraph.get();
 //        courseGraph1.setJsMindData(jsMindData);
 //        graphRepository.save(courseGraph1, 0);
+        return null;
     }
 
     /**

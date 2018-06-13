@@ -1,5 +1,6 @@
 package edu.fudan.main.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.fudan.main.domain.User;
 import edu.fudan.main.domain.UserType;
 

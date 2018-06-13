@@ -28,13 +28,6 @@ public class RegisterReq {
     public RegisterReq() {
     }
 
-    public RegisterReq(String email, String name, String password, UserType type) {
-        this.email = email;
-        this.name = name;
-        this.password = password;
-        this.type = type;
-    }
-
     public String getEmail() {
         return email;
     }

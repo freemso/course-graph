@@ -3,10 +3,7 @@ package edu.fudan.main.model;
 import edu.fudan.main.domain.*;
 import edu.fudan.main.dto.response.CourseMetaResp;
 import edu.fudan.main.dto.response.UserPublicResp;
-import edu.fudan.main.exception.CourseConflictException;
-import edu.fudan.main.exception.CourseNotFoundException;
-import edu.fudan.main.exception.PermissionDeniedException;
-import edu.fudan.main.exception.UserNotFoundException;
+import edu.fudan.main.exception.*;
 import edu.fudan.main.repository.CourseRepository;
 import edu.fudan.main.repository.StudentRepository;
 import edu.fudan.main.repository.TeacherRepository;
@@ -44,7 +41,7 @@ public class CourseService {
      * @param courseCode code of the new course
      * @return CourseMetaResp
      */
-    public CourseMetaResp addCourse(User currentUser, String courseName, String courseCode) {
+    public CourseMetaResp createCourse(User currentUser, String courseName, String courseCode) {
         // Current user must be a teacher
         if (currentUser.getType() != UserType.TEACHER) {
             throw new PermissionDeniedException();
@@ -58,7 +55,11 @@ public class CourseService {
         // Generate a new id for the course
         long newCourseId = RandomIdGenerator.getInstance().generateRandomLongId(courseRepository);
 
-        Course course = courseRepository.save(new Course(courseCode, courseName, newCourseId, (Teacher) currentUser));
+        Course course = courseRepository.save(new Course(
+                courseCode, courseName, newCourseId,
+                teacherRepository.findById(currentUser.getId()).orElseThrow(
+                        UserNotFoundException::new
+                )));
 
         return new CourseMetaResp(course);
     }
@@ -88,7 +89,7 @@ public class CourseService {
         courseRepository.deleteById(courseId);
     }
 
-    public List<CourseMetaResp> listAllCourses(User currentUser){
+    public List<CourseMetaResp> listAllCoursesOfUser(User currentUser){
         List<Course> courses = new ArrayList<>();
 
         switch (currentUser.getType()) {
@@ -134,7 +135,7 @@ public class CourseService {
      * @param name course name #optimal
      * @param code course code #optimal
      */
-    public void updateCourse(User currentUser, Long courseId, String name, String code){
+    public CourseMetaResp updateCourse(User currentUser, long courseId, String name, String code){
         // First the course must exist
         Course course = courseRepository.findById(courseId).orElseThrow(
                 () -> new CourseNotFoundException(courseId)
@@ -158,8 +159,7 @@ public class CourseService {
         }
 
         // Save the change
-        courseRepository.save(course);
-
+        return new CourseMetaResp(courseRepository.save(course));
     }
 
 
@@ -168,7 +168,7 @@ public class CourseService {
      * @param courseId, id of the course
      * @return all students of this course
      */
-    public List<UserPublicResp> listAllStudents(long courseId){
+    public List<UserPublicResp> listAllStudentsOfCourse(long courseId){
         // First course must exist
         Course course = courseRepository.findById(courseId).orElseThrow(
                 () -> new CourseNotFoundException(courseId)
@@ -180,6 +180,31 @@ public class CourseService {
             results.add(new UserPublicResp(u));
         }
         return results;
+    }
+
+    public CourseMetaResp addStudentToCourse(User currentUser, long courseId, String code) {
+        // Fist the course must exist
+        Course course = courseRepository.findById(courseId).orElseThrow(
+                () -> new CourseNotFoundException(courseId)
+        );
+
+        // Code must be the same as course code
+        if (!code.equals(course.getCode())) {
+            throw new InvalidCodeException();
+        }
+
+        // Current user must be a student
+        if (currentUser.getType() != UserType.STUDENT) {
+            throw new PermissionDeniedException();
+        }
+
+        // Add to course
+        course.addAStudent(studentRepository.findById(currentUser.getId()).orElseThrow(
+                UserNotFoundException::new
+        ));
+
+        return new CourseMetaResp(courseRepository.save(course));
+
     }
 
 }

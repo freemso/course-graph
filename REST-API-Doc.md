@@ -89,10 +89,8 @@ course_meta :
     name : <string>,
     id : <integer>,
     code : <string>,
-    teacher : {
-        name : <string>,
-        id : <integer>
-    },
+    teacher_name : <string>,
+    teacher_id : <integer>,
     created_time : <time>, # The time that the course is created
     modified_time : <time>, # Last time of the mata data of the course being modified.
     student_num : <integer>
@@ -139,7 +137,7 @@ Teacher create a new course. Needs authorization.
 
 - **Success Response:**
 
-    - **Code:** 201 <br>
+    - **Code:** 201 CREATED <br>
       **Content:** `<course_meta>` of the newly created course
  
 - **Error Response:**
@@ -232,13 +230,10 @@ List all courses that a student takes or a teacher teaches. Needs Authorization.
     - **Code:** 200 <br>
       **Content:** 
     ```
-    {
-        courses : [
-            <course_meta>,
-            ...
-        ],
-        course_num : <integer>
-    }
+    [
+        <course_meta>,
+        ...
+    ]
     ```
  
 - **Error Response:**
@@ -374,13 +369,10 @@ Get a list of students of a course.
     - **Code:** 200 <br>
       **Content:** 
     ```
-    {
-        students: [
-            <user_public>,
-            ...
-        ],
-        student_num : <integer>
-    }
+    [
+        <user_public>,
+        ...
+    ]
     ```
  
 - **Error Response:**
@@ -419,14 +411,14 @@ Student join a course. Or add a student to a course.
 - **Data Params**
     ```
     {
-        uid : <integer> # Student id
+        code : <string> # Course code
     }
     ```
 
     Example:
     ```
     {
-        uid : 9527
+        code : "course_code"
     }
     ```
 
@@ -446,6 +438,18 @@ Student join a course. Or add a student to a course.
     - **Code:** 401 UNAUTHORIZED <br>
       **Content:** `{ error : "Unauthorized" }` <br>
       **Condition:** User not login or user id does not match token.
+     
+    OR
+    
+    - **Code:** 422 UNPROCESSABLE ENTRY <br>
+      **Content:** `{ error : "Course code invalid" }` <br>
+      **Condition:** Course code not match.
+    
+    OR
+    
+    - **Code:** 403 FORBIDDEN <br>
+      **Content:** `{ error : "Not a student" }` <br>
+      **Condition:** Current login user is not a student.
 
 - **Notes:**
 

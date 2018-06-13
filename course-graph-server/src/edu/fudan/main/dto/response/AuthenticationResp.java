@@ -1,21 +1,24 @@
 package edu.fudan.main.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class AuthenticationResp {
 
     private UserPublicResp user;
 
-    private String token;
+    @JsonProperty("token")
+    private String authentication;
 
     public AuthenticationResp() {
     }
 
-    public AuthenticationResp(String token, UserPublicResp user) {
-        this.token = token;
+    public AuthenticationResp(String authentication, UserPublicResp user) {
+        this.authentication = authentication;
         this.user = user;
     }
 
-    public String getToken(){
-        return token;
+    public String getAuthentication(){
+        return authentication;
     }
 
 }

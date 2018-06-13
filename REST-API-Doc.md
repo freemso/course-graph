@@ -89,10 +89,8 @@ course_meta :
     name : <string>,
     id : <integer>,
     code : <string>,
-    teacher : {
-        name : <string>,
-        id : <integer>
-    },
+    teacher_name : <string>,
+    teacher_id : <integer>,
     created_time : <time>, # The time that the course is created
     modified_time : <time>, # Last time of the mata data of the course being modified.
     student_num : <integer>
@@ -139,7 +137,7 @@ Teacher create a new course. Needs authorization.
 
 - **Success Response:**
 
-    - **Code:** 201 <br>
+    - **Code:** 201 CREATED <br>
       **Content:** `<course_meta>` of the newly created course
  
 - **Error Response:**
@@ -232,13 +230,10 @@ List all courses that a student takes or a teacher teaches. Needs Authorization.
     - **Code:** 200 <br>
       **Content:** 
     ```
-    {
-        courses : [
-            <course_meta>,
-            ...
-        ],
-        course_num : <integer>
-    }
+    [
+        <course_meta>,
+        ...
+    ]
     ```
  
 - **Error Response:**
@@ -374,13 +369,10 @@ Get a list of students of a course.
     - **Code:** 200 <br>
       **Content:** 
     ```
-    {
-        students: [
-            <user_public>,
-            ...
-        ],
-        student_num : <integer>
-    }
+    [
+        <user_public>,
+        ...
+    ]
     ```
  
 - **Error Response:**
@@ -419,14 +411,14 @@ Student join a course. Or add a student to a course.
 - **Data Params**
     ```
     {
-        uid : <integer> # Student id
+        code : <string> # Course code
     }
     ```
 
     Example:
     ```
     {
-        uid : 9527
+        code : "course_code"
     }
     ```
 
@@ -446,6 +438,18 @@ Student join a course. Or add a student to a course.
     - **Code:** 401 UNAUTHORIZED <br>
       **Content:** `{ error : "Unauthorized" }` <br>
       **Condition:** User not login or user id does not match token.
+     
+    OR
+    
+    - **Code:** 422 UNPROCESSABLE ENTRY <br>
+      **Content:** `{ error : "Course code invalid" }` <br>
+      **Condition:** Course code not match.
+    
+    OR
+    
+    - **Code:** 403 FORBIDDEN <br>
+      **Content:** `{ error : "Not a student" }` <br>
+      **Condition:** Current login user is not a student.
 
 - **Notes:**
 
@@ -833,6 +837,8 @@ Get user public profile.
 ----
 
 ## Graph Related
+Everything here needs authorized.
+
 Meta data structure of a graph:
 ```
 graph_meta :
@@ -844,7 +850,6 @@ graph_meta :
     modified_time : <time>
 }
 ```
-
 ### List all graphs of the course
 
 - **URL**
@@ -866,6 +871,7 @@ graph_meta :
     None.
 
 - **Data Params**
+
     None.
 
 - **Success Response:**
@@ -939,6 +945,12 @@ Teacher create a new graph for a course. Need authorization.
     - **Code:** 404 NOT FOUND <br>
       **Content:** `{ error : "Course not found" }` <br>
       **Condition:** Course id invalid.
+    
+    OR
+    
+    - **Code:** 401 UNAUTHORIZED <br>
+      **Content:** `{ error : "Unauthorized" }` <br>
+      **Condition:** User not login or user is not the teacher of this course.
 
 - **Notes:**
 
@@ -946,8 +958,110 @@ Teacher create a new graph for a course. Need authorization.
 
 ----
 ### Get data of the graph
+
+Get graph meta data.
+
+- **URL**
+
+    /graphs/{gid}
+
+- **Method:**
+
+    `GET`
+
+- **URL Params**
+
+    **Required:**
+
+    `gid=<integer>`
+
+    **Optional:**
+
+    None.
+
+- **Data Params**
+    
+    None.
+
+- **Success Response:**
+
+    - **Code:** 200 <br>
+      **Content:** `<graph_meta>`, metadata of the graph
+ 
+- **Error Response:**
+
+    - **Code:** 404 NOT FOUND <br>
+      **Content:** `{ error : "Graph not found" }` <br>
+      **Condition:** Graph id invalid.
+
+- **Notes:**
+
+    None.
+
+----
 ### Update data of the graph
+
+Update data of the graph. Needs Authorization.
+
+- **URL**
+
+    /graphs/{gid}
+
+- **Method:**
+
+    `PUT`
+
+- **URL Params**
+
+    **Required:**
+
+    `gid=<integer>`
+
+    **Optional:**
+
+    None.
+
+- **Data Params**
+    ```
+    {
+        name : <string>, # OPTIONAL
+        description : <string> # OPTIONAL
+    }
+    ```
+
+    Example:
+    ```
+    {
+        name : "Advanced Topics Graph",
+        description : "This is the graph of advanced topics of the course. We will cover this part later in this course."
+    }
+    ```
+
+- **Success Response:**
+
+    - **Code:** 200 <br>
+      **Content:** `<graph_meta>`, metadata of the updated graph
+ 
+- **Error Response:**
+
+    - **Code:** 404 NOT FOUND <br>
+      **Content:** `{ error : "Graph not found" }` <br>
+      **Condition:** Graph id invalid.
+      
+    OR
+    
+    - **Code:** 401 UNAUTHORIZED <br>
+      **Content:** `{ error : "Unauthorized" }` <br>
+      **Condition:** User not login or user is not the teacher of this course.
+
+- **Notes:**
+
+    None.
+
+----
 ### Delete the graph
+
+Delete the graph.
 
 - **URL**
 
@@ -995,16 +1109,60 @@ Teacher create a new graph for a course. Need authorization.
 ----
 
 ## Node Related
+Everything here needs authorized.
+
 Meta data of a node:
 ```
 node_meta :
 {
-    name : <string>,
-    color : <string>,
-    
+    title : <string>,
+    id : <string>
 }
 ```
 ### List all nodes of the graph
+
+- **URL**
+
+    /graphs/{gid}/nodes
+
+- **Method:**
+
+    `GET`
+
+- **URL Params**
+
+    **Required:**
+
+    `gid=<integer>` 
+
+    **Optional:**
+
+    None.
+
+- **Data Params**
+
+    None.
+
+- **Success Response:**
+
+    - **Code:** 200 <br>
+      **Content:** 
+    ```
+    [
+        <node_meta>,
+        ...
+    ]
+    ```
+ 
+- **Error Response:**
+
+    None.
+
+- **Notes:**
+
+    None.
+
+----
 ### Add a node to the graph
 ### Get data of the node
 ### Update date of the node
@@ -1056,11 +1214,227 @@ node_meta :
 ----
 
 ## Resource Related
+Everything here needs authorized.
+
+Resource data structure:
+```
+resource :
+{
+    id : <integer>,
+    title : <string>,
+    link : <string>
+}
+```
 ### List all resources of the node
-### Add a resource to the node
+
+- **URL**
+
+    /nodes/{nid}/resources
+
+- **Method:**
+
+    `GET`
+
+- **URL Params**
+
+    **Required:**
+
+    `nid=<integer>` 
+
+    **Optional:**
+
+    None.
+
+- **Data Params**
+
+    None.
+
+- **Success Response:**
+
+    - **Code:** 200 <br>
+      **Content:** 
+    ```
+    [
+        <resource>,
+        ...
+    ]
+    ```
+ 
+- **Error Response:**
+
+    None.
+
+- **Notes:**
+
+    None.
+
+----
+### Add a new resource to the node
+
+Teacher add a new resource to a node. Need authorization.
+
+- **URL**
+
+    /nodes/{nid}/resources
+
+- **Method:**
+
+    `POST`
+
+- **URL Params**
+
+    **Required:**
+
+    `nid=<integer>`
+
+    **Optional:**
+
+    None.
+
+- **Data Params**
+    ```
+    {
+        title : <string>, # title of the resource
+        link : <string> # link of the resource
+    }
+    ```
+
+    Example:
+    ```
+    {
+        title : "PRML Book",
+        link : "http://some.domain/u/r/l/prml.pdf"
+    }
+    ```
+
+- **Success Response:**
+
+    - **Code:** 200 <br>
+      **Content:** `<resource>`
+ 
+- **Error Response:**
+
+    - **Code:** 404 NOT FOUND <br>
+      **Content:** `{ error : "Node not found" }` <br>
+      **Condition:** Node id invalid.
+    
+    OR
+    
+    - **Code:** 401 UNAUTHORIZED <br>
+      **Content:** `{ error : "Unauthorized" }` <br>
+      **Condition:** User not login or user is not the teacher of this course.
+
+- **Notes:**
+
+    None.
+
+----
 ### Get data of the resource
-### Update data of the resource
+
+Get resource meta data.
+
+- **URL**
+
+    /resources/{rid}
+
+- **Method:**
+
+    `GET`
+
+- **URL Params**
+
+    **Required:**
+
+    `rid=<integer>`
+
+    **Optional:**
+
+    None.
+
+- **Data Params**
+    
+    None.
+
+- **Success Response:**
+
+    - **Code:** 200 <br>
+      **Content:** `<resource>`
+ 
+- **Error Response:**
+
+    - **Code:** 404 NOT FOUND <br>
+      **Content:** `{ error : "Resource not found" }` <br>
+      **Condition:** Resource id invalid.
+
+- **Notes:**
+
+    None.
+
+----
+### Update data of the Resource
+
+Update data of the resource. Needs Authorization.
+
+- **URL**
+
+    /resources/{rid}
+
+- **Method:**
+
+    `PUT`
+
+- **URL Params**
+
+    **Required:**
+
+    `rid=<integer>`
+
+    **Optional:**
+
+    None.
+
+- **Data Params**
+
+    ```
+    {
+        title : <string>, # OPTIONAL
+        link : <string> # OPTIONAL
+    }
+    ```
+
+    Example:
+    ```
+    {
+        title : "PRML Book",
+        link : "http://some.domain/u/r/l/prml.pdf"
+    }
+    ```
+
+- **Success Response:**
+
+    - **Code:** 200 <br>
+      **Content:** `<resource>`
+ 
+- **Error Response:**
+
+    - **Code:** 404 NOT FOUND <br>
+      **Content:** `{ error : "Resource not found" }` <br>
+      **Condition:** Resource id invalid.
+      
+    OR
+    
+    - **Code:** 401 UNAUTHORIZED <br>
+      **Content:** `{ error : "Unauthorized" }` <br>
+      **Condition:** User not login or user is not the teacher of this course.
+
+- **Notes:**
+
+    None.
+
+----
 ### Delete the resource
+
+Delete the resource.
 
 - **URL**
 
@@ -1081,7 +1455,7 @@ node_meta :
     None.
 
 - **Data Params**
-
+    
     None.
 
 - **Success Response:**
@@ -1108,25 +1482,50 @@ node_meta :
 ----
 
 ## Lecture Related
-### List all lectures of the node
-### Add a lecture to the node
-### Get data of the lecture
-### Update data of the lecture
-### Delete the lecture
+Almost the same as resources
+url is `/lectures/{lid}`
+
+## Question Related
+Everything here needs authorized.
+
+Question data structure:
+```
+question: # Response format
+{
+    id : <integer>,
+    description : <string>,
+    type : <string>, # "MULTIPLE_CHOICE" or "SHORT_ANSWER"
+    choices : [ # presented only when type is "MULTIPLE_CHOICE"
+        {
+            key : <string>,
+            value : <string>
+        },
+        ...
+    ],
+    answer : <string>,
+    submission_num : <interger>, # OPTIONAL only available for teacher, otherwise it's null
+    correct_num : <interger> # OPTIONAL only available for teacher AND type is MULTIPLE_CHOICE, otherwise it's null
+}
+```
+Note that `answer` is the `key` of the choice if `type` is `MULTIPLE_CHOICE`. 
+For teacher, it is the correct answer, `null` if `type` is `SHORT_ANSWER`.
+For student, it is the answer he choose, `null` if not answered yet.
+
+### List all questions of the node
 
 - **URL**
 
-    /lectures/{lid}
+    /nodes/{nid}/questions
 
 - **Method:**
 
-    `DELETE`
+    `GET`
 
 - **URL Params**
 
     **Required:**
 
-    `lid=<integer>`
+    `nid=<integer>` 
 
     **Optional:**
 
@@ -1138,33 +1537,234 @@ node_meta :
 
 - **Success Response:**
 
-    - **Code:** 204 NO CONTENT <br>
-      **Content:** None.
+    - **Code:** 200 <br>
+      **Content:** 
+    ```
+    [
+        <question>,
+        ...
+    ]
+    ```
  
 - **Error Response:**
 
-    - **Code:** 401 UNAUTHORIZED <br>
-      **Content:** `{ error : "Unauthorized" }` <br>
-      **Condition:** User not login or user is not the teacher of this course.
-    
-    OR
-
-    - **Code:** 404 NOT FOUND <br>
-      **Content:** `{ error : "Lecture not found" }` <br>
-      **Condition:** Lecture id invalid.
+    None.
 
 - **Notes:**
 
     None.
 
 ----
+### Add a new question to the node
 
-## Question Related
-### List all questions of the node
-### Add a question to the node
-### Get data of the question
-### Update data of the question
+Teacher add a new question to a node. Need authorization.
+
+- **URL**
+
+    /nodes/{nid}/questions
+
+- **Method:**
+
+    `POST`
+
+- **URL Params**
+
+    **Required:**
+
+    `nid=<integer>`
+
+    **Optional:**
+
+    None.
+
+- **Data Params**
+    ```
+    {
+        description : <string>,
+        type : <string>, # "MULTIPLE_CHOICE" or "SHORT_ANSWER"
+        choices : [ # presented only when type is "MULTIPLE_CHOICE"
+            {
+                key : <string>,
+                value : <string>
+            },
+            ...
+        ],
+        answer : <string> # presented only when type is "MULTIPLE_CHOICE"
+    }
+    ```
+
+    Example:
+    ```
+    {
+        description : "What is Neo4j?,
+        type : "MULTIPLE_CHOICE",
+        choices : [
+            {
+                key : "A",
+                value : "A server."
+            },
+            {
+                key : "B",
+                value : "A database."
+            },
+            {
+                key : "C",
+                value : "A programming language."
+            }
+        ],
+        answer : "B"
+    }
+    ```
+
+- **Success Response:**
+
+    - **Code:** 200 <br>
+      **Content:** `<question>`
+ 
+- **Error Response:**
+
+    - **Code:** 404 NOT FOUND <br>
+      **Content:** `{ error : "Node not found" }` <br>
+      **Condition:** Node id invalid.
+    
+    OR
+    
+    - **Code:** 401 UNAUTHORIZED <br>
+      **Content:** `{ error : "Unauthorized" }` <br>
+      **Condition:** User not login or user is not the teacher of this course.
+
+- **Notes:**
+
+    None.
+
+----
+### Get data of the resource
+
+Get resource meta data.
+
+- **URL**
+
+    /questions/{qid}
+
+- **Method:**
+
+    `GET`
+
+- **URL Params**
+
+    **Required:**
+
+    `qid=<integer>`
+
+    **Optional:**
+
+    None.
+
+- **Data Params**
+    
+    None.
+
+- **Success Response:**
+
+    - **Code:** 200 <br>
+      **Content:** `<question>`
+ 
+- **Error Response:**
+
+    - **Code:** 404 NOT FOUND <br>
+      **Content:** `{ error : "Resource not found" }` <br>
+      **Condition:** Resource id invalid.
+
+- **Notes:**
+
+    None.
+
+----
+### Update data of the Resource
+
+Update data of the resource. Needs Authorization.
+
+- **URL**
+
+    /questions/{qid}
+
+- **Method:**
+
+    `PUT`
+
+- **URL Params**
+
+    **Required:**
+
+    `qid=<integer>`
+
+    **Optional:**
+
+    None.
+
+- **Data Params**
+
+    ```
+    {
+        description : <string>,
+        choices : [ # OPTIONAL
+            {
+                key : <string>,
+                value : <string>
+            },
+            ...
+        ],
+        answer : <string> # OPTIONAL
+    }
+    ```
+
+    Example:
+    ```
+    {
+        description : "What is Neo4j?
+        choices : [
+            {
+                key : "B",
+                value : "A server."
+            },
+            {
+                key : "C",
+                value : "A database."
+            },
+            {
+                key : "D",
+                value : "A programming language."
+            }
+        ],
+        answer : "B"
+    }
+    ```
+
+- **Success Response:**
+
+    - **Code:** 200 <br>
+      **Content:** `<question>`
+ 
+- **Error Response:**
+
+    - **Code:** 404 NOT FOUND <br>
+      **Content:** `{ error : "Resource not found" }` <br>
+      **Condition:** Resource id invalid.
+      
+    OR
+    
+    - **Code:** 401 UNAUTHORIZED <br>
+      **Content:** `{ error : "Unauthorized" }` <br>
+      **Condition:** User not login or user is not the teacher of this course.
+
+- **Notes:**
+
+    None.
+
+----
 ### Delete the question
+
+Delete the question.
 
 - **URL**
 
@@ -1185,7 +1785,7 @@ node_meta :
     None.
 
 - **Data Params**
-
+    
     None.
 
 - **Success Response:**
@@ -1212,53 +1812,4 @@ node_meta :
 ----
 
 ## Answer Related
-### List all answers of the question
-### Add a answer to the question
-### Get data of the answer
-### Update the answer
-### Delete the answer
-
-- **URL**
-
-    /answers/{aid}
-
-- **Method:**
-
-    `DELETE`
-
-- **URL Params**
-
-    **Required:**
-
-    `aid=<integer>`
-
-    **Optional:**
-
-    None.
-
-- **Data Params**
-
-    None.
-
-- **Success Response:**
-
-    - **Code:** 204 NO CONTENT <br>
-      **Content:** None.
- 
-- **Error Response:**
-
-    - **Code:** 401 UNAUTHORIZED <br>
-      **Content:** `{ error : "Unauthorized" }` <br>
-      **Condition:** User not login or user is not the teacher of this course.
-    
-    OR
-
-    - **Code:** 404 NOT FOUND <br>
-      **Content:** `{ error : "Answer not found" }` <br>
-      **Condition:** Answer id invalid.
-
-- **Notes:**
-
-    None.
-
-----
+Not required.

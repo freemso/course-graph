@@ -29,7 +29,6 @@ import static org.junit.Assert.*;
 @Transactional
 public class UserServiceTest {
 
-
     @Autowired
     private UserService userService;
     @Autowired
@@ -38,7 +37,7 @@ public class UserServiceTest {
     private TokenRepository tokenRepository;
 
     @Before
-    public void set() {
+    public void setup() {
         User student = new Student(1, "user1", "1234", "stu@fudan.edu.cn");
         userRepository.save(student);
     }
@@ -59,14 +58,14 @@ public class UserServiceTest {
         assertNotNull(resp);
 
         // The token in AuthenticationResp is actually the combination of token and id
-        // so we only need to pass it to getToken() to get the tokenEntry
-        TokenEntry tokenEntry = tokenRepository.getToken(resp.getToken());
+        // so we only need to pass it to getAuthentication() to get the tokenEntry
+        TokenEntry tokenEntry = tokenRepository.getToken(resp.getAuthentication());
         assertTrue(tokenRepository.checkToken(tokenEntry));
 
         // Test token override
         // create a token again
         assertNotNull(userService.createToken("stu@fudan.edu.cn", "1234"));
-        TokenEntry oldTokenEntry = tokenRepository.getToken(resp.getToken());
+        TokenEntry oldTokenEntry = tokenRepository.getToken(resp.getAuthentication());
         // old token will be invalid
         assertFalse(tokenRepository.checkToken(oldTokenEntry));
     }
@@ -77,12 +76,12 @@ public class UserServiceTest {
         AuthenticationResp resp = userService.createToken("stu@fudan.edu.cn", "1234");
         assertNotNull(resp);
 
-        TokenEntry tokenEntry = tokenRepository.getToken(resp.getToken());
+        TokenEntry tokenEntry = tokenRepository.getToken(resp.getAuthentication());
         assertTrue(tokenRepository.checkToken(tokenEntry));
 
         //deleteToken
         userService.deleteToken(1);
-        TokenEntry oldTokenEntry = tokenRepository.getToken(resp.getToken());
+        TokenEntry oldTokenEntry = tokenRepository.getToken(resp.getAuthentication());
         assertFalse(tokenRepository.checkToken(oldTokenEntry));
     }
 

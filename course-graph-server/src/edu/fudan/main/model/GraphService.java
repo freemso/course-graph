@@ -80,9 +80,9 @@ public class GraphService {
 //        Gso
 //    }
 
-//    private void updateNodes(String jsMindData){
-//        JSONObject mindObj = new JSONObject(jsMindData);
-//        List<String> newNodeIds = new ArrayList<>();
-//
-//    }
+    private void updateNodes(String jsMindData){
+        JSONObject mindObj = new JSONObject(jsMindData);
+        List<String> newNodeIds = new ArrayList<>();
+
+    }
 }

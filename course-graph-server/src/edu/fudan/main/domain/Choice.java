@@ -17,6 +17,9 @@ public class Choice {
     @Property
     private String value;
 
+    public Choice() {
+    }
+
     public Choice(String key, String value) {
         this.key = key;
         this.value = value;

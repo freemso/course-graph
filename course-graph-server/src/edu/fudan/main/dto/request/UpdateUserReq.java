@@ -26,6 +26,9 @@ public class UpdateUserReq {
     @Pattern(regexp = PASSWORD_REGEX, message = "invalid new password.")
     private String newPassword;
 
+    public UpdateUserReq() {
+    }
+
     public UpdateUserReq(String name, String email, String password, String newPassword) {
         this.name = name;
         this.email = email;

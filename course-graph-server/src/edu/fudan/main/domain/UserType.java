@@ -1,6 +1,7 @@
 package edu.fudan.main.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import edu.fudan.main.exception.IllegalUserTypeException;
 
 public enum UserType {
     STUDENT("STUDENT"),
@@ -24,8 +25,6 @@ public enum UserType {
                 return t;
             }
         }
-        throw new IllegalArgumentException();
+        throw new IllegalUserTypeException();
     }
-
-
 }

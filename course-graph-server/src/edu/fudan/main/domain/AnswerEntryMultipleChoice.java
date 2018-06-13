@@ -8,6 +8,9 @@ public class AnswerEntryMultipleChoice extends AnswerEntry {
     @Property
     private boolean correct;
 
+    public AnswerEntryMultipleChoice() {
+    }
+
     public AnswerEntryMultipleChoice(long id, Student creator, String content,
                                      QuestionMultipleChoice questionMultipleChoice,
                                      boolean correct) {

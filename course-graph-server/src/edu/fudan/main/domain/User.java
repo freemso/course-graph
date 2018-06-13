@@ -25,6 +25,9 @@ public abstract class User {
     @Property
     private UserType type;
 
+    public User() {
+    }
+
     public User(Long id, String name, String password, String email, UserType type) {
         this.userId = id;
         this.name = name;

@@ -27,6 +27,9 @@ public class Node {
     @Relationship(type = "HAS_QUESTION")
     private List<Question> questionList;
 
+    public Node() {
+    }
+
     public Node(long id, String title) {
         this.nodeId = id;
         this.title = title;

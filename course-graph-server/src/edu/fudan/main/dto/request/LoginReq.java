@@ -16,6 +16,9 @@ public class LoginReq {
     @NotBlank
     private String password;
 
+    public LoginReq() {
+    }
+
     public LoginReq(String email, String password) {
         this.email = email;
         this.password = password;

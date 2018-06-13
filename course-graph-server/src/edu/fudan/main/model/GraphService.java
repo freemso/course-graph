@@ -67,13 +67,18 @@ public class GraphService {
 
 
     public void deleteGraph(long courseGraphId) {
-      Graph graph = graphRepository.findById(courseGraphId).orElseThrow(
-              GraphNotFoundException::new
-      );
-      for(Node node: graph.getNodeSet()){
-          nodeService.deleteNode(node.getNodeId());
-      }
-      graphRepository.deleteById(courseGraphId);
+        //get this graph
+        Graph graph = graphRepository.findById(courseGraphId).orElseThrow(
+                GraphNotFoundException::new
+        );
+
+        //delete all nodes related to this graph
+        for (Node node : graph.getNodeSet()) {
+            nodeService.deleteNode(node.getNodeId());
+        }
+
+        //delete this graph itself
+        graphRepository.deleteById(courseGraphId);
     }
 
 
@@ -84,25 +89,32 @@ public class GraphService {
      * @param jsMindData    mind map json string
      */
     public GraphMetaResp updateGraph(Long courseGraphId, String jsMindData) {
-        //todo
-//        Optional<CourseGraph> courseGraph = graphRepository.findById(courseGraphId);
-//        if(!courseGraph.isPresent())
-//            throw new GraphNotFoundException(courseGraphId);
-//        CourseGraph courseGraph1 = courseGraph.get();
-//        courseGraph1.setJsMindData(jsMindData);
-//        graphRepository.save(courseGraph1, 0);
-        return null;
+        Graph graph = graphRepository.findById(courseGraphId).orElseThrow(
+                GraphNotFoundException::new
+        );
+
+        //update jsmind json string
+        graph.setJsMindData(jsMindData);
+        graphRepository.save(graph);
+
+        //update nodes according new mind map
+        nodeService.updateNodes(courseGraphId, jsMindData);
+        return new GraphMetaResp(graph);
     }
 
     /**
      * get all graphs' metadata of one course
+     *
      * @param courseId
      * @return list of graph metadata
      */
     public List<GraphMetaResp> listAllGraphs(long courseId) {
+        //get all graphs
         List<Graph> graphs = courseRepository.findById(courseId).orElseThrow(
                 CourseNotFoundException::new
         ).getGraphList();
+
+        //generate response object according to graphs
         List<GraphMetaResp> metaResps = new ArrayList<>();
         for (Graph graph : graphs) {
             metaResps.add(new GraphMetaResp(graph));
@@ -112,6 +124,7 @@ public class GraphService {
 
     /**
      * get graph's mind map
+     *
      * @param courseGraphId
      * @return jsmind json string
      */

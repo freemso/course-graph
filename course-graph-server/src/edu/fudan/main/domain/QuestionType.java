@@ -2,7 +2,6 @@ package edu.fudan.main.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import edu.fudan.main.exception.IllegalQuestionTypeException;
-import edu.fudan.main.exception.IllegalUserTypeException;
 
 public enum QuestionType {
     MULTIPLE_CHOICE("MULTIPLE_CHOICE"),

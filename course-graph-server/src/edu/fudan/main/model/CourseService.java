@@ -1,6 +1,9 @@
 package edu.fudan.main.model;
 
-import edu.fudan.main.domain.*;
+import edu.fudan.main.domain.Course;
+import edu.fudan.main.domain.Graph;
+import edu.fudan.main.domain.User;
+import edu.fudan.main.domain.UserType;
 import edu.fudan.main.dto.response.CourseMetaResp;
 import edu.fudan.main.dto.response.UserPublicResp;
 import edu.fudan.main.exception.*;
@@ -17,8 +20,11 @@ import java.util.List;
 @Service
 @Transactional
 public class CourseService {
+
     private final CourseRepository courseRepository;
+
     private final StudentRepository studentRepository;
+
     private final TeacherRepository teacherRepository;
 
     private final GraphService graphService;
@@ -31,7 +37,6 @@ public class CourseService {
         this.studentRepository = studentRepository;
         this.teacherRepository = teacherRepository;
     }
-
 
     /**
      * Create a new course
@@ -82,14 +87,21 @@ public class CourseService {
 
         // Delete all graphs of the course
         for (Graph g : course.getGraphList()) {
-            graphService.deleteGraph(g.getGraphId());
+            graphService.deleteGraph(currentUser, g.getGraphId());
         }
 
         // Delete the course
         courseRepository.deleteById(courseId);
     }
 
-    public List<CourseMetaResp> listAllCoursesOfUser(User currentUser){
+    /**
+     * List all courses of a user.
+     * List the courses that the user takes if it's a student.
+     * List the courses that the user teaches if it's a teacher.
+     * @param currentUser, current login user
+     * @return list of course meta data
+     */
+    public List<CourseMetaResp> getAllCoursesOfUser(User currentUser){
         List<Course> courses = new ArrayList<>();
 
         switch (currentUser.getType()) {
@@ -114,9 +126,7 @@ public class CourseService {
         return courseMetaRespList;
     }
 
-
     /**
-     *
      * Get meta data of a course
      * @param courseId, id of the course
      * @return course meta info
@@ -129,7 +139,6 @@ public class CourseService {
     }
 
     /**
-     *
      * Update course meta data
      * @param courseId, id of the course
      * @param name course name #optimal
@@ -168,7 +177,7 @@ public class CourseService {
      * @param courseId, id of the course
      * @return all students of this course
      */
-    public List<UserPublicResp> listAllStudentsOfCourse(long courseId){
+    public List<UserPublicResp> getAllStudentsOfCourse(long courseId){
         // First course must exist
         Course course = courseRepository.findById(courseId).orElseThrow(
                 () -> new CourseNotFoundException(courseId)
@@ -182,6 +191,14 @@ public class CourseService {
         return results;
     }
 
+    /**
+     * Add a student to a course.
+     * Need to check if the code provided matches course code.
+     * @param currentUser, current login user
+     * @param courseId, id of the course
+     * @param code, code provided
+     * @return meta data of the course
+     */
     public CourseMetaResp addStudentToCourse(User currentUser, long courseId, String code) {
         // Fist the course must exist
         Course course = courseRepository.findById(courseId).orElseThrow(

@@ -79,6 +79,10 @@ public class Graph {
         this.name = name;
     }
 
+    public Course getCourse() {
+        return course;
+    }
+
     public void setJsMindData(String jsMindData) {
         this.jsMindData = jsMindData;
     }

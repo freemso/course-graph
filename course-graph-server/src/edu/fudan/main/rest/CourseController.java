@@ -16,8 +16,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.Digits;
 import java.util.List;
 
 @Controller
@@ -65,7 +63,7 @@ public class CourseController {
 
     @GetMapping("/{cid}/students")
     ResponseEntity<List<UserPublicResp>> getStudentsOfCourse(@PathVariable long cid) {
-        return new ResponseEntity<>(courseService.listAllStudentsOfCourse(cid), HttpStatus.OK);
+        return new ResponseEntity<>(courseService.getAllStudentsOfCourse(cid), HttpStatus.OK);
     }
 
     @PostMapping("/{cid}/students")

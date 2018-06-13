@@ -1,7 +1,6 @@
 package edu.fudan.main.dto.response;
 
 import edu.fudan.main.domain.User;
-import edu.fudan.main.domain.UserType;
 
 public class UserPrivateResp extends UserPublicResp {
 

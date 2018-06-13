@@ -23,7 +23,9 @@ import java.util.List;
 public class GraphService {
 
     private final CourseRepository courseRepository;
+
     private final GraphRepository graphRepository;
+
     private final NodeService nodeService;
 
     @Autowired
@@ -65,66 +67,92 @@ public class GraphService {
         return new GraphMetaResp(graph);
     }
 
-
-    public void deleteGraph(long courseGraphId) {
-        //get this graph
-        Graph graph = graphRepository.findById(courseGraphId).orElseThrow(
+    /**
+     * Delete the graph.
+     * For controller.
+     * Need to check login user ownership.
+     * @param currentUser, current login user
+     * @param graphId, id of the graph
+     */
+    public void deleteGraph(User currentUser, long graphId) {
+        // First check if the graph exists
+        Graph graph = graphRepository.findById(graphId).orElseThrow(
                 GraphNotFoundException::new
         );
 
-        //delete all nodes related to this graph
-        for (Node node : graph.getNodeSet()) {
+        // Check if the current login user is the teacher/owner of the graph
+        // TODO maybe need to set depth
+        if (!graph.getCourse().getTeacher().equals(currentUser)) {
+            throw new PermissionDeniedException();
+        }
+
+        // Delete all nodes in the graph
+        for(Node node : graph.getNodeSet()) {
             nodeService.deleteNode(node.getNodeId());
         }
 
-        //delete this graph itself
-        graphRepository.deleteById(courseGraphId);
+        // Delete the graph itself
+        graphRepository.deleteById(graphId);
     }
 
-
     /**
-     * update course graph by updating its jsMindData
-     *
-     * @param courseGraphId id of the course graph to be updated
-     * @param jsMindData    mind map json string
+     * Delete the graph.
+     * For course service.
+     * Do NOT need to check login user.
+     * @param graphId, id of the graph
      */
-    public GraphMetaResp updateGraph(Long courseGraphId, String jsMindData) {
-        Graph graph = graphRepository.findById(courseGraphId).orElseThrow(
+    public void deleteGraph(long graphId) {
+        // First check if the graph exists
+        Graph graph = graphRepository.findById(graphId).orElseThrow(
                 GraphNotFoundException::new
         );
 
-        //update jsmind json string
-        graph.setJsMindData(jsMindData);
-        graphRepository.save(graph);
-
-        //update nodes according new mind map
-        nodeService.updateNodes(courseGraphId, jsMindData);
-        return new GraphMetaResp(graph);
+        // Delete all nodes in the graph
+        for (Node node : graph.getNodeSet()) {
+            nodeService.deleteNode(node.getNodeId());
+        }
     }
+
+//    /**
+//     * update course graph by updating its jsMindData
+//     *
+//     * @param courseGraphId id of the course graph to be updated
+//     * @param jsMindData    mind map json string
+//     */
+//    public GraphMetaResp updateGraph(Long courseGraphId, String jsMindData) {
+//        Graph graph = graphRepository.findById(courseGraphId).orElseThrow(
+//                GraphNotFoundException::new
+//        );
+//
+//        //update jsmind json string
+//        graph.setJsMindData(jsMindData);
+//        graphRepository.save(graph);
+//
+//        //update nodes according new mind map
+//        nodeService.updateNodes(courseGraphId, jsMindData);
+//        return new GraphMetaResp(graph);
+//    }
+
 
     /**
      * get all graphs' metadata of one course
-     *
      * @param courseId
      * @return list of graph metadata
      */
-    public List<GraphMetaResp> listAllGraphs(long courseId) {
-        //get all graphs
+    public List<GraphMetaResp> getAllGraphsOfCourse(long courseId) {
         List<Graph> graphs = courseRepository.findById(courseId).orElseThrow(
                 CourseNotFoundException::new
         ).getGraphList();
 
-        //generate response object according to graphs
-        List<GraphMetaResp> metaResps = new ArrayList<>();
+        List<GraphMetaResp> metaRespList = new ArrayList<>();
         for (Graph graph : graphs) {
-            metaResps.add(new GraphMetaResp(graph));
+            metaRespList.add(new GraphMetaResp(graph));
         }
-        return metaResps;
+        return metaRespList;
     }
 
     /**
      * get graph's mind map
-     *
      * @param courseGraphId
      * @return jsmind json string
      */

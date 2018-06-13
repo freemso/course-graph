@@ -34,4 +34,8 @@ public class Node {
         this.lectureList = new ArrayList<>();
         this.questionList = new ArrayList<>();
     }
+
+    public Long getNodeId() {
+        return nodeId;
+    }
 }

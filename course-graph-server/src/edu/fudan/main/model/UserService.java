@@ -145,7 +145,7 @@ public class UserService {
         if (email != null) {
             // Do NOT need to check email pattern, because controller has done the job
             // Change email
-            if (userRepository.existsByEmail(email)) {
+            if (userRepository.findByEmail(email).isPresent()) {
                 throw new EmailConflictException(email);
             }
             currentUser.setEmail(email);

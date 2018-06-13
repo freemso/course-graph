@@ -4,6 +4,7 @@ import edu.fudan.main.domain.UserType;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import static edu.fudan.main.config.Constants.PASSWORD_REGEX;
@@ -21,8 +22,11 @@ public class RegisterReq {
     @NotBlank
     private String password;
 
-    @NotBlank(message = "type can't be empty")
+    @NotNull
     private UserType type;
+
+    public RegisterReq() {
+    }
 
     public RegisterReq(String email, String name, String password, UserType type) {
         this.email = email;

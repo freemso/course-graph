@@ -6,6 +6,9 @@ public class AuthenticationResp {
 
     private String token;
 
+    public AuthenticationResp() {
+    }
+
     public AuthenticationResp(String token, UserPublicResp user) {
         this.token = token;
         this.user = user;

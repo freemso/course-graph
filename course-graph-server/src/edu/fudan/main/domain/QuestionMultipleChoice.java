@@ -18,6 +18,9 @@ public class QuestionMultipleChoice extends Question {
     @Property
     private String correctAnswerKey;
 
+    public QuestionMultipleChoice() {
+    }
+
     public QuestionMultipleChoice(long id, String description) {
         super(id, description, QuestionType.MULTIPLE_CHOICE);
         this.choices = new ArrayList<>();

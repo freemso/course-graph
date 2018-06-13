@@ -11,6 +11,9 @@ public class Student extends User {
     @Relationship(type = "STUDENT_OF")
     private List<Course> courseList;
 
+    public Student() {
+    }
+
     public Student(long id, String name, String password, String email) {
         super(id, name, password, email, UserType.STUDENT);
         courseList = new ArrayList<>();

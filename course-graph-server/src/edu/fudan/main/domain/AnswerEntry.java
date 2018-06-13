@@ -24,6 +24,9 @@ public abstract class AnswerEntry {
     @Property
     private String content;
 
+    public AnswerEntry() {
+    }
+
     public AnswerEntry(long id, Student submitter, Question question, String content) {
         this.answerEntryId = id;
         this.submitter = submitter;

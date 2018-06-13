@@ -12,9 +12,7 @@ public class UserPrivateResp extends UserPublicResp {
     private String email;
 
 
-    public UserPrivateResp(String name, long id, UserType type, String email) {
-        super(name, id, type);
-        this.email = email;
+    public UserPrivateResp() {
     }
 
     public UserPrivateResp(User user) {

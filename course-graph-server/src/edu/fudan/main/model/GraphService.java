@@ -4,17 +4,16 @@ import edu.fudan.main.domain.Course;
 import edu.fudan.main.domain.Graph;
 import edu.fudan.main.domain.User;
 import edu.fudan.main.dto.response.GraphMetaResp;
-import edu.fudan.main.exception.GraphConflictException;
-import edu.fudan.main.exception.GraphNotFoundException;
 import edu.fudan.main.exception.CourseNotFoundException;
+import edu.fudan.main.exception.GraphConflictException;
 import edu.fudan.main.exception.PermissionDeniedException;
 import edu.fudan.main.repository.CourseRepository;
 import edu.fudan.main.repository.GraphRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional

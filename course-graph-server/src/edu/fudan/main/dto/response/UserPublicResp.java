@@ -10,10 +10,7 @@ public class UserPublicResp {
 
     private UserType type;
 
-    public UserPublicResp(String name, long id, UserType type) {
-        this.name = name;
-        this.id = id;
-        this.type = type;
+    public UserPublicResp() {
     }
 
     public UserPublicResp(User user) {

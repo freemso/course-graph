@@ -10,6 +10,8 @@ public class CourseMetaResp {
 
     private long id;
 
+    private String code;
+
     private String teacherName;
 
     private long teacherId;
@@ -20,19 +22,13 @@ public class CourseMetaResp {
 
     private int studentNum;
 
-    public CourseMetaResp(String name, long id, String teacherName, long teacherId , Date createdTime, Date modifiedTime, int studentNum) {
-        this.name = name;
-        this.id = id;
-        this.teacherName = teacherName;
-        this.teacherId = teacherId;
-        this.createdTime = createdTime;
-        this.modifiedTime = modifiedTime;
-        this.studentNum = studentNum;
+    public CourseMetaResp() {
     }
 
     public CourseMetaResp(Course course) {
         this.name = course.getName();
         this.id = course.getCourseId();
+        this.code = course.getCode();
         this.teacherName = course.getTeacher().getName();
         this.teacherId = course.getTeacher().getId();
         this.createdTime = course.getCreatedTime();
@@ -68,4 +64,7 @@ public class CourseMetaResp {
         return studentNum;
     }
 
+    public String getCode() {
+        return code;
+    }
 }

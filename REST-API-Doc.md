@@ -125,8 +125,7 @@ Teacher create a new course. Needs authorization.
     ```
     {
         name : <string>,
-        code : <string>,  # 课程代码
-        teacher_id : <string>
+        code : <string>  # 课程代码
     }
     ```
 
@@ -134,15 +133,14 @@ Teacher create a new course. Needs authorization.
     ```
     {
         name : "Advanced Web",
-        code : "GRE4T4G41N",
-        teacher_id : 9528
+        code : "GRE4T4G41N"
     }
     ```
 
 - **Success Response:**
 
     - **Code:** 201 <br>
-      **Content:** `[course_meta]` of the newly created course
+      **Content:** `<course_meta>` of the newly created course
  
 - **Error Response:**
 

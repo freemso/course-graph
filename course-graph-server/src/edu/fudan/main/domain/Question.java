@@ -23,6 +23,9 @@ public abstract class Question {
     @Relationship(type = "ANSWER_TO", direction = Relationship.INCOMING)
     private List<AnswerEntry> answerEntryList;
 
+    public Question() {
+    }
+
     public Question(long id, String description, QuestionType questionType) {
         this.questionId = id;
         this.description = description;

@@ -17,12 +17,7 @@ public class GraphMetaResp {
 
     private Date modifiedTime;
 
-    public GraphMetaResp(String name, long id, String description, Date createdTime, Date modifiedTime) {
-        this.name = name;
-        this.id = id;
-        this.description = description;
-        this.createdTime = createdTime;
-        this.modifiedTime = modifiedTime;
+    public GraphMetaResp() {
     }
 
     public GraphMetaResp(Graph graph) {

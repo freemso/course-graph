@@ -1,7 +1,6 @@
 package edu.fudan.main.domain;
 
 import org.neo4j.ogm.annotation.*;
-import org.neo4j.ogm.annotation.typeconversion.DateString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -39,6 +38,8 @@ public class Course {
     @Relationship(type = "TEACHER_OF", direction = Relationship.INCOMING)
     private Teacher teacher;
 
+    public Course() {
+    }
 
     public Course(String code, String name, Long courseId, Teacher teacher){
         this.courseId = courseId;

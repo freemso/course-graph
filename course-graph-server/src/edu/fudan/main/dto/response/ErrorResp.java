@@ -7,6 +7,9 @@ public class ErrorResp {
     private String details;
     private Date timestamp;
 
+    public ErrorResp() {
+    }
+
     public ErrorResp(String error, String details) {
         this.error = error;
         this.details = details;

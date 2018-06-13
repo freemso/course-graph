@@ -1,6 +1,9 @@
 package edu.fudan.main.model;
 
-import edu.fudan.main.domain.*;
+import edu.fudan.main.domain.Course;
+import edu.fudan.main.domain.Graph;
+import edu.fudan.main.domain.User;
+import edu.fudan.main.domain.UserType;
 import edu.fudan.main.dto.response.CourseMetaResp;
 import edu.fudan.main.dto.response.UserPublicResp;
 import edu.fudan.main.exception.*;

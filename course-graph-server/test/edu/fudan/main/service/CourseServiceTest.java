@@ -1,6 +1,5 @@
 package edu.fudan.main.service;
 
-import edu.fudan.main.annotation.Authorization;
 import edu.fudan.main.model.CourseService;
 import org.junit.Before;
 import org.junit.runner.RunWith;

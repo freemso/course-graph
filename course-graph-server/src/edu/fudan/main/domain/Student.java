@@ -24,6 +24,6 @@ public class Student extends User {
     }
 
     public List<Course> getCourseList() {
-        return courseList;
+        return courseList == null ? new ArrayList<>() : courseList;
     }
 }

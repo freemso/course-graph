@@ -53,7 +53,7 @@ public class CourseService {
         }
 
         // Course code must be unique
-        if (courseRepository.existsByCode(courseCode)) {
+        if (courseRepository.findByCode(courseCode).isPresent()) {
             throw new CourseConflictException(courseCode);
         }
 
@@ -87,11 +87,15 @@ public class CourseService {
 
         // Delete all graphs of the course
         for (Graph g : course.getGraphList()) {
-            graphService.deleteGraph(currentUser, g.getGraphId());
+            graphService.deleteGraph(g.getGraphId());
         }
 
+        // Delete the relation to teacher
+        course.removeTeacher();
+        courseRepository.save(course);
+
         // Delete the course
-        courseRepository.deleteById(courseId);
+        courseRepository.delete(course);
     }
 
     /**
@@ -161,7 +165,7 @@ public class CourseService {
 
         if (code != null) {
             // Check if code is conflict with other courses
-            if (courseRepository.existsByCode(code)) {
+            if (courseRepository.findByCode(code).isPresent()) {
                 throw new CourseConflictException(code);
             }
             course.setCode(code);
@@ -213,6 +217,11 @@ public class CourseService {
         // Current user must be a student
         if (currentUser.getType() != UserType.STUDENT) {
             throw new PermissionDeniedException();
+        }
+
+        // Current user must not be in the course
+        if (course.getStudents().contains(currentUser)) {
+            throw new DuplicateStudentException();
         }
 
         // Add to course

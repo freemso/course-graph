@@ -16,10 +16,6 @@ public interface CourseRepository extends Neo4jRepository<Course, Long> {
 
     Optional<Course> findByCode(String code);
 
-    boolean existsByCode(String code);
-
-    void deleteByCode(String code);
-
     /**
      * List all courses that a student takes, ordered by course name
      *

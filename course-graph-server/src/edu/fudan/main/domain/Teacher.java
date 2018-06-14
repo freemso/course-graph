@@ -15,6 +15,7 @@ public class Teacher extends User {
 
     public Teacher(long id, String name, String password, String email) {
         super(id, name, password, email,UserType.TEACHER);
+        this.courseList = new ArrayList<>();
     }
 
     public void addCourse(Course course){

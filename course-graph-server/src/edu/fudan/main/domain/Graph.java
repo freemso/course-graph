@@ -42,10 +42,11 @@ public class Graph {
     public Graph() {
     }
 
-    public Graph(Long graphId, String name, String description, Course course) {
+    public Graph(Long graphId, String name, String description, String jsMindData, Course course) {
         this.graphId = graphId;
         this.name = name;
         this.description = description;
+        this.jsMindData = jsMindData;
         this.course = course;
     }
 

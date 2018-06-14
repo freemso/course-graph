@@ -852,6 +852,13 @@ graph_meta :
     description : <string>
 }
 ```
+
+Jsmind data of the graph:
+```
+{
+    jsmind : <string>
+}
+```
 ### List all graphs of the course
 
 - **URL**
@@ -925,7 +932,8 @@ Teacher create a new graph for a course. Need authorization.
     ```
     {
         name : <string>, # name of the graph
-        description : <string> # description of the graph
+        description : <string>, # description of the graph
+        jsmind : <string> # initial jsmind data, by default, send an empty string ""
     }
     ```
 
@@ -933,7 +941,8 @@ Teacher create a new graph for a course. Need authorization.
     ```
     {
         name : "Advanced Topics Graph",
-        description : "This is the graph of advanced topics of the course. We will cover this part later in this course."
+        description : "This is the graph of advanced topics of the course. We will cover this part later in this course.",
+        jsmind : ""
     }
     ```
 
@@ -959,7 +968,107 @@ Teacher create a new graph for a course. Need authorization.
     None.
 
 ----
-### Get data of the graph
+### Get jsMind of the graph
+
+Get jsMind of the graph in a string format.
+
+- **URL**
+
+    /graphs/{gid}/jsmind
+
+- **Method:**
+
+    `GET`
+
+- **URL Params**
+
+    **Required:**
+
+    `gid=<integer>`
+
+    **Optional:**
+
+    None.
+
+- **Data Params**
+    
+    None.
+
+- **Success Response:**
+
+    - **Code:** 200 <br>
+      **Content:** `{jsmind : <string>}`, jsmind of the graph
+ 
+- **Error Response:**
+
+    - **Code:** 404 NOT FOUND <br>
+      **Content:** `{ error : "Graph not found" }` <br>
+      **Condition:** Graph id invalid.
+
+- **Notes:**
+
+    None.
+
+----
+### Update jsMind of the graph
+
+Update jsmind of the graph. Needs Authorization.
+
+- **URL**
+
+    /graphs/{gid}/jsmind
+
+- **Method:**
+
+    `PUT`
+
+- **URL Params**
+
+    **Required:**
+
+    `gid=<integer>`
+
+    **Optional:**
+
+    None.
+
+- **Data Params**
+    ```
+    {
+        jsmind : <string> # jsmind json in a string
+    }
+    ```
+
+    Example:
+    ```
+    {
+        jsmind : ""
+    }
+    ```
+
+- **Success Response:**
+
+    - **Code:** 200 <br>
+      **Content:** `{jsmind : <string>}`
+ 
+- **Error Response:**
+
+    - **Code:** 404 NOT FOUND <br>
+      **Content:** `{ error : "Graph not found" }` <br>
+      **Condition:** Graph id invalid.
+      
+    OR
+    
+    - **Code:** 401 UNAUTHORIZED <br>
+      **Content:** `{ error : "Unauthorized" }` <br>
+      **Condition:** User not login or user is not the teacher of this course.
+
+- **Notes:**
+
+    None.
+
+----
+### Get meta data of the graph
 
 Get graph meta data.
 
@@ -1001,7 +1110,7 @@ Get graph meta data.
     None.
 
 ----
-### Update data of the graph
+### Update meta data of the graph
 
 Update data of the graph. Needs Authorization.
 

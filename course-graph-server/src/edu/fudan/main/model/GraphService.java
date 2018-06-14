@@ -5,6 +5,7 @@ import edu.fudan.main.domain.Graph;
 import edu.fudan.main.domain.Node;
 import edu.fudan.main.domain.User;
 import edu.fudan.main.dto.response.GraphMetaResp;
+import edu.fudan.main.dto.response.JsmindResp;
 import edu.fudan.main.exception.CourseNotFoundException;
 import edu.fudan.main.exception.GraphConflictException;
 import edu.fudan.main.exception.GraphNotFoundException;
@@ -41,9 +42,11 @@ public class GraphService {
      * @param currentUser, current login user
      * @param name         of the graph
      * @param description of the graph
+     * @param jsmind of the graph
      * @param courseId,    id of the course
      */
-    public GraphMetaResp createNewGraph(User currentUser, String name, String description, long courseId) {
+    public GraphMetaResp createNewGraph(User currentUser, String name, String description,
+                                        String jsmind, long courseId) {
         // Course must first exist
         Course course = courseRepository.findById(courseId).orElseThrow(
                 () -> new CourseNotFoundException(courseId)
@@ -63,7 +66,7 @@ public class GraphService {
         long newGraphId = RandomIdGenerator.getInstance().generateRandomLongId(graphRepository);
 
         // Save it to database
-        Graph graph = graphRepository.save(new Graph(newGraphId, name, description, course));
+        Graph graph = graphRepository.save(new Graph(newGraphId, name, description, jsmind, course));
 
         return new GraphMetaResp(graph);
     }
@@ -153,15 +156,28 @@ public class GraphService {
     }
 
     /**
-     * get graph's mind map
-     * @param courseGraphId
+     * Get graph jsmind data
+     * @param graphId, id of the graph
      * @return jsmind json string
      */
-    public String getJsMindData(long courseGraphId) {
-        String jsMindData = graphRepository.findById(courseGraphId).orElseThrow(
+    public JsmindResp getJsmind(long graphId) {
+        String jsMindData = graphRepository.findById(graphId).orElseThrow(
                 GraphNotFoundException::new
         ).getJsMindData();
-        return jsMindData;
+        return new JsmindResp(jsMindData);
+    }
+
+    /**
+     * Get meta data of a graph
+     * @param graphId, id of the graph
+     * @return graph meta data
+     */
+    public GraphMetaResp getGraphMeta(long graphId) {
+        Graph graph = graphRepository.findById(graphId).orElseThrow(
+                GraphNotFoundException::new
+        );
+
+        return new GraphMetaResp(graph);
     }
 
 

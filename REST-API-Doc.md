@@ -1327,13 +1327,16 @@ node_meta :
 ## Resource Related
 Everything here needs authorized.
 
-Resource data structure:
+The way to upload file, please refer to 
+[this blog](https://o7planning.org/en/11673/spring-boot-file-upload-with-angularjs-example).
+
+Resource metadata structure:
 ```
 resource :
 {
     id : <integer>,
     title : <string>,
-    link : <string>
+    link : <string> #OPTIONAL, if there is link, it means the resource is just a link, redirect to the link
 }
 ```
 ### List all resources of the node
@@ -1366,7 +1369,7 @@ resource :
       **Content:** 
     ```
     [
-        <resource>,
+        <resource>, # just metadata
         ...
     ]
     ```
@@ -1406,7 +1409,8 @@ Teacher add a new resource to a node. Need authorization.
     ```
     {
         title : <string>, # title of the resource
-        link : <string> # link of the resource
+        link : <string> # OPTIONAL, link of the resource
+        file : <file> # OPTIONAL, file of the resource
     }
     ```
 
@@ -1414,7 +1418,8 @@ Teacher add a new resource to a node. Need authorization.
     ```
     {
         title : "PRML Book",
-        link : "http://some.domain/u/r/l/prml.pdf"
+        link : "http://some.domain/u/r/l/prml.pdf",
+        file : null
     }
     ```
 
@@ -1440,7 +1445,7 @@ Teacher add a new resource to a node. Need authorization.
     None.
 
 ----
-### Get data of the resource
+### Get meta data of the resource
 
 Get resource meta data.
 
@@ -1482,6 +1487,49 @@ Get resource meta data.
     None.
 
 ----
+### Get file of the resource
+### Get meta data of the resource
+
+Get resource file.
+
+- **URL**
+
+    /resources/{rid}/file
+
+- **Method:**
+
+    `GET`
+
+- **URL Params**
+
+    **Required:**
+
+    `rid=<integer>`
+
+    **Optional:**
+
+    None.
+
+- **Data Params**
+    
+    None.
+
+- **Success Response:**
+
+    - **Code:** 200 <br>
+      **Content:** `<file>`
+ 
+- **Error Response:**
+
+    - **Code:** 404 NOT FOUND <br>
+      **Content:** `{ error : "Resource not found" }` <br>
+      **Condition:** Resource id invalid or resource is just a link.
+
+- **Notes:**
+
+    None.
+
+----
 ### Update data of the Resource
 
 Update data of the resource. Needs Authorization.
@@ -1509,7 +1557,8 @@ Update data of the resource. Needs Authorization.
     ```
     {
         title : <string>, # OPTIONAL
-        link : <string> # OPTIONAL
+        link : <string>, # OPTIONAL
+        file : <file> #OPTIONAL 
     }
     ```
 
@@ -1517,7 +1566,8 @@ Update data of the resource. Needs Authorization.
     ```
     {
         title : "PRML Book",
-        link : "http://some.domain/u/r/l/prml.pdf"
+        link : "http://some.domain/u/r/l/prml.pdf",
+        file : null
     }
     ```
 

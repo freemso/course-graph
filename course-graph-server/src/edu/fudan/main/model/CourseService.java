@@ -219,6 +219,11 @@ public class CourseService {
             throw new PermissionDeniedException();
         }
 
+        // Current user must not be in the course
+        if (course.getStudents().contains(currentUser)) {
+            throw new DuplicateStudentException();
+        }
+
         // Add to course
         course.addAStudent(studentRepository.findById(currentUser.getId()).orElseThrow(
                 UserNotFoundException::new

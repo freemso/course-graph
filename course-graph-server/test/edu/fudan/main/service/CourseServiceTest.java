@@ -5,8 +5,8 @@ import edu.fudan.main.domain.Teacher;
 import edu.fudan.main.domain.User;
 import edu.fudan.main.domain.UserType;
 import edu.fudan.main.dto.response.CourseMetaResp;
-import edu.fudan.main.exception.CourseConflictException;
-import edu.fudan.main.exception.PermissionDeniedException;
+import edu.fudan.main.dto.response.UserPublicResp;
+import edu.fudan.main.exception.*;
 import edu.fudan.main.model.CourseService;
 import edu.fudan.main.model.UserService;
 import edu.fudan.main.repository.CourseRepository;
@@ -20,11 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-import static org.junit.Assert.*;
 
-
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -70,14 +67,14 @@ public class CourseServiceTest {
     @Test
     public void testCreateCourse() {
         // Teacher can create a course
-        CourseMetaResp courseMetaResp1 = courseService.createCourse(
+        CourseMetaResp courseMetaResp = courseService.createCourse(
                 teacherUser, "some course", "course_code");
-        assertNotNull(courseMetaResp1);
-        assertEquals(courseMetaResp1.getCode(), "course_code");
-        assertEquals(courseMetaResp1.getName(), "some course");
-        assertEquals(courseMetaResp1.getStudentNum(), 0);
-        assertEquals(courseMetaResp1.getTeacherId(), teacherUser.getId());
-        assertEquals(courseMetaResp1.getTeacherName(), teacherUser.getName());
+        assertNotNull(courseMetaResp);
+        assertEquals(courseMetaResp.getCode(), "course_code");
+        assertEquals(courseMetaResp.getName(), "some course");
+        assertEquals(courseMetaResp.getStudentNum(), 0);
+        assertEquals(courseMetaResp.getTeacherId(), teacherUser.getId());
+        assertEquals(courseMetaResp.getTeacherName(), teacherUser.getName());
 
         // Abort the create time / modified time test
 //        assertEquals(courseMetaResp1.getCreatedTime(), courseMetaResp1.getModifiedTime());
@@ -87,14 +84,14 @@ public class CourseServiceTest {
 //        assertTrue(courseMetaResp1.getCreatedTime().after(oneHourAgo));
 
         // Get the newly created course
-        Course course1 = courseRepository.findById(courseMetaResp1.getId()).orElse(null);
-        assertNotNull(course1);
+        Course course = courseRepository.findById(courseMetaResp.getId()).orElse(null);
+        assertNotNull(course);
 
         // Teacher can find a course in his course list
         Teacher teacher = teacherRepository.findById(teacherUser.getId()).orElse(null);
         assertNotNull(teacher);
         assertEquals(teacher.getCourseList().size(), 1);
-        assertEquals(teacher.getCourseList().get(0), course1);
+        assertEquals(teacher.getCourseList().get(0), course);
 
         // Can not create another course with the same code
         try {
@@ -115,10 +112,10 @@ public class CourseServiceTest {
 
     @Test
     public void testDeleteCourse() {
-        CourseMetaResp courseMetaResp1 = courseService.createCourse(
+        CourseMetaResp courseMetaResp = courseService.createCourse(
                 teacherUser, "some course", "course_code");
 
-        long courseId = courseMetaResp1.getId();
+        long courseId = courseMetaResp.getId();
 
         // Student or other users cannot delete the course
         try {
@@ -128,8 +125,8 @@ public class CourseServiceTest {
 
         // Teacher himself can delete the course
         assertTrue(courseRepository.findById(courseId).isPresent());
-        Course course1 = courseRepository.findById(courseMetaResp1.getId()).orElse(null);
-        assertNotNull(course1);
+        Course course = courseRepository.findById(courseMetaResp.getId()).orElse(null);
+        assertNotNull(course);
         courseService.deleteCourse(teacherUser, courseId);
         assertFalse(courseRepository.findById(courseId).isPresent());
 
@@ -142,5 +139,135 @@ public class CourseServiceTest {
 //        assertEquals(course1, course2);
 //        System.out.println(course2.getCourseId());
 //        System.out.println(courseRepository.findById(course2.getCourseId()).isPresent());
+    }
+
+    @Test
+    public void testUpdateCourse() {
+        // Teacher create a course
+        CourseMetaResp courseMetaResp = courseService.createCourse(
+                teacherUser, "some course", "course_code");
+
+        // Teacher can update the course
+        courseMetaResp = courseService.updateCourse(
+                teacherUser, courseMetaResp.getId(), "another name", "another_code");
+        assertEquals(courseMetaResp.getName(), "another name");
+        assertEquals(courseMetaResp.getCode(), "another_code");
+        // Can update part of the course
+        courseMetaResp = courseService.updateCourse(
+                teacherUser, courseMetaResp.getId(), "yet another name", null);
+        assertEquals(courseMetaResp.getName(), "yet another name");
+        assertEquals(courseMetaResp.getCode(), "another_code");
+
+        // Student or others can not update the course
+        try {
+            courseService.updateCourse(studentUser, courseMetaResp.getId(), "some", "some_code");
+            fail();
+        } catch (PermissionDeniedException ignore) {}
+        assertEquals(courseMetaResp.getName(), "yet another name");
+        assertEquals(courseMetaResp.getCode(), "another_code");
+
+    }
+
+    @Test
+    public void testAddStudentToCourse() {
+        // Teacher create a course
+        CourseMetaResp courseMetaResp = courseService.createCourse(
+                teacherUser, "some course", "course_code");
+
+        assertEquals(courseMetaResp.getStudentNum(), 0);
+
+        // Add student to course
+        // wrong id
+        try {
+            courseService.addStudentToCourse(studentUser, 1234, "course_code");
+            fail();
+        } catch (CourseNotFoundException ignore) {}
+        // correct id, wrong code
+        try {
+            courseService.addStudentToCourse(studentUser, courseMetaResp.getId(), "wrong_code");
+            fail();
+        } catch (InvalidCodeException ignore) {}
+        // current user not a student
+        try {
+            courseService.addStudentToCourse(teacherUser, courseMetaResp.getId(), courseMetaResp.getCode());
+            fail();
+        } catch (PermissionDeniedException ignore) {}
+
+        courseMetaResp = courseService.addStudentToCourse(
+                studentUser, courseMetaResp.getId(), courseMetaResp.getCode());
+
+        assertEquals(courseMetaResp.getStudentNum(), 1);
+
+        // can not add it again
+        try {
+            courseService.addStudentToCourse(
+                    studentUser, courseMetaResp.getId(), courseMetaResp.getCode());
+            fail();
+        } catch (DuplicateStudentException ignore) {}
+
+        Course course = courseRepository.findById(courseMetaResp.getId()).orElse(null);
+        assertNotNull(course);
+
+        assertEquals(course.getStudents().size(), 1);
+        assertTrue(course.getStudents().contains(studentUser));
+
+    }
+
+    @Test
+    public void testGetCoursesOfUserAndGetStudentsOfCourse() {
+        // Teacher create a course
+        CourseMetaResp courseMetaResp = courseService.createCourse(
+                teacherUser, "some course", "course_code");
+        courseMetaResp = courseService.addStudentToCourse(
+                studentUser, courseMetaResp.getId(), courseMetaResp.getCode());
+
+        // Create another student
+        userService.createUser(
+                "student2@some.com", "student2", "somePassword$$42", UserType.STUDENT);
+        User anotherStudent = userRepository.findByEmail("student2@some.com").orElse(null);
+        assertNotNull(anotherStudent);
+        // Add it to course
+        courseMetaResp = courseService.addStudentToCourse(
+                anotherStudent, courseMetaResp.getId(), courseMetaResp.getCode());
+
+        // Teacher add another course
+        CourseMetaResp anotherCourseMetaResp = courseService.createCourse(
+                teacherUser, "another course", "another_code"
+        );
+        // Add newly created student to this newly created course
+        anotherCourseMetaResp = courseService.addStudentToCourse(
+                anotherStudent, anotherCourseMetaResp.getId(), anotherCourseMetaResp.getCode()
+        );
+
+        // Get all courses of the teacher
+        List<CourseMetaResp> teacherCourseList = courseService.getAllCoursesOfUser(teacherUser);
+        assertNotNull(teacherCourseList);
+        assertEquals(teacherCourseList.size(), 2);
+
+        // Get all courses of the student
+        List<CourseMetaResp> studentCourseList = courseService.getAllCoursesOfUser(studentUser);
+        assertNotNull(studentCourseList);
+        assertEquals(studentCourseList.size(), 1);
+
+        // Get all courses of another student
+        List<CourseMetaResp> anotherStudentCourseList = courseService.getAllCoursesOfUser(anotherStudent);
+        assertNotNull(anotherStudentCourseList);
+        assertEquals(anotherStudentCourseList.size(), 2);
+
+        // Get all students of a course
+        List<UserPublicResp> studentList = courseService.getAllStudentsOfCourse(courseMetaResp.getId());
+        assertNotNull(studentList);
+        assertEquals(studentList.size(), 2);
+
+        // Get all student of another course
+        List<UserPublicResp> studentListAnother = courseService.getAllStudentsOfCourse(anotherCourseMetaResp.getId());
+        assertNotNull(studentListAnother);
+        assertEquals(studentListAnother.size(), 1);
+
+        // Course id not exist
+        try {
+            courseService.getAllStudentsOfCourse(42);
+            fail();
+        } catch (CourseNotFoundException ignore) {}
     }
 }

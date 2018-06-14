@@ -38,6 +38,9 @@ public class UserService {
      * @throws EmailOrPasswordException, when email not exists or password not match
      */
     public AuthenticationResp createToken(String email, String password) {
+        // Lower case
+        email = email.toLowerCase();
+
         User user = this.userRepository.findByEmail(email).orElseThrow(
                 EmailOrPasswordException::new // Email does not exist
         );

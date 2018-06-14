@@ -87,7 +87,7 @@ public class CourseService {
 
         // Delete all graphs of the course
         for (Graph g : course.getGraphList()) {
-            graphService.deleteGraph(currentUser, g.getGraphId());
+            graphService.deleteGraph(g.getGraphId());
         }
 
         // Delete the course

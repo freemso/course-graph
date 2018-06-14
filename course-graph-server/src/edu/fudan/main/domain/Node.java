@@ -41,4 +41,38 @@ public class Node {
     public String getNodeId() {
         return nodeId;
     }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public List<Resource> getResourceList() {
+        List<Resource> resources = new ArrayList<>(resourceList);
+        return resources;
+    }
+
+    public List<Lecture> getLectureList() {
+        List<Lecture> lectures = new ArrayList<>(lectureList);
+        return lectures;
+    }
+
+    public List<Question> getQuestionList() {
+        List<Question> questions = new ArrayList<>(questionList);
+        return questions;
+    }
+
+    public void addQuestion(Question question){
+        this.questionList.add(question);
+    }
+
+    public void addResource(Resource resource){
+        this.resourceList.add(resource);
+    }
+
+    public void addLecture(Lecture lecture){
+        this.lectureList.add(lecture);
+    }
+
+
+
 }

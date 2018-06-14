@@ -91,8 +91,6 @@ course_meta :
     code : <string>,
     teacher_name : <string>,
     teacher_id : <integer>,
-    created_time : <time>, # The time that the course is created
-    modified_time : <time>, # Last time of the mata data of the course being modified.
     student_num : <integer>
 }
 ```
@@ -845,9 +843,7 @@ graph_meta :
 {
     name : <string>,
     id : <string>,
-    description : <string>,
-    created_time : <time>,
-    modified_time : <time>
+    description : <string>
 }
 ```
 ### List all graphs of the course

@@ -107,7 +107,7 @@ public class UserServiceTest {
         modifiedUser = userRepository.findById(1L).orElse(null);
         assertNotNull(modifiedUser);
         assertEquals(modifiedUser.getName(), "newName");
-        assertEquals(modifiedUser.getEmail(), "newEmail");
+        assertEquals(modifiedUser.getEmail(), "newemail"); // all to lower case
         assertEquals(modifiedUser.getPassword(), "12345");
     }
 

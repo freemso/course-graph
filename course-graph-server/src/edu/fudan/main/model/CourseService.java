@@ -53,7 +53,7 @@ public class CourseService {
         }
 
         // Course code must be unique
-        if (courseRepository.existsByCode(courseCode)) {
+        if (courseRepository.findByCode(courseCode).isPresent()) {
             throw new CourseConflictException(courseCode);
         }
 
@@ -90,8 +90,12 @@ public class CourseService {
             graphService.deleteGraph(g.getGraphId());
         }
 
+        // Delete the relation to teacher
+        course.removeTeacher();
+        courseRepository.save(course);
+
         // Delete the course
-        courseRepository.deleteById(courseId);
+        courseRepository.delete(course);
     }
 
     /**
@@ -161,7 +165,7 @@ public class CourseService {
 
         if (code != null) {
             // Check if code is conflict with other courses
-            if (courseRepository.existsByCode(code)) {
+            if (courseRepository.findByCode(code).isPresent()) {
                 throw new CourseConflictException(code);
             }
             course.setCode(code);

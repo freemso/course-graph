@@ -3,8 +3,6 @@ package edu.fudan.main.dto.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.fudan.main.domain.Course;
 
-import java.util.Date;
-
 public class CourseMetaResp {
 
     private String name;
@@ -19,11 +17,11 @@ public class CourseMetaResp {
     @JsonProperty("teacher_id")
     private long teacherId;
 
-    @JsonProperty("created_time")
-    private Date createdTime;
-
-    @JsonProperty("modified_time")
-    private Date modifiedTime;
+//    @JsonProperty("created_time")
+//    private Date createdTime;
+//
+//    @JsonProperty("modified_time")
+//    private Date modifiedTime;
 
     @JsonProperty("student_num")
     private int studentNum;
@@ -37,8 +35,8 @@ public class CourseMetaResp {
         this.code = course.getCode();
         this.teacherName = course.getTeacher().getName();
         this.teacherId = course.getTeacher().getId();
-        this.createdTime = course.getCreatedTime();
-        this.modifiedTime = course.getModifiedTime();
+//        this.createdTime = course.getCreatedTime();
+//        this.modifiedTime = course.getModifiedTime();
         this.studentNum = course.getStudents().size();
     }
 
@@ -58,13 +56,13 @@ public class CourseMetaResp {
         return teacherId;
     }
 
-    public Date getCreatedTime() {
-        return createdTime;
-    }
-
-    public Date getModifiedTime() {
-        return modifiedTime;
-    }
+//    public Date getCreatedTime() {
+//        return createdTime;
+//    }
+//
+//    public Date getModifiedTime() {
+//        return modifiedTime;
+//    }
 
     public int getStudentNum() {
         return studentNum;

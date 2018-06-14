@@ -46,6 +46,9 @@ public class QuestionResp {
         this.correctNum = correctNum;
     }
 
+    public QuestionResp() {
+    }
+
     public QuestionResp(Question question, UserType userType) {
         this.id = question.getQuestionId();
         this.description = question.getDescription();

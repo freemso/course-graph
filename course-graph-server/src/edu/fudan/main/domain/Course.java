@@ -75,15 +75,19 @@ public class Course {
     }
 
     public List<Graph> getGraphList() {
-        return graphList;
+        return graphList == null ? new ArrayList<>() : graphList;
     }
 
     public Set<Student> getStudents() {
-        return students;
+        return students == null ? new HashSet<>() : students;
     }
 
     public Teacher getTeacher() {
         return teacher;
+    }
+
+    public void removeTeacher() {
+        teacher = null;
     }
 
     public void addAStudent(Student student) {
@@ -92,5 +96,21 @@ public class Course {
         }
 
         students.add(student);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Course)) return false;
+        return this.courseId.equals(((Course) o).courseId);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = courseId.hashCode();
+        result = 31 * result + name.hashCode();
+        result = 31 * result + code.hashCode();
+        result = 31 * result + teacher.hashCode();
+        return result;
     }
 }

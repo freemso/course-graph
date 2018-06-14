@@ -21,15 +21,17 @@ public class QuestionMultipleChoice extends Question {
     public QuestionMultipleChoice() {
     }
 
-    public QuestionMultipleChoice(long id, String description) {
+    public QuestionMultipleChoice(long id, String description, List<Choice> choices, String correctAnswerKey) {
         super(id, description, QuestionType.MULTIPLE_CHOICE);
-        this.choices = new ArrayList<>();
+        this.choices = choices;
+        this.correctAnswerKey = correctAnswerKey;
     }
 
     public List<Choice> getChoices() {
         List<Choice> choices = new ArrayList<>(this.choices);
         return choices;
     }
+
 
     public void setChoices(List<Choice> choices) {
         this.choices = choices;

@@ -60,4 +60,19 @@ public class Node {
         List<Question> questions = new ArrayList<>(questionList);
         return questions;
     }
+
+    public void addQuestion(Question question){
+        this.questionList.add(question);
+    }
+
+    public void addResource(Resource resource){
+        this.resourceList.add(resource);
+    }
+
+    public void addLecture(Lecture lecture){
+        this.lectureList.add(lecture);
+    }
+
+
+
 }

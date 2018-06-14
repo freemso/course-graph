@@ -7,6 +7,7 @@ import edu.fudan.main.exception.NodeNotFoundException;
 import edu.fudan.main.exception.PermissionDeniedException;
 import edu.fudan.main.exception.QuestionNotFoundException;
 import edu.fudan.main.repository.*;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -77,6 +78,8 @@ public class NodeService {
         for (Node node : newNodes) {
             newNodeIds.add(node.getNodeId());
         }
+        if(oldNodes == null)
+            return;
         for (Node node : oldNodes) {
             if (!newNodeIds.contains(node.getNodeId())) {
                 this.deleteNode(node.getNodeId());
@@ -96,8 +99,9 @@ public class NodeService {
         Node node = new Node((String) mindNode.get("id"), (String) mindNode.get("topic"));
         newNodes.add(node);
         if (mindNode.has("children")) {
-            for (JSONObject subNode : (JSONObject[]) mindNode.get("children")) {
-                getNodesFromMindData(subNode, newNodes);
+            JSONArray children = (JSONArray)mindNode.get("children");
+            for(int i = 0; i < children.length(); i++){
+                getNodesFromMindData((JSONObject) children.get(i), newNodes);
             }
         }
     }

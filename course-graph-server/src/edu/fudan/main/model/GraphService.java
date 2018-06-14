@@ -113,25 +113,25 @@ public class GraphService {
         }
     }
 
-//    /**
-//     * update course graph by updating its jsMindData
-//     *
-//     * @param courseGraphId id of the course graph to be updated
-//     * @param jsMindData    mind map json string
-//     */
-//    public GraphMetaResp updateGraph(Long courseGraphId, String jsMindData) {
-//        Graph graph = graphRepository.findById(courseGraphId).orElseThrow(
-//                GraphNotFoundException::new
-//        );
-//
-//        //update jsmind json string
-//        graph.setJsMindData(jsMindData);
-//        graphRepository.save(graph);
-//
-//        //update nodes according new mind map
-//        nodeService.updateNodes(courseGraphId, jsMindData);
-//        return new GraphMetaResp(graph);
-//    }
+    /**
+     * update course graph by updating its jsMindData
+     *
+     * @param courseGraphId id of the course graph to be updated
+     * @param jsMindData    mind map json string
+     */
+    public GraphMetaResp updateGraph(Long courseGraphId, String jsMindData) {
+        Graph graph = graphRepository.findById(courseGraphId).orElseThrow(
+                GraphNotFoundException::new
+        );
+
+        //update jsmind json string
+        graph.setJsMindData(jsMindData);
+        graphRepository.save(graph);
+
+        //update nodes according new mind map
+        nodeService.updateNodes(courseGraphId, jsMindData);
+        return new GraphMetaResp(graph);
+    }
 
 
     /**

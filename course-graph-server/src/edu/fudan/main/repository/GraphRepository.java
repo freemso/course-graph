@@ -11,10 +11,10 @@ import java.util.List;
 @Repository
 public interface GraphRepository extends Neo4jRepository<Graph, Long> {
 
-    @Query("MATCH (c:Course)<-[r:GRAPH_OF]-(g:Graph)" +
-            "WHERE c.courseId = courseId and g.name = courseName" +
+    @Query("MATCH (c:Course)<-[r:GRAPH_OF]-(g:Graph) " +
+            "WHERE c.courseId = {courseId} and g.name = {courseName} " +
             "return count(g) > 0")
-    boolean existsByName(String name, long courseId);
+    boolean existsByName(@Param("courseId") String name, @Param("courseName") long courseId);
 
 
     @Query("MATCH (course:Course)<-[r:GRAPH_OF]-(courseGraph:Graph) " +
@@ -29,7 +29,7 @@ public interface GraphRepository extends Neo4jRepository<Graph, Long> {
 
     @Query("MATCH (course:Course)<-[r:GRAPH_OF]-(courseGraph:Graph) " +
             "WHERE course.code = {code} " +
-            "RETURN courseGraph ORDER BY courseGraph.name")
+            "RETURN courseGraph ORDER BY courseGraph.name ")
     List<Graph> findGraphsByCourseCode(@Param("code") String code);
 
 

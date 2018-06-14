@@ -102,7 +102,7 @@ public class GraphServiceTest {
 
     /**
      *
-     * Method: updateGraph(Long courseGraphId, String jsMindData)
+     * Method: updateJsmind(Long courseGraphId, String jsMindData)
      *
      */
     @Test
@@ -115,7 +115,7 @@ public class GraphServiceTest {
 
         Set<Node> oldNodes = graphRepository.findById(graphId).get().getNodeSet();
 
-        graphService.updateGraph(graphId, jsmind);
+        graphService.updateJsmind(graphId, jsmind);
 
         Set<Node> newNodes = graphRepository.findById(graphId).get().getNodeSet();
 

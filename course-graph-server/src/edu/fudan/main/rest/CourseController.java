@@ -6,6 +6,7 @@ import edu.fudan.main.domain.User;
 import edu.fudan.main.dto.request.CreateGraphReq;
 import edu.fudan.main.dto.request.JoinCourseReq;
 import edu.fudan.main.dto.request.CreateCourseReq;
+import edu.fudan.main.dto.request.UpdateCourseMetaReq;
 import edu.fudan.main.dto.response.CourseMetaResp;
 import edu.fudan.main.dto.response.GraphMetaResp;
 import edu.fudan.main.dto.response.UserPublicResp;
@@ -69,9 +70,9 @@ public class CourseController {
     @Authorization
     ResponseEntity<CourseMetaResp> updateCourse(@CurrentUser User currentUser,
                                                 @PathVariable long cid,
-                                                @RequestBody CreateCourseReq createCourseReq) {
+                                                @RequestBody UpdateCourseMetaReq updateCourseMetaReq) {
         return new ResponseEntity<>(courseService.updateCourse(currentUser, cid,
-                createCourseReq.getName(), createCourseReq.getCode()), HttpStatus.OK);
+                updateCourseMetaReq.getName(), updateCourseMetaReq.getCode()), HttpStatus.OK);
     }
 
     @GetMapping("/{cid}/students")
@@ -89,8 +90,10 @@ public class CourseController {
     }
 
     @GetMapping("/{cid}/graphs")
-    ResponseEntity<List<GraphMetaResp>> getGraphsOfCourse(@PathVariable long cid) {
-        return new ResponseEntity<>(graphService.getAllGraphsOfCourse(cid), HttpStatus.OK);
+    @Authorization
+    ResponseEntity<List<GraphMetaResp>> getGraphsOfCourse(@PathVariable long cid,
+                                                          @CurrentUser User currentUser) {
+        return new ResponseEntity<>(graphService.getAllGraphsOfCourse(currentUser, cid), HttpStatus.OK);
     }
 
     @PostMapping("{cid}/graphs")
@@ -99,6 +102,6 @@ public class CourseController {
                                                     @PathVariable long cid,
                                                     @Valid @RequestBody CreateGraphReq createGraphReq) {
         return new ResponseEntity<>(graphService.createNewGraph(currentUser, createGraphReq.getName(),
-                createGraphReq.getDescription(), cid), HttpStatus.CREATED);
+                createGraphReq.getDescription(), createGraphReq.getJsmind(), cid), HttpStatus.CREATED);
     }
 }

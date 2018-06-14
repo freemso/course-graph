@@ -66,14 +66,6 @@ public class Graph {
         return description;
     }
 
-    public Date getCreatedTime() {
-        return createdTime;
-    }
-
-    public Date getModifiedTime() {
-        return modifiedTime;
-    }
-
     public String getJsMindData() {
         return jsMindData;
     }
@@ -92,5 +84,13 @@ public class Graph {
 
     public void setNodeSet(Set<Node> nodeSet) {
         this.nodeSet = nodeSet;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void removeCourse() {
+        this.course = null;
     }
 }

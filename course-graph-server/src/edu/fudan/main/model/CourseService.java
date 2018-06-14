@@ -39,8 +39,37 @@ public class CourseService {
     }
 
     /**
+     * Check write permission of the course
+     * @return true is have permission, false if not
+     */
+    public boolean checkWritePermOfCourse(User user, long courseId) {
+        // The course must first exist
+        Course course = courseRepository.findById(courseId).orElseThrow(
+                () -> new CourseNotFoundException(courseId)
+        );
+
+        // User must be the owner/teacher of the course
+        return course.getTeacher().equals(user);
+    }
+
+    /**
+     * Check read permission of the course
+     * @return true is have permission, false if not
+     */
+    public boolean checkReadPermOfCourse(User user, long courseId) {
+        // The course must first exist
+        Course course = courseRepository.findById(courseId).orElseThrow(
+                () -> new CourseNotFoundException(courseId)
+        );
+
+        // Owner/teacher of the course have the read permission
+        if (checkWritePermOfCourse(user, courseId)) return true;
+
+        return course.getStudents().contains(user);
+    }
+
+    /**
      * Create a new course
-     *
      * @param currentUser current login user, must be a teacher
      * @param courseName name of the new course
      * @param courseCode code of the new course
@@ -60,11 +89,8 @@ public class CourseService {
         // Generate a new id for the course
         long newCourseId = RandomIdGenerator.getInstance().generateRandomLongId(courseRepository);
 
-        Course course = courseRepository.save(new Course(
-                courseCode, courseName, newCourseId,
-                teacherRepository.findById(currentUser.getId()).orElseThrow(
-                        UserNotFoundException::new
-                )));
+        Course course = courseRepository.save(new Course(courseCode, courseName, newCourseId,
+                teacherRepository.findById(currentUser.getId()).orElseThrow(UserNotFoundException::new)));
 
         return new CourseMetaResp(course);
     }
@@ -81,7 +107,7 @@ public class CourseService {
         );
 
         // Current user must be the owner/teacher of the course
-        if (currentUser.getType() != UserType.TEACHER || !course.getTeacher().equals(currentUser)) {
+        if (!checkWritePermOfCourse(currentUser, courseId)) {
             throw new PermissionDeniedException();
         }
 
@@ -168,7 +194,7 @@ public class CourseService {
         );
 
         // Current user must be the owner/teacher of the course
-        if (currentUser.getType() != UserType.TEACHER || !course.getTeacher().equals(currentUser)) {
+        if (!checkWritePermOfCourse(currentUser, courseId)) {
             throw new PermissionDeniedException();
         }
 

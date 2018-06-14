@@ -29,11 +29,15 @@ public class GraphService {
 
     private final NodeService nodeService;
 
+    private final CourseService courseService;
+
     @Autowired
-    public GraphService(CourseRepository courseRepository, GraphRepository graphRepository, NodeService nodeService) {
+    public GraphService(CourseRepository courseRepository, GraphRepository graphRepository,
+                        NodeService nodeService, CourseService courseService) {
         this.courseRepository = courseRepository;
         this.graphRepository = graphRepository;
         this.nodeService = nodeService;
+        this.courseService = courseService;
     }
 
     /**
@@ -53,12 +57,12 @@ public class GraphService {
         );
 
         // Current user must be the teacher of the course
-        if (!course.getTeacher().equals(currentUser)) {
+        if (!courseService.checkWritePermOfCourse(currentUser, courseId)) {
             throw new PermissionDeniedException();
         }
 
         // New graph must have a unique name
-        if (graphRepository.existsByName(name, courseId)) {
+        if (graphRepository.existsByNameInCourse(name, courseId)) {
             throw new GraphConflictException(name);
         }
 
@@ -69,6 +73,20 @@ public class GraphService {
         Graph graph = graphRepository.save(new Graph(newGraphId, name, description, jsmind, course));
 
         return new GraphMetaResp(graph);
+    }
+
+    private void deleteGraph(Graph graph) {
+        // Delete all nodes in the graph
+        for(Node node : graph.getNodeSet()) {
+            nodeService.deleteNode(node.getNodeId());
+        }
+
+        // Remove course relationships
+        graph.removeCourse();
+        graphRepository.save(graph);
+
+        // Delete the graph itself
+        graphRepository.delete(graph);
     }
 
     /**
@@ -84,25 +102,18 @@ public class GraphService {
                 GraphNotFoundException::new
         );
 
-        // Check if the current login user is the teacher/owner of the graph
-        // TODO maybe need to set depth
-        if (!graph.getCourse().getTeacher().equals(currentUser)) {
+        // Check write permission
+        if (!courseService.checkWritePermOfCourse(currentUser, graph.getCourse().getCourseId())) {
             throw new PermissionDeniedException();
         }
 
-        // Delete all nodes in the graph
-        for(Node node : graph.getNodeSet()) {
-            nodeService.deleteNode(node.getNodeId());
-        }
-
-        // Delete the graph itself
-        graphRepository.deleteById(graphId);
+        deleteGraph(graph);
     }
 
     /**
      * Delete the graph.
      * For course service.
-     * Do NOT need to check login user.
+     * Do NOT need to get permission.
      * @param graphId, id of the graph
      */
     public void deleteGraph(long graphId) {
@@ -111,42 +122,78 @@ public class GraphService {
                 GraphNotFoundException::new
         );
 
-        // Delete all nodes in the graph
-        for (Node node : graph.getNodeSet()) {
-            nodeService.deleteNode(node.getNodeId());
-        }
+        deleteGraph(graph);
     }
 
     /**
      * update course graph by updating its jsMindData
-     *
-     * @param courseGraphId id of the course graph to be updated
+     * @param currentUser, current login user
+     * @param graphId id of the course graph to be updated
      * @param jsMindData    mind map json string
      */
-    public GraphMetaResp updateGraph(Long courseGraphId, String jsMindData) {
-        Graph graph = graphRepository.findById(courseGraphId).orElseThrow(
+    public JsmindResp updateJsmind(User currentUser, long graphId, String jsMindData) {
+        // Graph exists
+        Graph graph = graphRepository.findById(graphId).orElseThrow(
                 GraphNotFoundException::new
         );
 
-        //update jsmind json string
+        // Check write permission
+        if (!courseService.checkWritePermOfCourse(currentUser, graph.getCourse().getCourseId())) {
+            throw new PermissionDeniedException();
+        }
+
+        // Update jsmind json string
         graph.setJsMindData(jsMindData);
         graphRepository.save(graph);
 
-        //update nodes according new mind map
-        nodeService.updateNodes(courseGraphId, jsMindData);
-        return new GraphMetaResp(graph);
+        // Update nodes according new mind map
+        nodeService.updateNodes(graphId, jsMindData);
+        return new JsmindResp(jsMindData);
     }
 
+
+    public GraphMetaResp updateGraphMeta(User currentUser, long graphId, String name, String description) {
+        // Graph exists
+        Graph graph = graphRepository.findById(graphId).orElseThrow(
+                GraphNotFoundException::new
+        );
+
+        // Check write permission
+        if (!courseService.checkWritePermOfCourse(currentUser, graph.getCourse().getCourseId())) {
+            throw new PermissionDeniedException();
+        }
+
+        if (name != null) {
+            // New name must not duplicate with other graphs of the course
+            if (graphRepository.existsByNameInCourse(name, graph.getCourse().getCourseId())) {
+                throw new GraphConflictException(name);
+            }
+            graph.setName(name);
+        }
+
+        if (description != null) {
+            graph.setDescription(description);
+        }
+
+        // Save the changes and return
+        return new GraphMetaResp(graphRepository.save(graph));
+    }
 
     /**
      * Get all graph metadata of a course
      * @param courseId, id of the course
      * @return list of graph metadata
      */
-    public List<GraphMetaResp> getAllGraphsOfCourse(long courseId) {
+    public List<GraphMetaResp> getAllGraphsOfCourse(User currentUser, long courseId) {
+        // Course exists
         List<Graph> graphs = courseRepository.findById(courseId).orElseThrow(
                 CourseNotFoundException::new
         ).getGraphList();
+
+        // Current login user must have read permission
+        if (!courseService.checkReadPermOfCourse(currentUser, courseId)) {
+            throw new PermissionDeniedException();
+        }
 
         List<GraphMetaResp> metaRespList = new ArrayList<>();
         for (Graph graph : graphs) {
@@ -176,7 +223,6 @@ public class GraphService {
         Graph graph = graphRepository.findById(graphId).orElseThrow(
                 GraphNotFoundException::new
         );
-
         return new GraphMetaResp(graph);
     }
 

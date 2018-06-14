@@ -11,7 +11,6 @@ public class CreateGraphReq {
     @NotNull
     private String description;
 
-    @NotNull
     private String jsmind;
 
     public CreateGraphReq() {

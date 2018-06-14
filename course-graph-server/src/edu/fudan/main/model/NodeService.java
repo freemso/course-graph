@@ -63,18 +63,21 @@ public class NodeService {
         JSONObject mindData = (JSONObject) mindObject.get("data");
 
         //get existing nodes related to the graph
-        Set<Node> oldNodes = graphRepository.findById(graphId).orElseThrow(
+        Graph graph = graphRepository.findById(graphId).orElseThrow(
                 GraphNotFoundException::new
-        ).getNodeSet();
+        );
+        Set<Node> oldNodes = graph.getNodeSet();
 
         //update old nodes and create new nodes
-        List<Node> newNodes = new ArrayList<>();
+        Set<Node> newNodes = new HashSet<>();
         getNodesFromMindData(mindData, newNodes);
         //save() will merge new node with old node if it existed before, otherwise add it to the database
         nodeRepository.saveAll(newNodes);
+        graph.setNodeSet(newNodes);
+        graphRepository.save(graph);
 
         //find deleted nodes and delete them from database
-        List<String> newNodeIds = new ArrayList<>();
+        Set<String> newNodeIds = new HashSet<>();
         for (Node node : newNodes) {
             newNodeIds.add(node.getNodeId());
         }
@@ -95,7 +98,7 @@ public class NodeService {
      * @param mindNode the root of the mind-map json object
      * @param newNodes a list to save all nodes in this mind-map
      */
-    private void getNodesFromMindData(JSONObject mindNode, List<Node> newNodes) {
+    private void getNodesFromMindData(JSONObject mindNode, Set<Node> newNodes) {
         Node node = new Node((String) mindNode.get("id"), (String) mindNode.get("topic"));
         newNodes.add(node);
         if (mindNode.has("children")) {

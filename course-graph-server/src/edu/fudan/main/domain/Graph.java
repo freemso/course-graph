@@ -86,4 +86,8 @@ public class Graph {
     public void setJsMindData(String jsMindData) {
         this.jsMindData = jsMindData;
     }
+
+    public void setNodeSet(Set<Node> nodeSet) {
+        this.nodeSet = nodeSet;
+    }
 }

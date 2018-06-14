@@ -105,12 +105,12 @@ public class Course {
         return this.courseId.equals(((Course) o).courseId);
     }
 
-    @Override
-    public int hashCode() {
-        int result = courseId.hashCode();
-        result = 31 * result + name.hashCode();
-        result = 31 * result + code.hashCode();
-        result = 31 * result + teacher.hashCode();
-        return result;
-    }
+//    @Override
+//    public int hashCode() {
+//        int result = courseId.hashCode();
+//        result = 31 * result + name.hashCode();
+//        result = 31 * result + code.hashCode();
+//        result = 31 * result + teacher.hashCode();
+//        return result;
+//    }
 }

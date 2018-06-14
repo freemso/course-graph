@@ -4,6 +4,7 @@ import edu.fudan.main.domain.*;
 import edu.fudan.main.dto.response.QuestionResp;
 import edu.fudan.main.exception.GraphNotFoundException;
 import edu.fudan.main.exception.NodeNotFoundException;
+import edu.fudan.main.exception.PermissionDeniedException;
 import edu.fudan.main.exception.QuestionNotFoundException;
 import edu.fudan.main.repository.*;
 import org.json.JSONObject;
@@ -18,6 +19,7 @@ public class NodeService {
 
 
     private final NodeRepository nodeRepository;
+    private final StudentRepository studentRepository;
     private final GraphRepository graphRepository;
     private final QuestionRepository questionRepository;
     private final QuestionMultipleChoiceRepository questionMultipleChoiceRepository;
@@ -25,12 +27,16 @@ public class NodeService {
     private final ChoiceRepository choiceRepository;
     private final AnswerEntryRepository answerEntryRepository;
 
-    public NodeService(NodeRepository nodeRepository, GraphRepository graphRepository,
+
+    public NodeService(NodeRepository nodeRepository,
+                       StudentRepository studentRepository,
+                       GraphRepository graphRepository,
                        QuestionRepository questionRepository,
                        QuestionMultipleChoiceRepository questionMultipleChoiceRepository,
                        QuestionShortAnswerRepository questionShortAnswerRepository,
                        ChoiceRepository choiceRepository,
                        AnswerEntryRepository answerEntryRepository) {
+        this.studentRepository = studentRepository;
         this.nodeRepository = nodeRepository;
         this.graphRepository = graphRepository;
         this.questionRepository = questionRepository;
@@ -94,7 +100,6 @@ public class NodeService {
                 getNodesFromMindData(subNode, newNodes);
             }
         }
-        return;
     }
 
     /**
@@ -184,13 +189,64 @@ public class NodeService {
     }
 
     /**
-     * handle user's answers of some questions, return the results(true or false)
+     * handle user's answers of some questions, return the results(right or wrong)
      *
+     * @param currentUser current user who submits his answers
      * @param submissions the questions that user answered
-     * @return a list of results (true or false)
+     * @return a list of results (right or wrong)
      */
-    public void handleQuestionSubmission(List<QuestionSubmission> submissions) {
-        //todo
+    public List<AnswerResult> handleQuestionSubmission(User currentUser, List<QuestionSubmission> submissions) {
+        //if the user is teacher, refuse this operation
+        if (currentUser.getType().equals(UserType.TEACHER))
+            throw new PermissionDeniedException();
+
+        //if the user is student, get this student
+        Student student = studentRepository.findById(currentUser.getId()).get();
+
+        List<AnswerResult> answerResults = new ArrayList<>();
+        for (QuestionSubmission questionSubmission : submissions) {
+
+            //get submission's question id and answer
+            long questionId = questionSubmission.getQuestionId();
+            String submittedAnswer = questionSubmission.getAnswer();
+
+            //for multiple-choice question
+            if (questionMultipleChoiceRepository.existsById(questionId)) {
+                //get this multiple-choice question
+                QuestionMultipleChoice question = questionMultipleChoiceRepository.findById(questionId).get();
+
+                //check whether the answer submitted is right
+                boolean isRight = submittedAnswer.equalsIgnoreCase(question.getCorrectAnswerKey());
+
+                //add a new answer entry
+                AnswerEntryMultipleChoice answerEntry = new AnswerEntryMultipleChoice(
+                        RandomIdGenerator.getInstance().generateRandomLongId(answerEntryRepository),
+                        student, submittedAnswer, question, isRight
+                );
+
+                //save in the database
+                answerEntryRepository.save(answerEntry);
+
+                //add the result in answer results;
+                answerResults.add(new AnswerResult(questionId, isRight));
+
+            }
+            //for short-answer question
+            else if (questionShortAnswerRepository.existsById(questionId)) {
+                //get this short-answer question
+                QuestionShortAnswer question = questionShortAnswerRepository.findById(questionId).get();
+
+                //add a new answer entry
+                AnswerEntryShortAnswer answerEntry = new AnswerEntryShortAnswer(
+                        RandomIdGenerator.getInstance().generateRandomLongId(answerEntryRepository),
+                        student, submittedAnswer, question
+                );
+
+                //save in the database
+                answerEntryRepository.save(answerEntry);
+            }
+        }
+        return answerResults;
     }
 
     /**

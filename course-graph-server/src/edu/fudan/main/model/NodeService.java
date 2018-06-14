@@ -9,6 +9,7 @@ import edu.fudan.main.exception.QuestionNotFoundException;
 import edu.fudan.main.repository.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,17 +19,23 @@ import java.util.*;
 @Transactional
 public class NodeService {
 
-
     private final NodeRepository nodeRepository;
+
     private final StudentRepository studentRepository;
+
     private final GraphRepository graphRepository;
+
     private final QuestionRepository questionRepository;
+
     private final QuestionMultipleChoiceRepository questionMultipleChoiceRepository;
+
     private final QuestionShortAnswerRepository questionShortAnswerRepository;
+
     private final ChoiceRepository choiceRepository;
+
     private final AnswerEntryRepository answerEntryRepository;
 
-
+    @Autowired
     public NodeService(NodeRepository nodeRepository,
                        StudentRepository studentRepository,
                        GraphRepository graphRepository,
@@ -48,11 +55,11 @@ public class NodeService {
     }
 
     public void deleteNode(String NodeId) {
-
+        // TODO
     }
 
     /**
-     * update all nodes related to one graph according to new jsmind data
+     * Update all nodes related to one graph according to new jsmind data
      *
      * @param graphId    id of the graph
      * @param jsMindData new jsmind data

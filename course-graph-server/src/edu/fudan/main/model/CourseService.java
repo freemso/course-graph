@@ -29,43 +29,17 @@ public class CourseService {
 
     private final GraphService graphService;
 
+    private final PermissionService permissionService;
+
     @Autowired
     public CourseService(CourseRepository courseRepository, GraphService graphService,
-                         StudentRepository studentRepository, TeacherRepository teacherRepository) {
+                         StudentRepository studentRepository, TeacherRepository teacherRepository,
+                         PermissionService permissionService) {
         this.courseRepository = courseRepository;
         this.graphService = graphService;
         this.studentRepository = studentRepository;
         this.teacherRepository = teacherRepository;
-    }
-
-    /**
-     * Check write permission of the course
-     * @return true is have permission, false if not
-     */
-    public boolean checkWritePermOfCourse(User user, long courseId) {
-        // The course must first exist
-        Course course = courseRepository.findById(courseId).orElseThrow(
-                () -> new CourseNotFoundException(courseId)
-        );
-
-        // User must be the owner/teacher of the course
-        return course.getTeacher().equals(user);
-    }
-
-    /**
-     * Check read permission of the course
-     * @return true is have permission, false if not
-     */
-    public boolean checkReadPermOfCourse(User user, long courseId) {
-        // The course must first exist
-        Course course = courseRepository.findById(courseId).orElseThrow(
-                () -> new CourseNotFoundException(courseId)
-        );
-
-        // Owner/teacher of the course have the read permission
-        if (checkWritePermOfCourse(user, courseId)) return true;
-
-        return course.getStudents().contains(user);
+        this.permissionService = permissionService;
     }
 
     /**
@@ -107,7 +81,7 @@ public class CourseService {
         );
 
         // Current user must be the owner/teacher of the course
-        if (!checkWritePermOfCourse(currentUser, courseId)) {
+        if (!permissionService.checkWritePermOfCourse(currentUser, courseId)) {
             throw new PermissionDeniedException();
         }
 
@@ -194,7 +168,7 @@ public class CourseService {
         );
 
         // Current user must be the owner/teacher of the course
-        if (!checkWritePermOfCourse(currentUser, courseId)) {
+        if (!permissionService.checkWritePermOfCourse(currentUser, courseId)) {
             throw new PermissionDeniedException();
         }
 

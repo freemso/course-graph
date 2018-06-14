@@ -29,15 +29,15 @@ public class GraphService {
 
     private final NodeService nodeService;
 
-    private final CourseService courseService;
+    private final PermissionService permissionService;
 
     @Autowired
     public GraphService(CourseRepository courseRepository, GraphRepository graphRepository,
-                        NodeService nodeService, CourseService courseService) {
+                        NodeService nodeService, PermissionService permissionService) {
         this.courseRepository = courseRepository;
         this.graphRepository = graphRepository;
         this.nodeService = nodeService;
-        this.courseService = courseService;
+        this.permissionService = permissionService;
     }
 
     /**
@@ -57,7 +57,7 @@ public class GraphService {
         );
 
         // Current user must be the teacher of the course
-        if (!courseService.checkWritePermOfCourse(currentUser, courseId)) {
+        if (!permissionService.checkWritePermOfCourse(currentUser, courseId)) {
             throw new PermissionDeniedException();
         }
 
@@ -103,7 +103,7 @@ public class GraphService {
         );
 
         // Check write permission
-        if (!courseService.checkWritePermOfCourse(currentUser, graph.getCourse().getCourseId())) {
+        if (!permissionService.checkWritePermOfCourse(currentUser, graph.getCourse().getCourseId())) {
             throw new PermissionDeniedException();
         }
 
@@ -138,7 +138,7 @@ public class GraphService {
         );
 
         // Check write permission
-        if (!courseService.checkWritePermOfCourse(currentUser, graph.getCourse().getCourseId())) {
+        if (!permissionService.checkWritePermOfCourse(currentUser, graph.getCourse().getCourseId())) {
             throw new PermissionDeniedException();
         }
 
@@ -159,7 +159,7 @@ public class GraphService {
         );
 
         // Check write permission
-        if (!courseService.checkWritePermOfCourse(currentUser, graph.getCourse().getCourseId())) {
+        if (!permissionService.checkWritePermOfCourse(currentUser, graph.getCourse().getCourseId())) {
             throw new PermissionDeniedException();
         }
 
@@ -191,7 +191,7 @@ public class GraphService {
         ).getGraphList();
 
         // Current login user must have read permission
-        if (!courseService.checkReadPermOfCourse(currentUser, courseId)) {
+        if (!permissionService.checkReadPermOfCourse(currentUser, courseId)) {
             throw new PermissionDeniedException();
         }
 

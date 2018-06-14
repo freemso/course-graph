@@ -93,4 +93,11 @@ public class Graph {
     public void removeCourse() {
         this.course = null;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Graph)) return false;
+        return this.graphId.equals(((Graph) o).graphId);
+    }
 }

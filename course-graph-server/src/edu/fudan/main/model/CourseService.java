@@ -131,11 +131,24 @@ public class CourseService {
     }
 
     /**
+     * List all courses.
+     * @return list of courses
+     */
+    public List<CourseMetaResp> getAllCourses() {
+        List<CourseMetaResp> courseMetaRespList = new ArrayList<>();
+        for (Course c : courseRepository.findAll()) {
+            courseMetaRespList.add(new CourseMetaResp(c));
+        }
+
+        return courseMetaRespList;
+    }
+
+    /**
      * Get meta data of a course
      * @param courseId, id of the course
      * @return course meta info
      */
-    public CourseMetaResp getCourseData(Long courseId){
+    public CourseMetaResp getCourse(Long courseId){
         Course course = courseRepository.findById(courseId).orElseThrow(
                 () -> new CourseNotFoundException(courseId)
         );
@@ -174,7 +187,6 @@ public class CourseService {
         // Save the change
         return new CourseMetaResp(courseRepository.save(course));
     }
-
 
     /**
      * Get all students of this course

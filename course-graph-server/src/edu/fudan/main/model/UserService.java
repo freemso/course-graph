@@ -4,9 +4,11 @@ import edu.fudan.main.domain.*;
 import edu.fudan.main.dto.response.AuthenticationResp;
 import edu.fudan.main.dto.response.UserPrivateResp;
 import edu.fudan.main.dto.response.UserPublicResp;
+import edu.fudan.main.exception.CourseNotFoundException;
 import edu.fudan.main.exception.EmailConflictException;
 import edu.fudan.main.exception.EmailOrPasswordException;
 import edu.fudan.main.exception.UserNotFoundException;
+import edu.fudan.main.repository.CourseRepository;
 import edu.fudan.main.repository.TokenRepository;
 import edu.fudan.main.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional
@@ -24,10 +28,14 @@ public class UserService {
 
     private final TokenRepository tokenRepository;
 
+    private final CourseRepository courseRepository;
+
     @Autowired
-    public UserService(UserRepository userRepository, TokenRepository tokenRepository) {
+    public UserService(UserRepository userRepository, TokenRepository tokenRepository,
+                       CourseRepository courseRepository) {
         this.userRepository = userRepository;
         this.tokenRepository = tokenRepository;
+        this.courseRepository = courseRepository;
     }
 
     /**

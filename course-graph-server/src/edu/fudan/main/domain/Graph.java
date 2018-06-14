@@ -8,6 +8,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @NodeEntity
@@ -41,9 +42,10 @@ public class Graph {
     public Graph() {
     }
 
-    public Graph(Long graphId, String name, Course course) {
+    public Graph(Long graphId, String name, String description, Course course) {
         this.graphId = graphId;
         this.name = name;
+        this.description = description;
         this.course = course;
     }
 
@@ -52,7 +54,7 @@ public class Graph {
     }
 
     public Set<Node> getNodeSet() {
-        return nodeSet;
+        return nodeSet == null ? new HashSet<>() : nodeSet;
     }
 
     public String getName() {

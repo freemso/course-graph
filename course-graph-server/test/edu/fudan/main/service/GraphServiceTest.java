@@ -17,7 +17,8 @@ import static org.junit.Assert.*;
 public class GraphServiceTest {
 
     @Before
-    public void before() throws Exception {
+    public void before() {
+
     }
 
     @After

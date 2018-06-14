@@ -2,12 +2,12 @@ package edu.fudan.main.dto.request;
 
 import javax.validation.constraints.NotBlank;
 
-public class AddToCourseReq {
+public class JoinCourseReq {
 
     @NotBlank
     private String code;
 
-    public AddToCourseReq() {
+    public JoinCourseReq() {
     }
 
     public String getCode() {

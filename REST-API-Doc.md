@@ -448,6 +448,12 @@ Student join a course. Or add a student to a course.
     - **Code:** 403 FORBIDDEN <br>
       **Content:** `{ error : "Not a student" }` <br>
       **Condition:** Current login user is not a student.
+    
+    OR
+    
+    - **Code:** 409 FORBIDDEN <br>
+      **Content:** `{ error : "Student already in this course." }` <br>
+      **Condition:** Current login user is already a student in this course.
 
 - **Notes:**
 

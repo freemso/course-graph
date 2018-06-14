@@ -40,9 +40,10 @@ public class GraphService {
      *
      * @param currentUser, current login user
      * @param name         of the graph
+     * @param description of the graph
      * @param courseId,    id of the course
      */
-    public GraphMetaResp createNewGraph(User currentUser, String name, long courseId) {
+    public GraphMetaResp createNewGraph(User currentUser, String name, String description, long courseId) {
         // Course must first exist
         Course course = courseRepository.findById(courseId).orElseThrow(
                 () -> new CourseNotFoundException(courseId)
@@ -62,7 +63,7 @@ public class GraphService {
         long newGraphId = RandomIdGenerator.getInstance().generateRandomLongId(graphRepository);
 
         // Save it to database
-        Graph graph = graphRepository.save(new Graph(newGraphId, name, course));
+        Graph graph = graphRepository.save(new Graph(newGraphId, name, description, course));
 
         return new GraphMetaResp(graph);
     }
@@ -135,8 +136,8 @@ public class GraphService {
 
 
     /**
-     * get all graphs' metadata of one course
-     * @param courseId
+     * Get all graph metadata of a course
+     * @param courseId, id of the course
      * @return list of graph metadata
      */
     public List<GraphMetaResp> getAllGraphsOfCourse(long courseId) {

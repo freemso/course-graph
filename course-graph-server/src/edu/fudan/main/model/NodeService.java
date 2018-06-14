@@ -4,9 +4,9 @@ import edu.fudan.main.domain.*;
 import edu.fudan.main.dto.response.QuestionResp;
 import edu.fudan.main.exception.GraphNotFoundException;
 import edu.fudan.main.exception.NodeNotFoundException;
-import edu.fudan.main.repository.GraphRepository;
-import edu.fudan.main.repository.NodeRepository;
-import edu.fudan.main.repository.QuestionRepository;
+import edu.fudan.main.exception.PermissionDeniedException;
+import edu.fudan.main.exception.QuestionNotFoundException;
+import edu.fudan.main.repository.*;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,13 +19,31 @@ public class NodeService {
 
 
     private final NodeRepository nodeRepository;
+    private final StudentRepository studentRepository;
     private final GraphRepository graphRepository;
     private final QuestionRepository questionRepository;
+    private final QuestionMultipleChoiceRepository questionMultipleChoiceRepository;
+    private final QuestionShortAnswerRepository questionShortAnswerRepository;
+    private final ChoiceRepository choiceRepository;
+    private final AnswerEntryRepository answerEntryRepository;
 
-    public NodeService(NodeRepository nodeRepository, GraphRepository graphRepository, QuestionRepository questionRepository) {
+
+    public NodeService(NodeRepository nodeRepository,
+                       StudentRepository studentRepository,
+                       GraphRepository graphRepository,
+                       QuestionRepository questionRepository,
+                       QuestionMultipleChoiceRepository questionMultipleChoiceRepository,
+                       QuestionShortAnswerRepository questionShortAnswerRepository,
+                       ChoiceRepository choiceRepository,
+                       AnswerEntryRepository answerEntryRepository) {
+        this.studentRepository = studentRepository;
         this.nodeRepository = nodeRepository;
         this.graphRepository = graphRepository;
         this.questionRepository = questionRepository;
+        this.questionMultipleChoiceRepository = questionMultipleChoiceRepository;
+        this.questionShortAnswerRepository = questionShortAnswerRepository;
+        this.choiceRepository = choiceRepository;
+        this.answerEntryRepository = answerEntryRepository;
     }
 
     public void deleteNode(String NodeId) {
@@ -82,7 +100,6 @@ public class NodeService {
                 getNodesFromMindData(subNode, newNodes);
             }
         }
-        return;
     }
 
     /**
@@ -113,10 +130,11 @@ public class NodeService {
 
     /**
      * create a new multiple-choice and add it to a course node
-     * @param nodeId id of course node
+     *
+     * @param nodeId      id of course node
      * @param description description of the question to be added
-     * @param choices choices of the question to be added
-     * @param answer the answer of this multiple-choice question
+     * @param choices     choices of the question to be added
+     * @param answer      the answer of this multiple-choice question
      * @return response information of the question created newly
      */
     public QuestionResp addQuestionMultipleChoiceOfNode(String nodeId, String description, List<Choice> choices, String answer) {
@@ -134,7 +152,8 @@ public class NodeService {
 
         //save the changes in the database
         nodeRepository.save(node, 0);
-        questionRepository.save(question, 0);
+        questionMultipleChoiceRepository.save((QuestionMultipleChoice) question);
+        //questionRepository.save(question, 0);
 
         //return question response
         return new QuestionResp(question, UserType.TEACHER);
@@ -142,11 +161,12 @@ public class NodeService {
 
     /**
      * create a new short-answer and add it to a course node
-     * @param nodeId id of the course node
+     *
+     * @param nodeId      id of the course node
      * @param description description of the question
      * @return response information of the question created newly
      */
-    public QuestionResp addQuestionShortAnswerOfNode(String nodeId, String description){
+    public QuestionResp addQuestionShortAnswerOfNode(String nodeId, String description) {
         //get the course node
         Node node = nodeRepository.findById(nodeId).orElseThrow(
                 NodeNotFoundException::new
@@ -161,18 +181,134 @@ public class NodeService {
 
         //save the changes in the database
         nodeRepository.save(node, 0);
-        questionRepository.save(question, 0);
+//        questionRepository.save(question, 0);
+        questionShortAnswerRepository.save((QuestionShortAnswer) question);
 
         //return question response
         return new QuestionResp(question, UserType.TEACHER);
     }
 
     /**
-     * get the result (true or false) of user's answers of some questions
-     * @param questions the questions that user answered
-     * @return a list of results (true or false)
+     * handle user's answers of some questions, return the results(right or wrong)
+     *
+     * @param currentUser current user who submits his answers
+     * @param submissions the questions that user answered
+     * @return a list of results (right or wrong)
      */
-    public void  getResultOfQuestionSubmission(List<Question> questions){
+    public List<AnswerResult> handleQuestionSubmission(User currentUser, List<QuestionSubmission> submissions) {
+        //if the user is teacher, refuse this operation
+        if (currentUser.getType().equals(UserType.TEACHER))
+            throw new PermissionDeniedException();
+
+        //if the user is student, get this student
+        Student student = studentRepository.findById(currentUser.getId()).get();
+
+        List<AnswerResult> answerResults = new ArrayList<>();
+        for (QuestionSubmission questionSubmission : submissions) {
+
+            //get submission's question id and answer
+            long questionId = questionSubmission.getQuestionId();
+            String submittedAnswer = questionSubmission.getAnswer();
+
+            //for multiple-choice question
+            if (questionMultipleChoiceRepository.existsById(questionId)) {
+                //get this multiple-choice question
+                QuestionMultipleChoice question = questionMultipleChoiceRepository.findById(questionId).get();
+
+                //check whether the answer submitted is right
+                boolean isRight = submittedAnswer.equalsIgnoreCase(question.getCorrectAnswerKey());
+
+                //add a new answer entry
+                AnswerEntryMultipleChoice answerEntry = new AnswerEntryMultipleChoice(
+                        RandomIdGenerator.getInstance().generateRandomLongId(answerEntryRepository),
+                        student, submittedAnswer, question, isRight
+                );
+
+                //save in the database
+                answerEntryRepository.save(answerEntry);
+
+                //add the result in answer results;
+                answerResults.add(new AnswerResult(questionId, isRight));
+
+            }
+            //for short-answer question
+            else if (questionShortAnswerRepository.existsById(questionId)) {
+                //get this short-answer question
+                QuestionShortAnswer question = questionShortAnswerRepository.findById(questionId).get();
+
+                //add a new answer entry
+                AnswerEntryShortAnswer answerEntry = new AnswerEntryShortAnswer(
+                        RandomIdGenerator.getInstance().generateRandomLongId(answerEntryRepository),
+                        student, submittedAnswer, question
+                );
+
+                //save in the database
+                answerEntryRepository.save(answerEntry);
+            }
+        }
+        return answerResults;
+    }
+
+    /**
+     * delete a question
+     *
+     * @param questionId id of question to be deleted
+     */
+    public void deleteQuestion(long questionId) {
+        // if the question is a short question
+        if (questionShortAnswerRepository.existsById(questionId)) {
+            QuestionShortAnswer question = questionShortAnswerRepository.findById(questionId).get();
+
+            //delete all answer entry
+            for (AnswerEntry answerEntry : question.getAnswerEntryList())
+                answerEntryRepository.delete(answerEntry);
+
+            //delete this question
+            questionShortAnswerRepository.delete(question);
+
+        } else if (questionMultipleChoiceRepository.existsById(questionId)) {
+            QuestionMultipleChoice question = questionMultipleChoiceRepository.findById(questionId).get();
+
+            //delete all choices
+            for (Choice choice : question.getChoices()) {
+                choiceRepository.delete(choice);
+            }
+
+            //delete all answer entry
+            for (AnswerEntry answerEntry : question.getAnswerEntryList()) {
+                answerEntryRepository.delete(answerEntry);
+            }
+
+            //delete this question
+            questionMultipleChoiceRepository.delete(question);
+        } else
+            // Not find this question, throw exception
+            throw new QuestionNotFoundException(questionId);
+
+
+    }
+
+    public void addResourceOfNode() {
+
+    }
+
+    public void getAllResourcesOfNode() {
+
+    }
+
+    public void deleteResource() {
+
+    }
+
+    public void addLecture() {
+
+    }
+
+    public void getAllLecturesOfNode() {
+
+    }
+
+    public void deleteLecture() {
 
     }
 

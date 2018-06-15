@@ -1,10 +1,7 @@
 package edu.fudan.main.domain;
 
 
-import org.neo4j.ogm.annotation.Id;
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Property;
-import org.neo4j.ogm.annotation.Relationship;
+import org.neo4j.ogm.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +9,7 @@ import java.util.List;
 @NodeEntity
 public class Node {
 
-    @Id
+    @Id@Index(unique = true)
     private String nodeId;
 
     @Property
@@ -47,32 +44,58 @@ public class Node {
     }
 
     public List<Resource> getResourceList() {
+        if(this.resourceList == null)
+            return new ArrayList<>();
         List<Resource> resources = new ArrayList<>(resourceList);
         return resources;
     }
 
     public List<Lecture> getLectureList() {
+        if(this.lectureList == null)
+            return new ArrayList<>();
         List<Lecture> lectures = new ArrayList<>(lectureList);
         return lectures;
     }
 
     public List<Question> getQuestionList() {
+        if(this.questionList == null)
+            return new ArrayList<>();
         List<Question> questions = new ArrayList<>(questionList);
         return questions;
     }
 
-    public void addQuestion(Question question){
+    public void addQuestion(Question question) {
         this.questionList.add(question);
     }
 
-    public void addResource(Resource resource){
+    public void addResource(Resource resource) {
         this.resourceList.add(resource);
     }
 
-    public void addLecture(Lecture lecture){
+    public void addLecture(Lecture lecture) {
         this.lectureList.add(lecture);
     }
 
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Node)) return false;
 
+        Node node = (Node) o;
+
+        return nodeId.equals(node.nodeId);
+    }
+
+    @Override
+    public int hashCode() {
+        return nodeId.hashCode();
+    }
+//
+//    @Override
+//    public int hashCode() {
+//        int result = nodeId.hashCode();
+//        result = 31 * result + title.hashCode();
+//        return result;
+//    }
 }

@@ -83,7 +83,7 @@ public class Graph {
     }
 
     public void setNodeSet(Set<Node> nodeSet) {
-        this.nodeSet = nodeSet;
+        this.nodeSet = new HashSet<>(nodeSet);
     }
 
     public void setDescription(String description) {

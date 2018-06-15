@@ -9,7 +9,6 @@ import edu.fudan.main.exception.QuestionNotFoundException;
 import edu.fudan.main.repository.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,23 +18,17 @@ import java.util.*;
 @Transactional
 public class NodeService {
 
+
     private final NodeRepository nodeRepository;
-
     private final StudentRepository studentRepository;
-
     private final GraphRepository graphRepository;
-
     private final QuestionRepository questionRepository;
-
     private final QuestionMultipleChoiceRepository questionMultipleChoiceRepository;
-
     private final QuestionShortAnswerRepository questionShortAnswerRepository;
-
     private final ChoiceRepository choiceRepository;
-
     private final AnswerEntryRepository answerEntryRepository;
 
-    @Autowired
+
     public NodeService(NodeRepository nodeRepository,
                        StudentRepository studentRepository,
                        GraphRepository graphRepository,
@@ -54,12 +47,29 @@ public class NodeService {
         this.answerEntryRepository = answerEntryRepository;
     }
 
-    public void deleteNode(String NodeId) {
-        // TODO
+    public void deleteNode(String nodeId) {
+        //get course node
+        Node node = nodeRepository.findById(nodeId).orElseThrow(
+                NodeNotFoundException::new
+        );
+
+        //get all lists that the course node owns
+        List<Question> questions = node.getQuestionList();
+        List<Resource> resources = node.getResourceList();
+        List<Lecture> lectures = node.getLectureList();
+
+        //delete question list
+        for(Question question:questions){
+            this.deleteQuestion(question.getQuestionId());
+        }
+        //Todo: delete resources and lectures
+
+        //delete the course node itself
+        nodeRepository.delete(node);
     }
 
     /**
-     * Update all nodes related to one graph according to new jsmind data
+     * update all nodes related to one graph according to new jsmind data
      *
      * @param graphId    id of the graph
      * @param jsMindData new jsmind data
@@ -84,17 +94,21 @@ public class NodeService {
         graphRepository.save(graph);
 
         //find deleted nodes and delete them from database
-        Set<String> newNodeIds = new HashSet<>();
-        for (Node node : newNodes) {
-            newNodeIds.add(node.getNodeId());
-        }
-        if(oldNodes == null)
-            return;
-        for (Node node : oldNodes) {
-            if (!newNodeIds.contains(node.getNodeId())) {
-                this.deleteNode(node.getNodeId());
-            }
-        }
+        Set<String> oldIds = new HashSet<>(), newIds = new HashSet<>();
+        for(Node node: oldNodes)
+            oldIds.add(node.getNodeId());
+        for(Node node: newNodes)
+            newIds.add(node.getNodeId());
+        oldIds.removeAll(newIds);
+        for(String nodeId: oldIds)
+            deleteNode(nodeId);
+//        oldNodes.removeAll(newNodes);
+//        if(oldNodes == null)
+//            return;
+//        for(Node node:oldNodes){
+//            deleteNode(node.getNodeId());
+//        }
+
 
 
     }

@@ -1,7 +1,8 @@
 package edu.fudan.main.model;
 
 import edu.fudan.main.domain.*;
-import edu.fudan.main.dto.response.QuestionResp;
+import edu.fudan.main.dto.response.LectureResp;
+import edu.fudan.main.dto.response.ResourceResp;
 import edu.fudan.main.exception.*;
 import edu.fudan.main.repository.*;
 import org.json.JSONArray;
@@ -16,53 +17,61 @@ import java.util.*;
 @Transactional
 public class NodeService {
 
-
     private final NodeRepository nodeRepository;
-    private final StudentRepository studentRepository;
-    private final GraphRepository graphRepository;
-    private final QuestionRepository questionRepository;
-    private final QuestionMultipleChoiceRepository questionMultipleChoiceRepository;
-    private final QuestionShortAnswerRepository questionShortAnswerRepository;
-    private final ChoiceRepository choiceRepository;
-    private final AnswerEntryRepository answerEntryRepository;
 
+    private final GraphRepository graphRepository;
+
+    private final ResourceRepository resourceRepository;
+
+    private final LectureRepository lectureRepository;
+
+    private final PermissionService permissionService;
+
+    private final QuestionService questionService;
 
     public NodeService(NodeRepository nodeRepository,
-                       StudentRepository studentRepository,
                        GraphRepository graphRepository,
-                       QuestionRepository questionRepository,
-                       QuestionMultipleChoiceRepository questionMultipleChoiceRepository,
-                       QuestionShortAnswerRepository questionShortAnswerRepository,
-                       ChoiceRepository choiceRepository,
-                       AnswerEntryRepository answerEntryRepository) {
-        this.studentRepository = studentRepository;
+                       ResourceRepository resourceRepository,
+                       LectureRepository lectureRepository,
+                       PermissionService permissionService,
+                       QuestionService questionService) {
         this.nodeRepository = nodeRepository;
         this.graphRepository = graphRepository;
-        this.questionRepository = questionRepository;
-        this.questionMultipleChoiceRepository = questionMultipleChoiceRepository;
-        this.questionShortAnswerRepository = questionShortAnswerRepository;
-        this.choiceRepository = choiceRepository;
-        this.answerEntryRepository = answerEntryRepository;
+        this.resourceRepository = resourceRepository;
+        this.lectureRepository = lectureRepository;
+        this.permissionService = permissionService;
+        this.questionService = questionService;
     }
 
     public void deleteNode(String nodeId) {
-        //get course node
+        // Node must exist
         Node node = nodeRepository.findById(nodeId).orElseThrow(
                 NodeNotFoundException::new
         );
 
-        //get all lists that the course node owns
-        List<Question> questions = node.getQuestionList();
-        List<Resource> resources = node.getResourceList();
-        List<Lecture> lectures = node.getLectureList();
+        // Get all lists that the course node owns
+        List<Question> questionList = node.getQuestionList();
+        List<Resource> resourceList = node.getResourceList();
+        List<Lecture> lectureList = node.getLectureList();
 
-        //delete question list
-        for(Question question:questions){
-            this.deleteQuestion(question.getQuestionId());
+        // Delete questions
+        for(Question question : questionList) {
+            questionService.deleteQuestion(question.getQuestionId());
         }
-        //Todo: delete resources and lectures
+        // Delete resources
+        for (Resource resource : resourceList) {
+            this.deleteResource(resource);
+        }
+        // Delete lectures
+        for (Lecture lecture : lectureList) {
+            this.deleteLecture(lecture);
+        }
 
-        //delete the course node itself
+        // Remove relations
+        node.removeRelations();
+        nodeRepository.save(node);
+
+        // Delete the course node itself
         nodeRepository.delete(node);
     }
 
@@ -129,201 +138,9 @@ public class NodeService {
         }
     }
 
-    /**
-     * list all questions of the user
-     *
-     * @param currentUser
-     * @param nodeId
-     * @return list of question information
-     */
-    public List<QuestionResp> getAllQuestionsOfNode(User currentUser, String nodeId) {
-        //get course node
-        Node node = nodeRepository.findById(nodeId).orElseThrow(
-                NodeNotFoundException::new
-        );
-
-        //get all questions related to the node
-        List<Question> questions = node.getQuestionList();
-
-        //generate question response
-        List<QuestionResp> questionRespList = new ArrayList<>();
-        for (Question q : questions) {
-            QuestionResp questionResp = new QuestionResp(q, currentUser.getType());
-            questionRespList.add(questionResp);
-        }
-
-        return questionRespList;
-    }
-
-    /**
-     * create a new multiple-choice and add it to a course node
-     *
-     * @param nodeId      id of course node
-     * @param description description of the question to be added
-     * @param choices     choices of the question to be added
-     * @param answer      the answer of this multiple-choice question
-     * @return response information of the question created newly
-     */
-    public QuestionResp addQuestionMultipleChoiceOfNode(String nodeId, String description, List<Choice> choices, String answer) {
-        //get the course node
-        Node node = nodeRepository.findById(nodeId).orElseThrow(
-                NodeNotFoundException::new
-        );
-
-        //create a new multiple-choice question
-        Question question = new QuestionMultipleChoice(RandomIdGenerator.getInstance().generateRandomLongId(questionRepository),
-                description, choices, answer);
-
-        //add it to the node
-        node.addQuestion(question);
-
-        //save the changes in the database
-        nodeRepository.save(node, 0);
-        questionMultipleChoiceRepository.save((QuestionMultipleChoice) question);
-        //questionRepository.save(question, 0);
-
-        //return question response
-        return new QuestionResp(question, UserType.TEACHER);
-    }
-
-    /**
-     * create a new short-answer and add it to a course node
-     *
-     * @param nodeId      id of the course node
-     * @param description description of the question
-     * @return response information of the question created newly
-     */
-    public QuestionResp addQuestionShortAnswerOfNode(String nodeId, String description) {
-        //get the course node
-        Node node = nodeRepository.findById(nodeId).orElseThrow(
-                NodeNotFoundException::new
-        );
-
-        //create a new short-answer question
-        Question question = new QuestionShortAnswer(RandomIdGenerator.getInstance().generateRandomLongId(questionRepository),
-                description);
-
-        //add it to the node
-        node.addQuestion(question);
-
-        //save the changes in the database
-        nodeRepository.save(node, 0);
-//        questionRepository.save(question, 0);
-        questionShortAnswerRepository.save((QuestionShortAnswer) question);
-
-        //return question response
-        return new QuestionResp(question, UserType.TEACHER);
-    }
-
-    /**
-     * handle user's answers of some questions, return the results(right or wrong)
-     *
-     * @param currentUser current user who submits his answers
-     * @param submissions the questions that user answered
-     * @return a list of results (right or wrong)
-     */
-    public List<AnswerResult> handleQuestionSubmission(User currentUser, List<QuestionSubmission> submissions) {
-        //if the user is teacher, refuse this operation
-        if (currentUser.getType().equals(UserType.TEACHER))
-            throw new PermissionDeniedException();
-
-        //if the user is student, get this student
-        Student student = studentRepository.findById(currentUser.getId()).get();
-
-        List<AnswerResult> answerResults = new ArrayList<>();
-        for (QuestionSubmission questionSubmission : submissions) {
-
-            //get submission's question id and answer
-            long questionId = questionSubmission.getQuestionId();
-            String submittedAnswer = questionSubmission.getAnswer();
-
-            //for multiple-choice question
-            if (questionMultipleChoiceRepository.existsById(questionId)) {
-                //get this multiple-choice question
-                QuestionMultipleChoice question = questionMultipleChoiceRepository.findById(questionId).get();
-
-                //check whether the answer submitted is right
-                boolean isRight = submittedAnswer.equalsIgnoreCase(question.getCorrectAnswerKey());
-
-                //add a new answer entry
-                AnswerEntryMultipleChoice answerEntry = new AnswerEntryMultipleChoice(
-                        RandomIdGenerator.getInstance().generateRandomLongId(answerEntryRepository),
-                        student, submittedAnswer, question, isRight
-                );
-
-                //save in the database
-                answerEntryRepository.save(answerEntry);
-
-                //add the result in answer results;
-                answerResults.add(new AnswerResult(questionId, isRight));
-
-            }
-            //for short-answer question
-            else if (questionShortAnswerRepository.existsById(questionId)) {
-                //get this short-answer question
-                QuestionShortAnswer question = questionShortAnswerRepository.findById(questionId).get();
-
-                //add a new answer entry
-                AnswerEntryShortAnswer answerEntry = new AnswerEntryShortAnswer(
-                        RandomIdGenerator.getInstance().generateRandomLongId(answerEntryRepository),
-                        student, submittedAnswer, question
-                );
-
-                //save in the database
-                answerEntryRepository.save(answerEntry);
-            }
-        }
-        return answerResults;
-    }
-
-    /**
-     * delete a question
-     *
-     * @param questionId id of question to be deleted
-     */
-    public void deleteQuestion(long questionId) {
-        // if the question is a short question
-        if (questionShortAnswerRepository.existsById(questionId)) {
-            QuestionShortAnswer question = questionShortAnswerRepository.findById(questionId).get();
-
-            //delete all answer entry
-            for (AnswerEntry answerEntry : question.getAnswerEntryList())
-                answerEntryRepository.delete(answerEntry);
-
-            //delete this question
-            questionShortAnswerRepository.delete(question);
-
-        } else if (questionMultipleChoiceRepository.existsById(questionId)) {
-            QuestionMultipleChoice question = questionMultipleChoiceRepository.findById(questionId).get();
-
-            //delete all choices
-            for (Choice choice : question.getChoices()) {
-                choiceRepository.delete(choice);
-            }
-
-            //delete all answer entry
-            for (AnswerEntry answerEntry : question.getAnswerEntryList()) {
-                answerEntryRepository.delete(answerEntry);
-            }
-
-            //delete this question
-            questionMultipleChoiceRepository.delete(question);
-        } else
-            // Not find this question, throw exception
-            throw new QuestionNotFoundException(questionId);
 
 
-    }
-
-    public void addResourceOfNode() {
-
-    }
-
-    public void getAllResourcesOfNode() {
-
-    }
-
-    public void deleteResource() {
+    public void addResource() {
 
     }
 
@@ -331,12 +148,36 @@ public class NodeService {
 
     }
 
-    public void getAllLecturesOfNode() {
+    public List<ResourceResp> getAllResourcesOfNode(User currentUser, String nodeId) {
+        // TODO
+        return null;
+    }
 
+    public List<LectureResp> getAllLecturesOfNode(User currentUser, String nodeId) {
+        // TODO
+        return null;
+    }
+
+    public void deleteResource() {
+
+    }
+
+    private void deleteResource(Resource resource) {
+        resource.removeRelation();
+        resourceRepository.save(resource);
+
+        resourceRepository.delete(resource);
     }
 
     public void deleteLecture() {
 
+    }
+
+    private void deleteLecture(Lecture lecture) {
+        lecture.removeRelation();
+        lectureRepository.save(lecture);
+
+        lectureRepository.delete(lecture);
     }
 
 

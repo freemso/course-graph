@@ -20,17 +20,21 @@ public abstract class Question {
     @Property
     private QuestionType questionType;
 
+    @Property
+    private long courseId;
+
     @Relationship(type = "ANSWER_TO", direction = Relationship.INCOMING)
     private List<AnswerEntry> answerEntryList;
 
     public Question() {
     }
 
-    public Question(long id, String description, QuestionType questionType) {
+    public Question(long id, String description, QuestionType questionType, long courseId) {
         this.questionId = id;
         this.description = description;
         this.questionType = questionType;
         this.answerEntryList = new ArrayList<>();
+        this.courseId = courseId;
     }
 
     public Long getQuestionId() {
@@ -47,5 +51,13 @@ public abstract class Question {
 
     public List<AnswerEntry> getAnswerEntryList() {
         return answerEntryList;
+    }
+
+    public long getCourseId() {
+        return courseId;
+    }
+
+    public void removeAnswers() {
+        this.answerEntryList = null;
     }
 }

@@ -1,22 +1,18 @@
 package edu.fudan.main.domain;
 
 
-import org.neo4j.ogm.annotation.Id;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
 import org.neo4j.ogm.annotation.Relationship;
 
 @NodeEntity
-public abstract class AnswerEntry {
-
-    @Id
-    private Long answerEntryId;
+public class AnswerEntry {
 
     /**
-     * The student who submitted this answer entry
+     * The id of the student who submitted this answer entry
      */
-    @Relationship(type = "SUBMITTED_BY")
-    private Student submitter;
+    @Property
+    private long submitterId;
 
     @Relationship(type = "ANSWER_TO")
     private Question question;
@@ -27,42 +23,17 @@ public abstract class AnswerEntry {
     public AnswerEntry() {
     }
 
-    public AnswerEntry(long id, Student submitter, Question question, String content) {
-        this.answerEntryId = id;
-        this.submitter = submitter;
+    public AnswerEntry(long submitterId, Question question, String content) {
+        this.submitterId = submitterId;
         this.question = question;
         this.content = content;
     }
 
-    public long getId() {
-        return answerEntryId;
-    }
-
-    public void setId(long id) {
-        this.answerEntryId = id;
-    }
-
-    public Student getSubmitter() {
-        return submitter;
-    }
-
-    public void setSubmitter(Student submitter) {
-        this.submitter = submitter;
-    }
-
-    public Question getQuestion() {
-        return question;
-    }
-
-    public void setQuestion(Question question) {
-        this.question = question;
+    public long getSubmitterId() {
+        return submitterId;
     }
 
     public String getContent() {
         return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
     }
 }

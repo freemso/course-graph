@@ -6,6 +6,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @CrossOrigin
-@RequestMapping("/questions/{qid}")
-public class QuestionController {
+@RequestMapping("/lectures/{lid}")
+public class LectureController {
 }

@@ -21,8 +21,8 @@ public class QuestionMultipleChoice extends Question {
     public QuestionMultipleChoice() {
     }
 
-    public QuestionMultipleChoice(long id, String description, List<Choice> choices, String correctAnswerKey) {
-        super(id, description, QuestionType.MULTIPLE_CHOICE);
+    public QuestionMultipleChoice(long id, String description, List<Choice> choices, String correctAnswerKey, long courseId) {
+        super(id, description, QuestionType.MULTIPLE_CHOICE, courseId);
         this.choices = choices;
         this.correctAnswerKey = correctAnswerKey;
     }
@@ -32,20 +32,11 @@ public class QuestionMultipleChoice extends Question {
         return choices;
     }
 
-
-    public void setChoices(List<Choice> choices) {
-        this.choices = choices;
-    }
-
     public String getCorrectAnswerKey() {
         return correctAnswerKey;
     }
 
-    public void setCorrectAnswerKey(String correctAnswerKey) {
-        this.correctAnswerKey = correctAnswerKey;
-    }
-
-    public void addChoice(Choice choice) {
-        this.choices.add(choice);
+    public void removeChoices() {
+        this.choices = null;
     }
 }

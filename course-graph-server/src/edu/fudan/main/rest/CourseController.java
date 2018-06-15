@@ -23,6 +23,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @Controller
+@CrossOrigin
 @RequestMapping("/courses")
 public class CourseController {
 

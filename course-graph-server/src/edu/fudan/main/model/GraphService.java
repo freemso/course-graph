@@ -97,6 +97,21 @@ public class GraphService {
 
     /**
      * Delete the graph.
+     * For course service.
+     * Do NOT need to get permission.
+     * @param graphId, id of the graph
+     */
+    void deleteGraph(long graphId) {
+        // First check if the graph exists
+        Graph graph = graphRepository.findById(graphId).orElseThrow(
+                GraphNotFoundException::new
+        );
+
+        deleteGraph(graph);
+    }
+
+    /**
+     * Delete the graph.
      * For controller.
      * Need to check login user ownership.
      * @param currentUser, current login user
@@ -112,21 +127,6 @@ public class GraphService {
         if (!permissionService.checkWritePermOfCourse(currentUser, graph.getCourse().getCourseId())) {
             throw new PermissionDeniedException();
         }
-
-        deleteGraph(graph);
-    }
-
-    /**
-     * Delete the graph.
-     * For course service.
-     * Do NOT need to get permission.
-     * @param graphId, id of the graph
-     */
-    public void deleteGraph(long graphId) {
-        // First check if the graph exists
-        Graph graph = graphRepository.findById(graphId).orElseThrow(
-                GraphNotFoundException::new
-        );
 
         deleteGraph(graph);
     }

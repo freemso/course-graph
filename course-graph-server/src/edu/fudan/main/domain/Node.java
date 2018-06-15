@@ -15,6 +15,9 @@ public class Node {
     @Property
     private String title;
 
+    @Relationship(type = "HAS_NODE", direction = Relationship.INCOMING)
+    private Graph graph;
+
     @Relationship(type = "HAS_RESOURCE")
     private List<Resource> resourceList;
 
@@ -30,9 +33,6 @@ public class Node {
     public Node(String id, String title) {
         this.nodeId = id;
         this.title = title;
-        this.resourceList = new ArrayList<>();
-        this.lectureList = new ArrayList<>();
-        this.questionList = new ArrayList<>();
     }
 
     public String getNodeId() {
@@ -44,36 +44,47 @@ public class Node {
     }
 
     public List<Resource> getResourceList() {
-        if(this.resourceList == null)
-            return new ArrayList<>();
-        List<Resource> resources = new ArrayList<>(resourceList);
-        return resources;
+        return resourceList == null ? new ArrayList<>() : resourceList;
     }
 
     public List<Lecture> getLectureList() {
-        if(this.lectureList == null)
-            return new ArrayList<>();
-        List<Lecture> lectures = new ArrayList<>(lectureList);
-        return lectures;
+        return lectureList == null ? new ArrayList<>() : lectureList;
     }
 
     public List<Question> getQuestionList() {
-        if(this.questionList == null)
-            return new ArrayList<>();
-        List<Question> questions = new ArrayList<>(questionList);
-        return questions;
+        return questionList == null ? new ArrayList<>() : questionList;
+    }
+
+    public Graph getGraph() {
+        return graph;
+    }
+
+    public void addLecture(Lecture lecture) {
+        if (lectureList == null) {
+            lectureList = new ArrayList<>();
+        }
+        this.lectureList.add(lecture);
     }
 
     public void addQuestion(Question question) {
+        if (questionList == null) {
+            questionList = new ArrayList<>();
+        }
         this.questionList.add(question);
     }
 
     public void addResource(Resource resource) {
+        if (resourceList == null) {
+            resourceList = new ArrayList<>();
+        }
         this.resourceList.add(resource);
     }
 
-    public void addLecture(Lecture lecture) {
-        this.lectureList.add(lecture);
+    public void removeRelations() {
+        this.graph = null;
+        this.resourceList = null;
+        this.questionList = null;
+        this.lectureList = null;
     }
 
 

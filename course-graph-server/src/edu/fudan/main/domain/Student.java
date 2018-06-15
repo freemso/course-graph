@@ -5,7 +5,6 @@ import org.neo4j.ogm.annotation.Relationship;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class Student extends User {
 
     @Relationship(type = "STUDENT_OF")

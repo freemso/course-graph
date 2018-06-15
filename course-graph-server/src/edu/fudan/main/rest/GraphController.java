@@ -3,7 +3,7 @@ package edu.fudan.main.rest;
 import edu.fudan.main.annotation.Authorization;
 import edu.fudan.main.annotation.CurrentUser;
 import edu.fudan.main.domain.User;
-import edu.fudan.main.dto.request.JsmindReq;
+import edu.fudan.main.dto.request.UpdateJsmindReq;
 import edu.fudan.main.dto.request.UpdateGraphMetaReq;
 import edu.fudan.main.dto.response.GraphMetaResp;
 import edu.fudan.main.dto.response.JsmindResp;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @Controller
+@CrossOrigin
 @RequestMapping("/graphs")
 public class GraphController {
 
@@ -50,8 +51,8 @@ public class GraphController {
     @Authorization
     ResponseEntity<JsmindResp> updateGraphJsmind(@PathVariable long gid,
                                                  @CurrentUser User currentUser,
-                                                 @Valid @RequestBody JsmindReq jsmindReq) {
-        return new ResponseEntity<>(graphService.updateJsmind(currentUser, gid, jsmindReq.getJsmind()), HttpStatus.OK);
+                                                 @Valid @RequestBody UpdateJsmindReq updateJsmindReq) {
+        return new ResponseEntity<>(graphService.updateJsmind(currentUser, gid, updateJsmindReq.getJsmind()), HttpStatus.OK);
     }
 
     @DeleteMapping("/{gid}")

@@ -33,10 +33,6 @@ The plural form of the resource refer to the set of the resource. GET method on 
 - `/graphs/{gid}/nodes`
     - GET, all nodes of the graph
     - POST, a new node to the graph, with specified parent node
-- `/nodes/{nid}`
-    - GET, data of the node, including parent node, children nodes, and some meta data
-    - DELETE, the node
-    - PUT, the updated node info
 - `/nodes/{nid}/questions`
     - GET, all questions of a node
     - POST, a new question to the node
@@ -51,12 +47,7 @@ The plural form of the resource refer to the set of the resource. GET method on 
     - PUT, the updated question
     - DELETE, the question
 - `/questions/{qid}/answers`
-    - GET, all answers of the question
     - POST, a new answer to this question
-- `/answers/{aid}`
-    - GET, the data of the answer
-    - PUT, the updated answer, restricted for that students are not allowed to edit their answers
-    - DELETE, the answer
 - `/lectures/{lid}`
     - GET, the data of the lecture
     - PUT, the updated lecture
@@ -1220,109 +1211,7 @@ Delete the graph.
 ----
 
 ## Node Related
-Everything here needs authorized.
-
-Meta data of a node:
-```
-node_meta :
-{
-    title : <string>,
-    id : <string>
-}
-```
-### List all nodes of the graph
-
-- **URL**
-
-    /graphs/{gid}/nodes
-
-- **Method:**
-
-    `GET`
-
-- **URL Params**
-
-    **Required:**
-
-    `gid=<integer>` 
-
-    **Optional:**
-
-    None.
-
-- **Data Params**
-
-    None.
-
-- **Success Response:**
-
-    - **Code:** 200 <br>
-      **Content:** 
-    ```
-    [
-        <node_meta>,
-        ...
-    ]
-    ```
- 
-- **Error Response:**
-
-    None.
-
-- **Notes:**
-
-    None.
-
-----
-### Add a node to the graph
-### Get data of the node
-### Update date of the node
-### Delete the node
-
-- **URL**
-
-    /nodes/{nid}
-
-- **Method:**
-
-    `DELETE`
-
-- **URL Params**
-
-    **Required:**
-
-    `nid=<integer>`
-
-    **Optional:**
-
-    None.
-
-- **Data Params**
-
-    None.
-
-- **Success Response:**
-
-    - **Code:** 204 NO CONTENT <br>
-      **Content:** None.
- 
-- **Error Response:**
-
-    - **Code:** 401 UNAUTHORIZED <br>
-      **Content:** `{ error : "Unauthorized" }` <br>
-      **Condition:** User not login or user is not the teacher of this course.
-    
-    OR
-
-    - **Code:** 404 NOT FOUND <br>
-      **Content:** `{ error : "Node not found" }` <br>
-      **Condition:** Node id invalid.
-
-- **Notes:**
-
-    None.
-
-----
+Not needed.
 
 ## Resource Related
 Everything here needs authorized.
@@ -1353,7 +1242,7 @@ resource :
 
     **Required:**
 
-    `nid=<integer>` 
+    `nid=<string>` 
 
     **Optional:**
 
@@ -1399,7 +1288,7 @@ Teacher add a new resource to a node. Need authorization.
 
     **Required:**
 
-    `nid=<integer>`
+    `nid=<string>`
 
     **Optional:**
 
@@ -1488,7 +1377,6 @@ Get resource meta data.
 
 ----
 ### Get file of the resource
-### Get meta data of the resource
 
 Get resource file.
 
@@ -1732,7 +1620,7 @@ Teacher add a new question to a node. Need authorization.
 
     **Required:**
 
-    `nid=<integer>`
+    `nid=<string>`
 
     **Optional:**
 
@@ -1973,4 +1861,60 @@ Delete the question.
 ----
 
 ## Answer Related
-Not required.
+
+### Student post an answer to a question
+
+Student add a new answer to a question. Need authorization.
+
+- **URL**
+
+    /questions/{qid}/answers
+
+- **Method:**
+
+    `POST`
+
+- **URL Params**
+
+    **Required:**
+
+    `qid=<integer>`
+
+    **Optional:**
+
+    None.
+
+- **Data Params**
+    ```
+    {
+        answer : <string>
+    }
+    ```
+
+    Example:
+    ```
+    {
+        answer : "B"
+    }
+    ```
+
+- **Success Response:**
+
+    - **Code:** 200 <br>
+      **Content:** None.
+ 
+- **Error Response:**
+
+    - **Code:** 404 NOT FOUND <br>
+      **Content:** `{ error : "Question not found" }` <br>
+      **Condition:** Question id invalid.
+    
+    OR
+    
+    - **Code:** 401 UNAUTHORIZED <br>
+      **Content:** `{ error : "Unauthorized" }` <br>
+      **Condition:** User not login or user is not the student of this course.
+
+- **Notes:**
+
+    None.

@@ -2,12 +2,12 @@ package edu.fudan.main.dto.request;
 
 import javax.validation.constraints.NotBlank;
 
-public class JsmindReq {
+public class UpdateJsmindReq {
 
     @NotBlank
     private String jsmind;
 
-    public JsmindReq() {
+    public UpdateJsmindReq() {
     }
 
     public String getJsmind() {

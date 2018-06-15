@@ -116,6 +116,7 @@ public class GraphService {
         for (Node node : graph.getNodeSet()) {
             nodeService.deleteNode(node.getNodeId());
         }
+        graphRepository.deleteById(graphId);
     }
 
     /**

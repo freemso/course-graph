@@ -3,6 +3,7 @@ package edu.fudan.main.service;
 
 import edu.fudan.main.domain.*;
 import edu.fudan.main.dto.response.GraphMetaResp;
+import edu.fudan.main.dto.response.JsmindResp;
 import edu.fudan.main.exception.CourseNotFoundException;
 import edu.fudan.main.exception.GraphNotFoundException;
 import edu.fudan.main.exception.PermissionDeniedException;
@@ -22,7 +23,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.*;
@@ -140,9 +143,9 @@ public class GraphServiceTest {
         //check new nodes
         assertTrue(delNodes.size() == 4);
         //check intersection of two sets
-//        Set<Node> intersection = (new HashSet<>(baseNodes));
-//        intersection.retainAll(delNodes);
-//        assertTrue(intersection.size() == 4);
+        Set<Node> intersection = (new HashSet<>(baseNodes));
+        intersection.retainAll(delNodes);
+        assertTrue(intersection.size() == 4);
 
         //update the graph by setting jsmind to jsmindAdd which add 3 node on the base of jsmindBase
         graphService.updateGraph(graphId, jsmindAdd);
@@ -153,9 +156,9 @@ public class GraphServiceTest {
         assertEquals(jsMindData, jsmindAdd);
         assertTrue(addNodes.size() == 10);
         //check intersection
-//        intersection = new HashSet<>(addNodes);
-//        intersection.retainAll(baseNodes);
-//        assertTrue(intersection.size() == 5);
+        intersection = new HashSet<>(addNodes);
+        intersection.retainAll(baseNodes);
+        assertTrue(intersection.size() == 7);
 
         //update the graph by setting jsmind to jsmindMod which modified 2 node on the base of jsmindBase
         graphService.updateGraph(graphId, jsMindMod);
@@ -166,9 +169,9 @@ public class GraphServiceTest {
         assertEquals(jsMindData, jsMindMod);
         assertTrue(modNodes.size() == 7);
         //check intersection
-//        intersection = new HashSet<>(modNodes);
-//        intersection.retainAll(baseNodes);
-//        assertTrue(intersection.size() == 7);
+        intersection = new HashSet<>(modNodes);
+        intersection.retainAll(baseNodes);
+        assertTrue(intersection.size() == 7);
 
 
     }
@@ -182,7 +185,6 @@ public class GraphServiceTest {
      */
     @Test
     public void testDeleteGraphForCurrentUserGraphId() throws Exception {
-//TODO: Test goes here...
         User user1 = userRepository.findById(1l).get();
         User user2 = userRepository.findById(5l).get();
         GraphMetaResp graphMetaResp = graphService.createNewGraph(user1, "test", "test map", jsmindBase, 2);
@@ -235,6 +237,7 @@ public class GraphServiceTest {
 
         graphService.updateGraph(graphId, jsmindBase);
 
+        //if the graph doesn't exist, throw exception
         try{
             graphService.deleteGraph(user1, -1);
             assert false;
@@ -242,6 +245,20 @@ public class GraphServiceTest {
             assert true;
         }
 
+        //before delete
+        Graph graph = graphRepository.findById(graphId).get();
+        assertNotNull(graph);
+        Set<Node> nodes = graph.getNodeSet();
+        assertTrue(nodes.size() == 7);
+
+        graphService.deleteGraph(graphId);
+
+
+        //after delete, all nodes related to the graph including the graph itself will disappear
+        assertFalse(graphRepository.findById(graphId).isPresent());
+        for(Node node: nodes){
+            assertFalse(nodeRepository.findById(node.getNodeId()).isPresent());
+        }
 
     }
 
@@ -253,6 +270,35 @@ public class GraphServiceTest {
     @Test
     public void testGetAllGraphsOfCourse() throws Exception {
 //TODO: Test goes here...
+        User user1 = userRepository.findById(1l).get();
+        GraphMetaResp graphMetaResp1 = graphService.createNewGraph(user1, "test1", "test map1", jsmindBase, 2);
+        GraphMetaResp graphMetaResp2 = graphService.createNewGraph(user1, "test2", "test map2", jsmindDel, 2);
+
+
+        //wrong course id
+        try{
+            List<GraphMetaResp> resps = graphService.getAllGraphsOfCourse(-1);
+            assert false;
+        }catch(CourseNotFoundException e){
+            assert true;
+        }
+
+        List<GraphMetaResp> resps = graphService.getAllGraphsOfCourse(2);
+        assertEquals(2, resps.size());
+        resps.sort(new Comparator<GraphMetaResp>() {
+            @Override
+            public int compare(GraphMetaResp o1, GraphMetaResp o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+        assertEquals(resps.get(0).getId(), graphMetaResp1.getId());
+        assertEquals(resps.get(0).getName(), "test1");
+        assertEquals(resps.get(0).getDescription(), "test map1");
+        assertEquals(resps.get(1).getId(), graphMetaResp2.getId());
+        assertEquals(resps.get(1).getName(), "test2");
+        assertEquals(resps.get(1).getDescription(), "test map2");
+
+
     }
 
     /**
@@ -262,7 +308,21 @@ public class GraphServiceTest {
      */
     @Test
     public void testGetJsMindData() throws Exception {
-//TODO: Test goes here...
+        User user1 = userRepository.findById(1l).get();
+        GraphMetaResp graphMetaResp = graphService.createNewGraph(user1, "test", "test map", jsmindBase, 2);
+        long graphId = graphMetaResp.getId();
+
+        //wrong graph id
+        try{
+            JsmindResp jsmindResp = graphService.getJsmind(-1);
+            assert false;
+        }catch (GraphNotFoundException e){
+            assert true;
+        }
+
+        JsmindResp jsmindResp = graphService.getJsmind(graphId);
+        assertEquals(jsmindResp.getJsmind(), jsmindBase);
+
     }
 
     private final String jsmindBase = "{\n" +

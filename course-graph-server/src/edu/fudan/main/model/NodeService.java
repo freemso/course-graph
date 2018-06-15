@@ -2,12 +2,10 @@ package edu.fudan.main.model;
 
 import edu.fudan.main.domain.*;
 import edu.fudan.main.dto.response.QuestionResp;
-import edu.fudan.main.exception.GraphNotFoundException;
-import edu.fudan.main.exception.NodeNotFoundException;
-import edu.fudan.main.exception.PermissionDeniedException;
-import edu.fudan.main.exception.QuestionNotFoundException;
+import edu.fudan.main.exception.*;
 import edu.fudan.main.repository.*;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,7 +74,12 @@ public class NodeService {
      */
     public void updateNodes(long graphId, String jsMindData) {
         //parse json string to json object
-        JSONObject mindObject = new JSONObject(jsMindData);
+        JSONObject mindObject;
+        try {
+            mindObject = new JSONObject(jsMindData);
+        } catch (JSONException e) {
+            throw new InvalidJsmindException();
+        }
         JSONObject mindData = (JSONObject) mindObject.get("data");
 
         //get existing nodes related to the graph
@@ -88,6 +91,7 @@ public class NodeService {
         //update old nodes and create new nodes
         Set<Node> newNodes = new HashSet<>();
         getNodesFromMindData(mindData, newNodes);
+
         //save() will merge new node with old node if it existed before, otherwise add it to the database
         nodeRepository.saveAll(newNodes);
         graph.setNodeSet(newNodes);
@@ -102,15 +106,10 @@ public class NodeService {
         oldIds.removeAll(newIds);
         for(String nodeId: oldIds)
             deleteNode(nodeId);
-//        oldNodes.removeAll(newNodes);
-//        if(oldNodes == null)
-//            return;
-//        for(Node node:oldNodes){
-//            deleteNode(node.getNodeId());
-//        }
 
-
-
+        //save() will merge new node with old node if it existed before, otherwise add it to the database
+        graph.setNodeSet(newNodes);
+        graphRepository.save(graph);
     }
 
     /**

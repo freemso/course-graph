@@ -69,8 +69,14 @@ public class GraphService {
         // Generate a new id for the graph
         long newGraphId = RandomIdGenerator.getInstance().generateRandomLongId(graphRepository);
 
+
         // Save it to database
         Graph graph = graphRepository.save(new Graph(newGraphId, name, description, jsmind, course));
+
+        if (jsmind != null && !jsmind.equals("")) {
+            // Update nodes according new mind map
+            nodeService.updateNodes(newGraphId, jsmind);
+        }
 
         return new GraphMetaResp(graph);
     }

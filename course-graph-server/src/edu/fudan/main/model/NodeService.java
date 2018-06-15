@@ -92,10 +92,10 @@ public class NodeService {
         Set<Node> newNodes = new HashSet<>();
         getNodesFromMindData(mindData, newNodes);
 
-        //save() will merge new node with old node if it existed before, otherwise add it to the database
-        nodeRepository.saveAll(newNodes);
-        graph.setNodeSet(newNodes);
-        graphRepository.save(graph);
+//        //save() will merge new node with old node if it existed before, otherwise add it to the database
+//        nodeRepository.saveAll(newNodes);
+//        graph.setNodeSet(newNodes);
+//        graphRepository.save(graph);
 
         //find deleted nodes and delete them from database
         Set<String> oldIds = new HashSet<>(), newIds = new HashSet<>();

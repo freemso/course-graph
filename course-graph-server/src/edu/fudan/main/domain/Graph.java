@@ -66,6 +66,14 @@ public class Graph {
         return description;
     }
 
+    public Date getCreatedTime() {
+        return createdTime;
+    }
+
+    public Date getModifiedTime() {
+        return modifiedTime;
+    }
+
     public String getJsMindData() {
         return jsMindData;
     }

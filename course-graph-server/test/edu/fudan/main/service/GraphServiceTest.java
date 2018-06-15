@@ -53,13 +53,11 @@ public class GraphServiceTest {
     @Autowired
     private NodeService nodeService;
 
-
     private final long STUDENT_ID = 0;
     private final long TEACHER1_ID = 1;
     private final long TEACHER2_ID = 5;
     private final long COURSE_ID = 2;
     private final long FAKE_COURSE_ID = 3;
-
 
     @Before
     public void before() {
@@ -77,7 +75,7 @@ public class GraphServiceTest {
     }
 
     @After
-    public void after() {
+    public void after() throws Exception {
     }
 
     /**

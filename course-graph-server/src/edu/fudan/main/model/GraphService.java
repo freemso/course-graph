@@ -67,6 +67,7 @@ public class GraphService {
 
         // Save it to database
         Graph graph = graphRepository.save(new Graph(newGraphId, name, description, jsmind, course));
+        updateGraph(graph.getGraphId(), jsmind);
 
         return new GraphMetaResp(graph);
     }
@@ -80,7 +81,7 @@ public class GraphService {
      */
     public void deleteGraph(User currentUser, long graphId) {
         // First check if the graph exists
-        Graph graph = graphRepository.findById(graphId).orElseThrow(
+        Graph graph = graphRepository.findById(graphId, 2).orElseThrow(
                 GraphNotFoundException::new
         );
 
@@ -132,6 +133,8 @@ public class GraphService {
         graph.setJsMindData(jsMindData);
         graphRepository.save(graph);
 
+        if(jsMindData.trim().equals(""))
+            return new GraphMetaResp(graph);
         //update nodes according new mind map
         nodeService.updateNodes(courseGraphId, jsMindData);
         return new GraphMetaResp(graph);

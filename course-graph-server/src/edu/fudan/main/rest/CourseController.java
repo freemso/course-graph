@@ -99,6 +99,6 @@ public class CourseController {
                                                     @PathVariable long cid,
                                                     @Valid @RequestBody CreateGraphReq createGraphReq) {
         return new ResponseEntity<>(graphService.createNewGraph(currentUser, createGraphReq.getName(),
-                createGraphReq.getDescription(), cid), HttpStatus.CREATED);
+                createGraphReq.getDescription(), createGraphReq.getJsmind(), cid), HttpStatus.CREATED);
     }
 }

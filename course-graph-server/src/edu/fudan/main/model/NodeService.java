@@ -47,8 +47,25 @@ public class NodeService {
         this.answerEntryRepository = answerEntryRepository;
     }
 
-    public void deleteNode(String NodeId) {
-        
+    public void deleteNode(String nodeId) {
+        //get course node
+        Node node = nodeRepository.findById(nodeId).orElseThrow(
+                NodeNotFoundException::new
+        );
+
+        //get all lists that the course node owns
+        List<Question> questions = node.getQuestionList();
+        List<Resource> resources = node.getResourceList();
+        List<Lecture> lectures = node.getLectureList();
+
+        //delete question list
+        for(Question question:questions){
+            this.deleteQuestion(question.getQuestionId());
+        }
+        //Todo: delete resources and lectures
+
+        //delete the course node itself
+        nodeRepository.delete(node);
     }
 
     /**
@@ -72,22 +89,25 @@ public class NodeService {
         Set<Node> newNodes = new HashSet<>();
         getNodesFromMindData(mindData, newNodes);
         //save() will merge new node with old node if it existed before, otherwise add it to the database
-        nodeRepository.saveAll(newNodes);
         graph.setNodeSet(newNodes);
         graphRepository.save(graph);
 
         //find deleted nodes and delete them from database
-        Set<String> newNodeIds = new HashSet<>();
-        for (Node node : newNodes) {
-            newNodeIds.add(node.getNodeId());
-        }
-        if(oldNodes == null)
-            return;
-        for (Node node : oldNodes) {
-            if (!newNodeIds.contains(node.getNodeId())) {
-                this.deleteNode(node.getNodeId());
-            }
-        }
+        Set<String> oldIds = new HashSet<>(), newIds = new HashSet<>();
+        for(Node node: oldNodes)
+            oldIds.add(node.getNodeId());
+        for(Node node: newNodes)
+            newIds.add(node.getNodeId());
+        oldIds.removeAll(newIds);
+        for(String nodeId: oldIds)
+            deleteNode(nodeId);
+//        oldNodes.removeAll(newNodes);
+//        if(oldNodes == null)
+//            return;
+//        for(Node node:oldNodes){
+//            deleteNode(node.getNodeId());
+//        }
+
 
 
     }

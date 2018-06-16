@@ -88,8 +88,8 @@ public class GraphService {
         }
 
         // Remove course relationships
-        graph.removeCourse();
-        graphRepository.save(graph);
+//        graph.removeCourse();
+//        graphRepository.save(graph);
 
         // Delete the graph itself
         graphRepository.delete(graph);

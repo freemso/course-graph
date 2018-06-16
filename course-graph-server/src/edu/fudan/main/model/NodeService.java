@@ -5,17 +5,27 @@ import edu.fudan.main.dto.response.LectureResp;
 import edu.fudan.main.dto.response.ResourceResp;
 import edu.fudan.main.exception.*;
 import edu.fudan.main.repository.*;
+import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.neo4j.ogm.session.Session;
+import org.neo4j.ogm.session.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 @Service
 @Transactional
 public class NodeService {
+
+    private static final String RESOURCE_PATH = "files/resources";
+
+    private static final String LECTURE_PATH = "files/lecture";
 
     private final NodeRepository nodeRepository;
 
@@ -29,6 +39,8 @@ public class NodeService {
 
     private final QuestionService questionService;
 
+
+    @Autowired
     public NodeService(NodeRepository nodeRepository,
                        GraphRepository graphRepository,
                        ResourceRepository resourceRepository,
@@ -68,8 +80,8 @@ public class NodeService {
         }
 
         // Remove relations
-        node.removeRelations();
-        nodeRepository.save(node);
+//        node.removeRelations();
+//        nodeRepository.save(node);
 
         // Delete the course node itself
         nodeRepository.delete(node);
@@ -139,34 +151,84 @@ public class NodeService {
     }
 
 
-
-    public void addResource() {
-
+    public List<ResourceResp> listAllResourcesOfNode(String nodeId){
+        Node node = nodeRepository.findById(nodeId).orElseThrow(
+                NodeNotFoundException::new
+        );
+        List<ResourceResp> resourceResps = new ArrayList<>();
+        for(Resource r: node.getResourceList()){
+            resourceResps.add(new ResourceResp(r));
+        }
+        return resourceResps;
     }
 
-    public void addLecture() {
+    public ResourceResp addNewResourceToNode(User currentUser, String nodeId, String title, String link, byte[] file){
+        //get the node
+        Node node = nodeRepository.findById(nodeId).orElseThrow(
+                NodeNotFoundException::new
+        );
 
-    }
+        /*check the permission of current user,
+         *since it needs to set the depth to 2 to get the course, so simply check the user type
+        */
+        if(!currentUser.getType().equals(UserType.TEACHER))
+            throw new PermissionDeniedException();
 
-    public List<ResourceResp> getAllResourcesOfNode(User currentUser, String nodeId) {
-        // TODO
+        //for link
+        if(link != null){
+            Resource resource = new Resource(RandomIdGenerator.getInstance().generateRandomLongId(resourceRepository),
+                    title, link, node, ResourceType.URL);
+            resourceRepository.save(resource);
+            return new ResourceResp(resource);
+
+        }else if(file != null){
+            String path = RESOURCE_PATH + title;
+            //save it to local directory
+            File localFile = new File(path);
+            try {
+                FileUtils.writeByteArrayToFile(localFile, file);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            //for file resource, link means the absolute path of this file on the server.
+            Resource resource = new Resource(RandomIdGenerator.getInstance().generateRandomLongId(resourceRepository),
+                    title, localFile.getAbsolutePath(), node, ResourceType.FILE);
+            return new ResourceResp(resource);
+        }
         return null;
+    }
+
+    public void deleteResource(User currentUser, long resourceId){
+        //get the resource
+        Resource resource = resourceRepository.findById(resourceId).orElseThrow(
+                ResourceNotFoundExeception::new
+        );
+
+        //check permission
+        if(currentUser.getType().equals(UserType.STUDENT))
+            throw new PermissionDeniedException();
+
+        deleteResource(resource);
+
+    }
+
+    private void deleteResource(Resource resource) {
+        //if resource's type is url, just delete it from database
+        if(resource.getTitle().equals(ResourceType.URL)){
+            resourceRepository.delete(resource);
+        }else{
+            //get the file by resource's link (absolute file path) and delete the file
+            File file = new File(resource.getLink());
+            file.delete();
+
+            //delete resource from database
+            resourceRepository.delete(resource);
+        }
     }
 
     public List<LectureResp> getAllLecturesOfNode(User currentUser, String nodeId) {
         // TODO
         return null;
-    }
-
-    public void deleteResource() {
-
-    }
-
-    private void deleteResource(Resource resource) {
-        resource.removeRelation();
-        resourceRepository.save(resource);
-
-        resourceRepository.delete(resource);
     }
 
     public void deleteLecture() {

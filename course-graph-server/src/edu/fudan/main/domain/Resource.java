@@ -20,7 +20,18 @@ public class Resource {
     @Relationship(type = "HAS_RESOURCE", direction = Relationship.INCOMING)
     private Node node;
 
+    @Property
+    private ResourceType type;
+
     public Resource() {
+    }
+
+    public Resource(Long resourceId, String title, String link, Node node, ResourceType type) {
+        this.resourceId = resourceId;
+        this.title = title;
+        this.link = link;
+        this.node = node;
+        this.type = type;
     }
 
     public Long getResourceId() {
@@ -42,4 +53,9 @@ public class Resource {
     public void removeRelation() {
         this.node = null;
     }
+
+    public ResourceType getType(){
+        return type;
+    }
+
 }

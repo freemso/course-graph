@@ -91,8 +91,8 @@ public class CourseService {
         }
 
         // Delete the relation to teacher
-        course.removeTeacher();
-        courseRepository.save(course);
+//        course.removeTeacher();
+//        courseRepository.save(course);
 
         // Delete the course
         courseRepository.delete(course);

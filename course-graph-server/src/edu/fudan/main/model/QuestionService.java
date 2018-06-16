@@ -150,8 +150,8 @@ public class QuestionService {
 
     private void deleteQuestion(Question question) {
         // Delete all the answer entries
-        question.removeAnswers();
-        questionRepository.save(question);
+//        question.removeAnswers();
+//        questionRepository.save(question);
 
         if (question.getQuestionType() == QuestionType.MULTIPLE_CHOICE) {
             QuestionMultipleChoice questionMultipleChoice = questionMultipleChoiceRepository.findById(

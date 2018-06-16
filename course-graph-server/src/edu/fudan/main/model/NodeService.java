@@ -76,63 +76,63 @@ public class NodeService {
     }
 
     /**
-     * update all nodes related to one graph according to new jsmind data
+     * Update all nodes related to one graph according to the given jsmind data
      *
      * @param graphId    id of the graph
      * @param jsMindData new jsmind data
      */
     public void updateNodes(long graphId, String jsMindData) {
-        //parse json string to json object
+        // Parse json string to json object
         JSONObject mindObject;
         try {
             mindObject = new JSONObject(jsMindData);
         } catch (JSONException e) {
             throw new InvalidJsmindException();
         }
+        // Get `data` field
         JSONObject mindData = (JSONObject) mindObject.get("data");
 
-        //get existing nodes related to the graph
+        // Get existing nodes related to the graph
         Graph graph = graphRepository.findById(graphId).orElseThrow(
                 GraphNotFoundException::new
         );
         Set<Node> oldNodes = graph.getNodeSet();
 
-        //update old nodes and create new nodes
+        // Update old nodes and create new nodes
         Set<Node> newNodes = new HashSet<>();
         getNodesFromMindData(mindData, newNodes);
 
-//        //save() will merge new node with old node if it existed before, otherwise add it to the database
-//        nodeRepository.saveAll(newNodes);
-//        graph.setNodeSet(newNodes);
-//        graphRepository.save(graph);
-
-        //find deleted nodes and delete them from database
-        Set<String> oldIds = new HashSet<>(), newIds = new HashSet<>();
-        for(Node node: oldNodes)
+        // Find deleted nodes and delete them from database
+        Set<String> oldIds = new HashSet<>();
+        Set<String> newIds = new HashSet<>();
+        for(Node node : oldNodes) {
             oldIds.add(node.getNodeId());
-        for(Node node: newNodes)
+        }
+        for(Node node : newNodes) {
             newIds.add(node.getNodeId());
-        oldIds.removeAll(newIds);
-        for(String nodeId: oldIds)
-            deleteNode(nodeId);
+        }
 
-        //save() will merge new node with old node if it existed before, otherwise add it to the database
+        oldIds.removeAll(newIds);
+        for(String nodeId : oldIds) {
+            deleteNode(nodeId);
+        }
+
         graph.setNodeSet(newNodes);
         graphRepository.save(graph);
     }
 
     /**
-     * get all nodes in this mind-map
+     * Recursively get nodes in this mind-map
      *
-     * @param mindNode the root of the mind-map json object
+     * @param currentRoot the root of the mind-map json object
      * @param newNodes a list to save all nodes in this mind-map
      */
-    private void getNodesFromMindData(JSONObject mindNode, Set<Node> newNodes) {
-        Node node = new Node((String) mindNode.get("id"), (String) mindNode.get("topic"));
+    private void getNodesFromMindData(JSONObject currentRoot, Set<Node> newNodes) {
+        Node node = new Node((String) currentRoot.get("id"), (String) currentRoot.get("topic"));
         newNodes.add(node);
-        if (mindNode.has("children")) {
-            JSONArray children = (JSONArray)mindNode.get("children");
-            for(int i = 0; i < children.length(); i++){
+        if (currentRoot.has("children")) {
+            JSONArray children = (JSONArray)currentRoot.get("children");
+            for (int i = 0; i < children.length(); i++) {
                 getNodesFromMindData((JSONObject) children.get(i), newNodes);
             }
         }

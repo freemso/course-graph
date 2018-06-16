@@ -3,6 +3,7 @@ package edu.fudan.main.repository;
 import edu.fudan.main.domain.Student;
 import edu.fudan.main.domain.Teacher;
 import edu.fudan.main.domain.User;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,10 +31,16 @@ public class UserRepositoryTest {
 
     @Before
     public void set(){
-        student = new Student(1, "test_student", "pwd", "email1");
-        teacher = new Teacher(2, "test_teacher", "pwd", "email2");
+        student = new Student(1L, "test_student", "pwd", "email1");
+        teacher = new Teacher(2L, "test_teacher", "pwd", "email2");
         userRepository.save(student);
         userRepository.save(teacher);
+    }
+
+    @After
+    public void after() {
+        userRepository.deleteById(1L);
+        userRepository.deleteById(2L);
     }
 
     @Test

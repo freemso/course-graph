@@ -5,8 +5,10 @@ import edu.fudan.main.domain.User;
 import edu.fudan.main.exception.CourseNotFoundException;
 import edu.fudan.main.repository.CourseRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class PermissionService {
 
     private final CourseRepository courseRepository;

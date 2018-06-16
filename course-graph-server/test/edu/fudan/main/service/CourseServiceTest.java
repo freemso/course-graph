@@ -13,6 +13,7 @@ import edu.fudan.main.repository.CourseRepository;
 import edu.fudan.main.repository.StudentRepository;
 import edu.fudan.main.repository.TeacherRepository;
 import edu.fudan.main.repository.UserRepository;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,6 +63,12 @@ public class CourseServiceTest {
         studentUser = userRepository.findByEmail("student@some.com").orElse(null);
         assertNotNull(teacherUser);
         assertNotNull(studentUser);
+    }
+
+    @After
+    public void after() {
+        userRepository.deleteById(teacherUser.getId());
+        userRepository.deleteById(studentUser.getId());
     }
 
     @Test

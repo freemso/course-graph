@@ -7,44 +7,32 @@ import edu.fudan.main.exception.PermissionDeniedException;
 import edu.fudan.main.exception.QuestionNotFoundException;
 import edu.fudan.main.repository.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 public class QuestionService {
 
     private final NodeRepository nodeRepository;
-
-    private final StudentRepository studentRepository;
-
-    private final GraphRepository graphRepository;
 
     private final QuestionRepository questionRepository;
 
     private final QuestionMultipleChoiceRepository questionMultipleChoiceRepository;
 
-    private final QuestionShortAnswerRepository questionShortAnswerRepository;
-
-    private final ChoiceRepository choiceRepository;
-
     private final AnswerEntryRepository answerEntryRepository;
 
     private final PermissionService permissionService;
 
-    public QuestionService(NodeRepository nodeRepository, StudentRepository studentRepository,
-                           GraphRepository graphRepository, QuestionRepository questionRepository,
+    public QuestionService(NodeRepository nodeRepository, QuestionRepository questionRepository,
                            QuestionMultipleChoiceRepository questionMultipleChoiceRepository,
-                           QuestionShortAnswerRepository questionShortAnswerRepository,
-                           ChoiceRepository choiceRepository, AnswerEntryRepository answerEntryRepository,
+                           AnswerEntryRepository answerEntryRepository,
                            PermissionService permissionService) {
         this.nodeRepository = nodeRepository;
-        this.studentRepository = studentRepository;
-        this.graphRepository = graphRepository;
         this.questionRepository = questionRepository;
         this.questionMultipleChoiceRepository = questionMultipleChoiceRepository;
-        this.questionShortAnswerRepository = questionShortAnswerRepository;
-        this.choiceRepository = choiceRepository;
         this.answerEntryRepository = answerEntryRepository;
         this.permissionService = permissionService;
     }

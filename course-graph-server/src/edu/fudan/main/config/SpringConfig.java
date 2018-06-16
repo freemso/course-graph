@@ -29,7 +29,6 @@ public class SpringConfig {
         return new org.neo4j.ogm.config.Configuration.Builder()
                 .uri(NEO4J_URL)
                 .credentials(NEO4J_USERNAME, NEO4J_PASSWORD)
-                .connectionPoolSize(200)  // Connection pool
                 .build();
     }
 

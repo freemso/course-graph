@@ -13,6 +13,7 @@ import edu.fudan.main.exception.UserNotFoundException;
 import edu.fudan.main.model.UserService;
 import edu.fudan.main.repository.TokenRepository;
 import edu.fudan.main.repository.UserRepository;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,6 +41,11 @@ public class UserServiceTest {
     public void setup() {
         User student = new Student(1, "user1", "1234", "stu@fudan.edu.cn");
         userRepository.save(student);
+    }
+
+    @After
+    public void clean() {
+        userRepository.deleteById(1L);
     }
 
     @Test

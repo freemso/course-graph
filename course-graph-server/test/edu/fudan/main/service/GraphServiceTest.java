@@ -75,7 +75,11 @@ public class GraphServiceTest {
     }
 
     @After
-    public void after() throws Exception {
+    public void after() {
+        userRepository.deleteById(STUDENT_ID);
+        userRepository.deleteById(TEACHER1_ID);
+        userRepository.deleteById(TEACHER2_ID);
+        courseRepository.deleteById(COURSE_ID);
     }
 
     /**
@@ -335,7 +339,7 @@ public class GraphServiceTest {
             "    \"meta\":{\n" +
             "        \"name\":\"jsMind-demo-tree\",\n" +
             "        \"author\":\"hizzgdev@163.com\",\n" +
-            "        \"version\":\"0.2\"\n" +
+            "        \"version\":\"0.1\"\n" +
             "    },\n" +
             "    /* 数据格式声明 */\n" +
             "    \"format\":\"node_tree\",\n" +
@@ -375,7 +379,7 @@ public class GraphServiceTest {
             "    \"meta\":{\n" +
             "        \"name\":\"jsMind-demo-tree\",\n" +
             "        \"author\":\"hizzgdev@163.com\",\n" +
-            "        \"version\":\"0.2\"\n" +
+            "        \"version\":\"0.3\"\n" +
             "    },\n" +
             "    /* 数据格式声明 */\n" +
             "    \"format\":\"node_tree\",\n" +
@@ -401,7 +405,7 @@ public class GraphServiceTest {
             "    \"meta\":{\n" +
             "        \"name\":\"jsMind-demo-tree\",\n" +
             "        \"author\":\"hizzgdev@163.com\",\n" +
-            "        \"version\":\"0.2\"\n" +
+            "        \"version\":\"0.4\"\n" +
             "    },\n" +
             "    /* 数据格式声明 */\n" +
             "    \"format\":\"node_tree\",\n" +

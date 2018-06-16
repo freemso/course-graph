@@ -33,4 +33,9 @@ public interface GraphRepository extends Neo4jRepository<Graph, Long> {
     List<Graph> findGraphsByCourseCode(@Param("code") String code);
 
 
+    @Override
+    Graph save(Graph s, int i);
+
+    @Override
+    Graph save(Graph s);
 }

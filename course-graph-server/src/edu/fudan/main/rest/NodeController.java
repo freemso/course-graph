@@ -3,11 +3,13 @@ package edu.fudan.main.rest;
 import edu.fudan.main.annotation.Authorization;
 import edu.fudan.main.annotation.CurrentUser;
 import edu.fudan.main.domain.User;
+import edu.fudan.main.dto.request.AddResourceReq;
 import edu.fudan.main.dto.response.LectureResp;
 import edu.fudan.main.dto.response.QuestionResp;
 import edu.fudan.main.dto.response.ResourceResp;
 import edu.fudan.main.model.NodeService;
 import edu.fudan.main.model.QuestionService;
+import jdk.management.resource.ResourceRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,6 +55,13 @@ public class NodeController {
     }
 
     // TODO: post a resource
+    @PostMapping("/resources")
+    ResponseEntity<ResourceResp> addResourcesToNode(@PathVariable String nid,
+                                                          @CurrentUser User currentUser, @RequestBody AddResourceReq resourceRequest) {
+        return new ResponseEntity<>(nodeService.addNewResourceToNode(currentUser, nid, resourceRequest.getTitle(),
+                resourceRequest.getLink(), resourceRequest.getFile()), HttpStatus.OK);
+    }
+
     // TODO: post a lecture
     // TODO: post a question
 }

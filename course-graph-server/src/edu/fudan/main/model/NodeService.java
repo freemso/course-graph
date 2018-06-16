@@ -1,5 +1,6 @@
 package edu.fudan.main.model;
 
+import edu.fudan.main.annotation.CurrentUser;
 import edu.fudan.main.domain.*;
 import edu.fudan.main.dto.response.LectureResp;
 import edu.fudan.main.dto.response.ResourceResp;
@@ -151,7 +152,10 @@ public class NodeService {
     }
 
 
-    public List<ResourceResp> listAllResourcesOfNode(String nodeId){
+    public List<ResourceResp> getAllResourcesOfNode(User currentUser, String nodeId){
+
+
+
         Node node = nodeRepository.findById(nodeId).orElseThrow(
                 NodeNotFoundException::new
         );

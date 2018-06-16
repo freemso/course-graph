@@ -1,6 +1,5 @@
 package edu.fudan.main.model;
 
-import edu.fudan.main.annotation.CurrentUser;
 import edu.fudan.main.domain.*;
 import edu.fudan.main.dto.response.LectureResp;
 import edu.fudan.main.dto.response.ResourceResp;
@@ -10,13 +9,13 @@ import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.neo4j.ogm.session.Session;
-import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
@@ -77,7 +76,7 @@ public class NodeService {
         }
         // Delete lectures
         for (Lecture lecture : lectureList) {
-            this.deleteLecture(lecture);
+            this.deleteLecture(lecture.getLectureId());
         }
 
         // Remove relations
@@ -154,8 +153,6 @@ public class NodeService {
 
     public List<ResourceResp> getAllResourcesOfNode(User currentUser, String nodeId){
 
-
-
         Node node = nodeRepository.findById(nodeId).orElseThrow(
                 NodeNotFoundException::new
         );
@@ -223,11 +220,39 @@ public class NodeService {
         }else{
             //get the file by resource's link (absolute file path) and delete the file
             File file = new File(resource.getLink());
-            file.delete();
+            if(file.exists())
+                file.delete();
 
             //delete resource from database
             resourceRepository.delete(resource);
         }
+    }
+
+    public FileInputStream downloadFileOfNode(long resourceId) throws FileNotFoundException {
+        //check resource type
+        Resource resource = resourceRepository.findById(resourceId).orElseThrow(
+                ResourceNotFoundExeception::new
+        );
+
+        if(resource.getType().equals(ResourceType.URL))
+            throw new ResourceNotFoundExeception();
+
+        //return a file stream to controller rather than all bytes of the file
+        //to handle large files not only small files. when faced with file problems,
+        //always steam, never keep fully in memory
+        return new FileInputStream(new File(resource.getLink()));
+    }
+
+
+    public LectureResp addNewLectureToNode(User currentUser, String nodeId){
+        //TODO
+        return null;
+    }
+
+    public FileInputStream downloadLecture(long lectureId){
+        //TODO
+
+        return null;
     }
 
     public List<LectureResp> getAllLecturesOfNode(User currentUser, String nodeId) {
@@ -235,16 +260,32 @@ public class NodeService {
         return null;
     }
 
-    public void deleteLecture() {
 
+
+
+
+    public void deleteLecture(User currentUser, long lectureId){
+        //check user permission
+        if(currentUser.getType().equals(UserType.STUDENT))
+            throw new PermissionDeniedException();
+
+        deleteLecture(lectureId);
     }
 
-    private void deleteLecture(Lecture lecture) {
-        lecture.removeRelation();
-        lectureRepository.save(lecture);
+    private void deleteLecture(long lectureId) {
+        Lecture lecture = lectureRepository.findById(lectureId).orElseThrow(
+                LectureNotFoundException::new
+        );
 
+        //delete file
+        File file = new File(lecture.getLink());
+        if(file.exists())
+            file.delete();
+
+        //delete from database
         lectureRepository.delete(lecture);
     }
+
 
 
 }

@@ -24,7 +24,7 @@ import java.util.List;
 @EnableNeo4jRepositories("edu.fudan.main.repository")
 @EntityScan(basePackages = "edu.fudan.main.domain")
 @EnableTransactionManagement
-public class SpringConfig implements WebMvcConfigurer{
+public class SpringConfig{
 
     private static final String NEO4J_USERNAME = "neo4j";
 
@@ -65,19 +65,4 @@ public class SpringConfig implements WebMvcConfigurer{
         return template;
     }
 
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    AuthorizationInterceptor authorizationInterceptor;
-
-    @Override
-    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-        argumentResolvers.add(new CurrentUserMethodArgumentResolver(userRepository));
-    }
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry){
-        registry.addInterceptor(authorizationInterceptor);
-    }
-}
+   }

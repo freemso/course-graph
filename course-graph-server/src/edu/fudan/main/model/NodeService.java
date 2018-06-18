@@ -140,7 +140,7 @@ public class NodeService {
      * @param newNodes a list to save all nodes in this mind-map
      */
     private void getNodesFromMindData(JSONObject currentRoot, Set<Node> newNodes) {
-        Node node = new Node((String) currentRoot.get("id"), (String) currentRoot.get("topic"));
+        Node node = new Node(currentRoot.get("id").toString(),  currentRoot.get("topic").toString());
         newNodes.add(node);
         if (currentRoot.has("children")) {
             JSONArray children = (JSONArray)currentRoot.get("children");
@@ -227,15 +227,6 @@ public class NodeService {
             resourceRepository.delete(resource);
         }
     }
-
-    public ResourceResp getResourceMeta(long resourceId) {
-        Resource resource = resourceRepository.findById(resourceId).orElseThrow(
-                ResourceNotFoundExeception::new
-        );
-
-        return new ResourceResp(resource);
-    }
-
 
     public FileInputStream downloadFileOfNode(long resourceId) throws FileNotFoundException {
         //check resource type

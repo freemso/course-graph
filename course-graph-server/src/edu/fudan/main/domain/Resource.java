@@ -23,10 +23,6 @@ public class Resource {
     @Property
     private ResourceType type;
 
-
-    @Property
-    private String originalFileName;
-
     public Resource() {
     }
 
@@ -36,18 +32,7 @@ public class Resource {
         this.link = link;
         this.node = node;
         this.type = type;
-        this.originalFileName = null;
     }
-
-    public Resource(Long resourceId, String title, String link, Node node, ResourceType type, String originalFileName) {
-        this.resourceId = resourceId;
-        this.title = title;
-        this.link = link;
-        this.node = node;
-        this.type = type;
-        this.originalFileName = originalFileName;
-    }
-
 
     public Long getResourceId() {
         return resourceId;
@@ -73,7 +58,4 @@ public class Resource {
         return type;
     }
 
-    public String getOriginalFileName() {
-        return originalFileName;
-    }
 }

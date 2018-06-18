@@ -39,5 +39,7 @@ public class Constants {
 
     public static final String EMAIL_REGEX = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$";
 
-    public static final String RESOURCE_PATH = "";
+    public static final String RESOURCE_PATH = "assets/resources/";
+
+    public static final String LECTURE_PATH = "assets/lectures/";
 }

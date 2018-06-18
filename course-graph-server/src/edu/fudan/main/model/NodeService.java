@@ -12,10 +12,11 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
-import java.nio.file.Path;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -139,7 +140,7 @@ public class NodeService {
      * @param newNodes a list to save all nodes in this mind-map
      */
     private void getNodesFromMindData(JSONObject currentRoot, Set<Node> newNodes) {
-        Node node = new Node(currentRoot.get("id").toString(),  currentRoot.get("topic").toString());
+        Node node = new Node((String) currentRoot.get("id"), (String) currentRoot.get("topic"));
         newNodes.add(node);
         if (currentRoot.has("children")) {
             JSONArray children = (JSONArray)currentRoot.get("children");
@@ -162,82 +163,7 @@ public class NodeService {
         return resourceResps;
     }
 
-    public Resource getResource(long rid){
-        Resource resource = resourceRepository.findById(rid).orElseThrow(
-                ResourceNotFoundExeception::new
-        );
-        return resource;
-    }
-
-//
-//    public ResourceResp addNewResourceToNode(User currentUser, String nodeId, String title, String link, byte[] file){
-//        //get the node
-//        Node node = nodeRepository.findById(nodeId).orElseThrow(
-//                NodeNotFoundException::new
-//        );
-//
-//        /*check the permission of current user,
-//         *since it needs to set the depth to 2 to get the course, so simply check the user type
-//        */
-//        if(!currentUser.getType().equals(UserType.TEACHER))
-//            throw new PermissionDeniedException();
-//
-//        //for link
-//        if(link != null){
-//            Resource resource = new Resource(RandomIdGenerator.getInstance().generateRandomLongId(resourceRepository),
-//                    title, link, node, ResourceType.URL);
-//            resourceRepository.save(resource);
-//            return new ResourceResp(resource);
-//
-//        }else if(file != null){
-//            String path = RESOURCE_PATH + title;
-//            //save it to local directory
-//            File localFile = new File(path);
-//            try {
-//                FileUtils.writeByteArrayToFile(localFile, file);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            //for file resource, link means the absolute path of this file on the server.
-//            Resource resource = new Resource(RandomIdGenerator.getInstance().generateRandomLongId(resourceRepository),
-//                    title, localFile.getAbsolutePath(), node, ResourceType.FILE);
-//            return new ResourceResp(resource);
-//        }
-//        return null;
-//    }
-
-    public List<ResourceResp> addFileResourcesToNode(User currentUser, String nodeId, MultipartFile[] files) throws IOException {
-        //get the node
-        Node node = nodeRepository.findById(nodeId).orElseThrow(
-                NodeNotFoundException::new
-        );
-
-        /*check the permission of current user,
-         *since it needs to set the depth to 2 to get the course, so simply check the user type
-        */
-        if(!currentUser.getType().equals(UserType.TEACHER))
-            throw new PermissionDeniedException();
-
-        //save the file to local file system
-        List<ResourceResp> resourceResps = new ArrayList<>();
-        for(MultipartFile file: files){
-            //assign a id for each file resource
-            long resourceId = RandomIdGenerator.getInstance().generateRandomLongId(resourceRepository);
-
-            //save the file to local filesystem
-            File localFile = new File(RESOURCE_PATH+resourceId);
-            file.transferTo(localFile);
-
-            //create a new resource and save it to the database
-            Resource resource = new Resource(resourceId, file.getName(),
-                    localFile.getAbsolutePath(),node, ResourceType.FILE);
-            resourceRepository.save(resource);
-            resourceResps.add(new ResourceResp(resource));
-        }
-        return resourceResps;
-    }
-
-    public ResourceResp addUrlResourceToNode(User currentUser, String nodeId, String link, String title){
+    public ResourceResp addNewResourceToNode(User currentUser, String nodeId, String title, String link, byte[] file){
         //get the node
         Node node = nodeRepository.findById(nodeId).orElseThrow(
                 NodeNotFoundException::new
@@ -255,13 +181,23 @@ public class NodeService {
                     title, link, node, ResourceType.URL);
             resourceRepository.save(resource);
             return new ResourceResp(resource);
+
+        }else if(file != null){
+            String path = RESOURCE_PATH + title;
+            //save it to local directory
+            File localFile = new File(path);
+            try {
+                FileUtils.writeByteArrayToFile(localFile, file);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            //for file resource, link means the absolute path of this file on the server.
+            Resource resource = new Resource(RandomIdGenerator.getInstance().generateRandomLongId(resourceRepository),
+                    title, localFile.getAbsolutePath(), node, ResourceType.FILE);
+            return new ResourceResp(resource);
         }
         return null;
     }
-
-
-
-
 
     public void deleteResource(User currentUser, long resourceId){
         //get the resource
@@ -292,7 +228,16 @@ public class NodeService {
         }
     }
 
-    public File downloadFile(long resourceId) throws FileNotFoundException {
+    public ResourceResp getResourceMeta(long resourceId) {
+        Resource resource = resourceRepository.findById(resourceId).orElseThrow(
+                ResourceNotFoundExeception::new
+        );
+
+        return new ResourceResp(resource);
+    }
+
+
+    public FileInputStream downloadFileOfNode(long resourceId) throws FileNotFoundException {
         //check resource type
         Resource resource = resourceRepository.findById(resourceId).orElseThrow(
                 ResourceNotFoundExeception::new
@@ -304,7 +249,7 @@ public class NodeService {
         //return a file stream to controller rather than all bytes of the file
         //to handle large files not only small files. when faced with file problems,
         //always steam, never keep fully in memory
-        return new File(resource.getLink());
+        return new FileInputStream(new File(resource.getLink()));
     }
 
 

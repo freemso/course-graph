@@ -17,35 +17,20 @@ import static org.junit.Assert.*;
 public class NodeServiceTest {
 
     @Before
-    public void before() throws Exception {
+    public void before() {
     }
 
     @After
-    public void after() throws Exception {
-    }
-
-    /**
-     * Method: deleteNode(String NodeId)
-     */
-    @Test
-    public void testDeleteNode() throws Exception {
-//TODO: Test goes here...
-    }
-
-    /**
-     * Method: updateNodes(long graphId, String jsMindData)
-     */
-    @Test
-    public void testUpdateNodes() throws Exception {
-//TODO: Test goes here...
+    public void after() {
     }
 
     /**
      * Method: getAllQuestionsOfNode(User currentUser, String nodeId)
      */
     @Test
-    public void testGetAllQuestionsOfNode() throws Exception {
+    public void testGetAllQuestionsOfNode() {
 //TODO: Test goes here...
+
     }
 
     /**

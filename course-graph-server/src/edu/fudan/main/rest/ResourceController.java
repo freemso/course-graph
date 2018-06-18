@@ -7,17 +7,13 @@ import edu.fudan.main.domain.User;
 import edu.fudan.main.dto.response.ResourceResp;
 import edu.fudan.main.model.NodeService;
 import edu.fudan.main.model.QuestionService;
-import org.neo4j.ogm.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
 
@@ -34,7 +30,27 @@ public class ResourceController {
         this.nodeService = nodeService;
     }
 
+    @GetMapping
+    @Authorization
+    ResponseEntity<ResourceResp> getResourceMeta(@CurrentUser User currentUser, @PathVariable long rid) {
+        return new ResponseEntity<>(nodeService.getResourceMeta(rid), HttpStatus.OK);
+    }
 
+    @DeleteMapping
+    @Authorization
+    ResponseEntity deleteResource(@CurrentUser User currentUser, @PathVariable long rid) {
+        nodeService.deleteResource(currentUser, rid);
+        return new ResponseEntity(null, HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/file")
+    @Authorization
+    ResponseEntity<MultipartFile> getResourceFile(@CurrentUser User currentUser, @PathVariable long rid) {
+        // TODO
+        return null;
+    }
+
+    /* method added by zzxiong
     @GetMapping(value = "/file")
     public ResponseEntity<InputStreamResource> downloadFileResource(@PathVariable long resourceId) {
         try {
@@ -51,6 +67,5 @@ public class ResourceController {
             return new ResponseEntity<InputStreamResource>((InputStreamResource) null, HttpStatus.NOT_FOUND);
         }
     }
-
-
+     */
 }

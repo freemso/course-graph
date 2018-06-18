@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @NodeEntity
-public abstract class Question {
+public class Question {
 
     @Id
     private Long questionId;

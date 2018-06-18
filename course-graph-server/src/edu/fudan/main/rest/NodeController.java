@@ -55,13 +55,51 @@ public class NodeController {
 
     // TODO: post a resource
     @PostMapping("/resources")
-    ResponseEntity<ResourceResp> addResourcesToNode(@PathVariable String nid,
-                                                    @CurrentUser User currentUser,
-                                                    @RequestBody AddResourceReq resourceRequest) {
-        return new ResponseEntity<>(nodeService.createResource(currentUser, nid, resourceRequest.getTitle(),
-                resourceRequest.getLink(), resourceRequest.getFile()), HttpStatus.OK);
+    ResponseEntity<ResourceResp> createResource(@PathVariable String nid,
+                                                @CurrentUser User currentUser,
+                                                @RequestBody AddResourceReq resourceRequest) {
+//        return new ResponseEntity<>(nodeService.createResource(currentUser, nid, resourceRequest.getTitle(),
+//                resourceRequest.getLink(), resourceRequest.getFile()), HttpStatus.OK);
+        // TODO
+        return null;
     }
 
     // TODO: post a lecture
     // TODO: post a question
+
+    /* methods added by zzxiong
+
+    @PostMapping(value = "/resources/files")
+    @Authorization
+    public ResponseEntity<List<ResourceResp>> addResourceToNode(@PathVariable String nid,
+                                                          @CurrentUser User currentUser,
+                                                          @RequestParam("file") MultipartFile[] files){
+
+        try {
+            return new ResponseEntity<List<ResourceResp>>(nodeService.addFileResourcesToNode(currentUser, nid, files),
+                    HttpStatus.OK);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+
+
+
+    // TODO: post a lecture
+    // TODO: post a question
+    @PostMapping("/questions")
+    @Authorization
+    ResponseEntity<QuestionResp> addQuestionToNode(@PathVariable String nid, @CurrentUser User currentUser,
+                                                   @RequestBody CreateQuestionReq createQuestionReq) {
+        return new ResponseEntity<QuestionResp>(
+                questionService.createQuestion(currentUser, nid, createQuestionReq.getDescription(),
+                        createQuestionReq.getType(), createQuestionReq.getChoices(), createQuestionReq.getAnswer())
+                , HttpStatus.OK);
+    }
+     */
+
+
 }

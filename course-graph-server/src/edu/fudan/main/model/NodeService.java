@@ -12,6 +12,7 @@ import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.neo4j.ogm.annotation.Property;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -169,7 +170,8 @@ public class NodeService {
         return resourceResps;
     }
 
-    public ResourceResp createResource(User currentUser, String nodeId, String title, String link, byte[] file){
+    public ResourceResp createResource(User currentUser, String nodeId, String title, String link,
+                                       String originalFileName, byte[] file){
         //get the node
         Node node = nodeRepository.findById(nodeId).orElseThrow(
                 NodeNotFoundException::new
@@ -184,7 +186,7 @@ public class NodeService {
         //for link
         if(link != null){
             Resource resource = new Resource(RandomIdGenerator.getInstance().generateRandomLongId(resourceRepository),
-                    title, link, ResourceType.URL, node.getCourseId());
+                    title, link, originalFileName, ResourceType.URL, node.getCourseId());
             resourceRepository.save(resource);
             return new ResourceResp(resource);
 
@@ -199,7 +201,7 @@ public class NodeService {
             }
             //for file resource, link means the absolute path of this file on the server.
             Resource resource = new Resource(RandomIdGenerator.getInstance().generateRandomLongId(resourceRepository),
-                    title, localFile.getAbsolutePath(), ResourceType.FILE, node.getCourseId());
+                    title, localFile.getAbsolutePath(), originalFileName, ResourceType.FILE, node.getCourseId());
             return new ResourceResp(resource);
         }
         return null;
@@ -241,6 +243,7 @@ public class NodeService {
 
         return new ResourceResp(resource);
     }
+
 
     public FileInputStream downloadFileOfNode(long resourceId) throws FileNotFoundException {
         //check resource type

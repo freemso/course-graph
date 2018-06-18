@@ -23,15 +23,20 @@ public class Resource {
     @Property
     private ResourceType type;
 
+
+    @Property
+    private String originalFileName;
+
     public Resource() {
     }
 
-    public Resource(Long resourceId, String title, String link, ResourceType type, long courseId) {
+    public Resource(Long resourceId, String title, String link, String originalFileName, ResourceType type, long courseId) {
         this.resourceId = resourceId;
         this.title = title;
         this.link = link;
         this.type = type;
         this.courseId = courseId;
+        this.originalFileName = originalFileName;
     }
 
     public Long getResourceId() {
@@ -52,5 +57,8 @@ public class Resource {
 
     public Long getCourseId() {
         return courseId;
+    }
+    public String getOriginalFileName() {
+        return originalFileName;
     }
 }

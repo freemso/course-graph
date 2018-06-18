@@ -17,8 +17,8 @@ public class Resource {
     @Property
     private String link;
 
-    @Relationship(type = "HAS_RESOURCE", direction = Relationship.INCOMING)
-    private Node node;
+    @Property
+    private Long courseId;
 
     @Property
     private ResourceType type;
@@ -26,12 +26,12 @@ public class Resource {
     public Resource() {
     }
 
-    public Resource(Long resourceId, String title, String link, Node node, ResourceType type) {
+    public Resource(Long resourceId, String title, String link, ResourceType type, long courseId) {
         this.resourceId = resourceId;
         this.title = title;
         this.link = link;
-        this.node = node;
         this.type = type;
+        this.courseId = courseId;
     }
 
     public Long getResourceId() {
@@ -46,16 +46,11 @@ public class Resource {
         return link;
     }
 
-    public Node getNode() {
-        return node;
-    }
-
-    public void removeRelation() {
-        this.node = null;
-    }
-
     public ResourceType getType(){
         return type;
     }
 
+    public Long getCourseId() {
+        return courseId;
+    }
 }

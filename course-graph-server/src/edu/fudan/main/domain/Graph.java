@@ -25,14 +25,6 @@ public class Graph {
     @Property
     private String jsMindData;
 
-    @Property
-    @CreatedDate
-    private Date createdTime;
-
-    @Property
-    @LastModifiedDate
-    private Date modifiedTime;
-
     @Relationship(type = "HAS_NODE")
     private Set<Node> nodeSet;
 
@@ -66,14 +58,6 @@ public class Graph {
         return description;
     }
 
-    public Date getCreatedTime() {
-        return createdTime;
-    }
-
-    public Date getModifiedTime() {
-        return modifiedTime;
-    }
-
     public String getJsMindData() {
         return jsMindData;
     }
@@ -98,14 +82,15 @@ public class Graph {
         this.description = description;
     }
 
-    public void removeCourse() {
-        this.course = null;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Graph)) return false;
         return this.graphId.equals(((Graph) o).graphId);
+    }
+
+    @Override
+    public int hashCode() {
+        return graphId.hashCode();
     }
 }

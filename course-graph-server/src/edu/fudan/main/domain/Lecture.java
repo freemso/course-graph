@@ -17,10 +17,17 @@ public class Lecture {
     @Property
     private String link;
 
-    @Relationship(type = "HAS_LECTURE", direction = Relationship.INCOMING)
-    private Node node;
+    @Property
+    private Long courseId;
 
     public Lecture() {
+    }
+
+    public Lecture(Long lectureId, String title, String link, Long courseId) {
+        this.lectureId = lectureId;
+        this.title = title;
+        this.link = link;
+        this.courseId = courseId;
     }
 
     public Long getLectureId() {
@@ -35,11 +42,7 @@ public class Lecture {
         return link;
     }
 
-    public Node getNode() {
-        return node;
-    }
-
-    public void removeRelation() {
-        this.node = null;
+    public Long getCourseId() {
+        return courseId;
     }
 }

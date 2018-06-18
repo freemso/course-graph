@@ -118,7 +118,7 @@ public class NodeService {
 
         // Update old nodes and create new nodes
         Set<Node> newNodes = new HashSet<>();
-        getNodesFromMindData(mindData, newNodes);
+        getNodesFromMindData(mindData, newNodes, graph.getCourse().getCourseId());
 
         // Find deleted nodes and delete them from database
         Set<String> oldIds = new HashSet<>();
@@ -145,13 +145,13 @@ public class NodeService {
      * @param currentRoot the root of the mind-map json object
      * @param newNodes a list to save all nodes in this mind-map
      */
-    private void getNodesFromMindData(JSONObject currentRoot, Set<Node> newNodes) {
-        Node node = new Node((String) currentRoot.get("id"), (String) currentRoot.get("topic"));
+    private void getNodesFromMindData(JSONObject currentRoot, Set<Node> newNodes, long courseId) {
+        Node node = new Node((String) currentRoot.get("id"), (String) currentRoot.get("topic"), courseId);
         newNodes.add(node);
         if (currentRoot.has("children")) {
             JSONArray children = (JSONArray)currentRoot.get("children");
             for (int i = 0; i < children.length(); i++) {
-                getNodesFromMindData((JSONObject) children.get(i), newNodes);
+                getNodesFromMindData((JSONObject) children.get(i), newNodes, courseId);
             }
         }
     }
@@ -169,7 +169,7 @@ public class NodeService {
         return resourceResps;
     }
 
-    public ResourceResp addNewResourceToNode(User currentUser, String nodeId, String title, String link, byte[] file){
+    public ResourceResp createResource(User currentUser, String nodeId, String title, String link, byte[] file){
         //get the node
         Node node = nodeRepository.findById(nodeId).orElseThrow(
                 NodeNotFoundException::new
@@ -184,7 +184,7 @@ public class NodeService {
         //for link
         if(link != null){
             Resource resource = new Resource(RandomIdGenerator.getInstance().generateRandomLongId(resourceRepository),
-                    title, link, node, ResourceType.URL);
+                    title, link, ResourceType.URL, node.getCourseId());
             resourceRepository.save(resource);
             return new ResourceResp(resource);
 
@@ -199,7 +199,7 @@ public class NodeService {
             }
             //for file resource, link means the absolute path of this file on the server.
             Resource resource = new Resource(RandomIdGenerator.getInstance().generateRandomLongId(resourceRepository),
-                    title, localFile.getAbsolutePath(), node, ResourceType.FILE);
+                    title, localFile.getAbsolutePath(), ResourceType.FILE, node.getCourseId());
             return new ResourceResp(resource);
         }
         return null;

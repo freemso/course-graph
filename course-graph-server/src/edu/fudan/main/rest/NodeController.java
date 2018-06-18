@@ -58,7 +58,7 @@ public class NodeController {
     ResponseEntity<ResourceResp> addResourcesToNode(@PathVariable String nid,
                                                     @CurrentUser User currentUser,
                                                     @RequestBody AddResourceReq resourceRequest) {
-        return new ResponseEntity<>(nodeService.addNewResourceToNode(currentUser, nid, resourceRequest.getTitle(),
+        return new ResponseEntity<>(nodeService.createResource(currentUser, nid, resourceRequest.getTitle(),
                 resourceRequest.getLink(), resourceRequest.getFile()), HttpStatus.OK);
     }
 

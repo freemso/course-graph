@@ -1,5 +1,8 @@
 package edu.fudan.main.domain;
 
+import org.neo4j.ogm.annotation.NodeEntity;
+
+@NodeEntity
 public class QuestionShortAnswer extends Question {
 
     public QuestionShortAnswer() {

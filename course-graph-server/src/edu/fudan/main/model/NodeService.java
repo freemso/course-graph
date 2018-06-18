@@ -228,6 +228,14 @@ public class NodeService {
         }
     }
 
+    public ResourceResp getResourceMeta(long resourceId) {
+        Resource resource = resourceRepository.findById(resourceId).orElseThrow(
+                ResourceNotFoundExeception::new
+        );
+
+        return new ResourceResp(resource);
+    }
+
     public FileInputStream downloadFileOfNode(long resourceId) throws FileNotFoundException {
         //check resource type
         Resource resource = resourceRepository.findById(resourceId).orElseThrow(

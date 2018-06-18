@@ -1418,7 +1418,7 @@ Get resource file.
     None.
 
 ----
-### Update data of the Resource
+### Update data of the Resource (NOT SUPPORTED)
 
 Update data of the resource. Needs Authorization.
 
@@ -1687,9 +1687,9 @@ Teacher add a new question to a node. Need authorization.
     None.
 
 ----
-### Get data of the resource
+### Get data of the question
 
-Get resource meta data.
+Get question meta data.
 
 - **URL**
 
@@ -1729,9 +1729,9 @@ Get resource meta data.
     None.
 
 ----
-### Update data of the Resource
+### Update data of the Question (NOT SUPPORTED)
 
-Update data of the resource. Needs Authorization.
+Update data of the question. Needs Authorization.
 
 - **URL**
 

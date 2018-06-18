@@ -57,7 +57,8 @@ public class NodeController {
     // TODO: post a resource
     @PostMapping("/resources")
     ResponseEntity<ResourceResp> addResourcesToNode(@PathVariable String nid,
-                                                          @CurrentUser User currentUser, @RequestBody AddResourceReq resourceRequest) {
+                                                    @CurrentUser User currentUser,
+                                                    @RequestBody AddResourceReq resourceRequest) {
         return new ResponseEntity<>(nodeService.addNewResourceToNode(currentUser, nid, resourceRequest.getTitle(),
                 resourceRequest.getLink(), resourceRequest.getFile()), HttpStatus.OK);
     }

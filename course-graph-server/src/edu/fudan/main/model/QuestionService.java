@@ -75,6 +75,20 @@ public class QuestionService {
         return questionRespList;
     }
 
+    public QuestionResp getQuestion(User currentUser, long questionId) {
+        // Question must first exist
+        Question question = questionRepository.findById(questionId, -1).orElseThrow(
+                QuestionNotFoundException::new
+        );
+
+        // Check read permission
+        if (!permissionService.checkReadPermOfCourse(currentUser, question.getCourseId())) {
+            throw new PermissionDeniedException();
+        }
+
+        return new QuestionResp(question, currentUser);
+    }
+
     /**
      * create a new multiple-choice and add it to a course node
      *
@@ -126,27 +140,11 @@ public class QuestionService {
         return new QuestionResp(question, currentUser);
     }
 
-    /**
-     * Student submit a answer
-     * @param currentUser, current login user
-     * @param questionId, id of the question
-     * @param answer, content of the answer
-     */
-    public void createAnswerEntry(User currentUser, long questionId, String answer) {
-        // Question must exist
-        Question question = questionRepository.findById(questionId).orElseThrow(
-                QuestionNotFoundException::new
-        );
-
-        // Current user must be the student of the question
-        if (!permissionService.checkReadPermOfCourse(currentUser, question.getCourseId())) {
-            throw new PermissionDeniedException();
-        }
-
-        AnswerEntry answerEntry = new AnswerEntry(currentUser.getId(), question, answer);
-
-        answerEntryRepository.save(answerEntry);
-    }
+    // Do not support updating question
+//    public QuestionResp updateQuestion(User currentUser, long questionId, String description,
+////                                       List<Choice> choices, String answer) {
+////
+////    }
 
     private void deleteQuestion(Question question) {
         // Delete all the answer entries
@@ -199,5 +197,27 @@ public class QuestionService {
         }
 
         deleteQuestion(question);
+    }
+
+    /**
+     * Student submit a answer
+     * @param currentUser, current login user
+     * @param questionId, id of the question
+     * @param answer, content of the answer
+     */
+    public void createAnswerEntry(User currentUser, long questionId, String answer) {
+        // Question must exist
+        Question question = questionRepository.findById(questionId).orElseThrow(
+                QuestionNotFoundException::new
+        );
+
+        // Current user must be the student of the question
+        if (!permissionService.checkReadPermOfCourse(currentUser, question.getCourseId())) {
+            throw new PermissionDeniedException();
+        }
+
+        AnswerEntry answerEntry = new AnswerEntry(currentUser.getId(), question, answer);
+
+        answerEntryRepository.save(answerEntry);
     }
 }

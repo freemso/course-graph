@@ -5,7 +5,10 @@ import edu.fudan.main.dto.response.QuestionResp;
 import edu.fudan.main.exception.NodeNotFoundException;
 import edu.fudan.main.exception.PermissionDeniedException;
 import edu.fudan.main.exception.QuestionNotFoundException;
-import edu.fudan.main.repository.*;
+import edu.fudan.main.repository.AnswerEntryRepository;
+import edu.fudan.main.repository.NodeRepository;
+import edu.fudan.main.repository.QuestionMultipleChoiceRepository;
+import edu.fudan.main.repository.QuestionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

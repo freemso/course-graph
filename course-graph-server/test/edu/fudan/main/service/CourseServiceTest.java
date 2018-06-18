@@ -67,8 +67,8 @@ public class CourseServiceTest {
 
     @After
     public void after() {
-        userRepository.deleteById(teacherUser.getId());
-        userRepository.deleteById(studentUser.getId());
+        userRepository.deleteById(teacherUser.getUserId());
+        userRepository.deleteById(studentUser.getUserId());
     }
 
     @Test
@@ -80,7 +80,7 @@ public class CourseServiceTest {
         assertEquals(courseMetaResp.getCode(), "course_code");
         assertEquals(courseMetaResp.getName(), "some course");
         assertEquals(courseMetaResp.getStudentNum(), 0);
-        assertEquals(courseMetaResp.getTeacherId(), teacherUser.getId());
+        assertEquals(courseMetaResp.getTeacherId(), teacherUser.getUserId());
         assertEquals(courseMetaResp.getTeacherName(), teacherUser.getName());
 
         // Abort the create time / modified time test
@@ -95,7 +95,7 @@ public class CourseServiceTest {
         assertNotNull(course);
 
         // Teacher can find a course in his course list
-        Teacher teacher = teacherRepository.findById(teacherUser.getId()).orElse(null);
+        Teacher teacher = teacherRepository.findById(teacherUser.getUserId()).orElse(null);
         assertNotNull(teacher);
         assertEquals(teacher.getCourseList().size(), 1);
         assertEquals(teacher.getCourseList().get(0), course);
@@ -138,7 +138,7 @@ public class CourseServiceTest {
         assertFalse(courseRepository.findById(courseId).isPresent());
 
         // Teacher can find his course list empty again
-        Teacher teacher = teacherRepository.findById(teacherUser.getId()).orElse(null);
+        Teacher teacher = teacherRepository.findById(teacherUser.getUserId()).orElse(null);
         assertNotNull(teacher);
 
 //        assertEquals(teacher.getCourseList().size(), 0);

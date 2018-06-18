@@ -85,7 +85,57 @@ course_meta :
     student_num : <integer>
 }
 ```
+### List all courses
 
+List all courses. Only get public data of the course
+
+- **URL**
+
+    /courses
+
+- **Method:**
+
+    `GET`
+
+- **URL Params**
+
+    **Required:**
+
+    None.
+
+    **Optional:**
+
+    None.
+
+- **Data Params**
+
+    None.
+
+- **Success Response:**
+
+    - **Code:** 200 <br>
+      **Content:** 
+    ```
+    [
+        {
+            name : <string>,
+            id : <integer>,
+            teacher_name : <string>,
+            teacher_id : <integer>
+        },
+        ...
+    ]
+    ```
+ 
+- **Error Response:**
+
+    None.
+
+- **Notes:**
+
+    None.
+
+----
 ### Create a course
 
 Teacher create a new course. Needs authorization.
@@ -330,7 +380,7 @@ Update the meta of the course. Only include the fields that need to be updated(r
 ----
 ### List all students of the course
 
-Get a list of students of a course.
+Get a list of students of a course. Only teacher can do this. Needs authorization.
 
 - **URL**
 

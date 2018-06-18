@@ -5,6 +5,7 @@ import edu.fudan.main.domain.Graph;
 import edu.fudan.main.domain.User;
 import edu.fudan.main.domain.UserType;
 import edu.fudan.main.dto.response.CourseMetaResp;
+import edu.fudan.main.dto.response.CoursePublicResp;
 import edu.fudan.main.dto.response.UserPublicResp;
 import edu.fudan.main.exception.*;
 import edu.fudan.main.repository.CourseRepository;
@@ -64,7 +65,7 @@ public class CourseService {
         long newCourseId = RandomIdGenerator.getInstance().generateRandomLongId(courseRepository);
 
         Course course = courseRepository.save(new Course(courseCode, courseName, newCourseId,
-                teacherRepository.findById(currentUser.getId()).orElseThrow(UserNotFoundException::new)));
+                teacherRepository.findById(currentUser.getUserId()).orElseThrow(UserNotFoundException::new)));
 
         return new CourseMetaResp(course);
     }
@@ -110,12 +111,12 @@ public class CourseService {
 
         switch (currentUser.getType()) {
             case TEACHER:
-                courses = teacherRepository.findById(currentUser.getId()).orElseThrow(
+                courses = teacherRepository.findById(currentUser.getUserId()).orElseThrow(
                         UserNotFoundException::new
                 ).getCourseList();
                 break;
             case STUDENT:
-                courses = studentRepository.findById(currentUser.getId()).orElseThrow(
+                courses = studentRepository.findById(currentUser.getUserId()).orElseThrow(
                         UserNotFoundException::new
                 ).getCourseList();
                 break;
@@ -134,24 +135,31 @@ public class CourseService {
      * List all courses.
      * @return list of courses
      */
-    public List<CourseMetaResp> getAllCourses() {
-        List<CourseMetaResp> courseMetaRespList = new ArrayList<>();
+    public List<CoursePublicResp> getAllCourses() {
+        List<CoursePublicResp> coursePublicRespList = new ArrayList<>();
         for (Course c : courseRepository.findAll()) {
-            courseMetaRespList.add(new CourseMetaResp(c));
+            coursePublicRespList.add(new CoursePublicResp(c));
         }
 
-        return courseMetaRespList;
+        return coursePublicRespList;
     }
 
     /**
      * Get meta data of a course
+     * @param currentUser, current login user
      * @param courseId, id of the course
      * @return course meta info
      */
-    public CourseMetaResp getCourse(Long courseId){
+    public CourseMetaResp getCourse(User currentUser, Long courseId){
         Course course = courseRepository.findById(courseId).orElseThrow(
                 () -> new CourseNotFoundException(courseId)
         );
+
+        // Current login user must have read permission
+        if(!permissionService.checkReadPermOfCourse(currentUser, courseId)) {
+            throw new PermissionDeniedException();
+        }
+
         return new CourseMetaResp(course);
     }
 
@@ -190,14 +198,20 @@ public class CourseService {
 
     /**
      * Get all students of this course
+     * @param currentUser, current login user
      * @param courseId, id of the course
      * @return all students of this course
      */
-    public List<UserPublicResp> getAllStudentsOfCourse(long courseId){
+    public List<UserPublicResp> getAllStudentsOfCourse(User currentUser, long courseId){
         // First course must exist
         Course course = courseRepository.findById(courseId).orElseThrow(
                 () -> new CourseNotFoundException(courseId)
         );
+
+        // Current login user must have teacher/write permission
+        if(!permissionService.checkWritePermOfCourse(currentUser, courseId)) {
+            throw new PermissionDeniedException();
+        }
 
         List<UserPublicResp> results = new ArrayList<>();
 
@@ -237,7 +251,7 @@ public class CourseService {
         }
 
         // Add to course
-        course.addAStudent(studentRepository.findById(currentUser.getId()).orElseThrow(
+        course.addAStudent(studentRepository.findById(currentUser.getUserId()).orElseThrow(
                 UserNotFoundException::new
         ));
 

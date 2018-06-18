@@ -57,7 +57,7 @@ public class QuestionService {
         );
 
         // Check read permission
-        if (!permissionService.checkReadPermOfCourse(currentUser, node.getGraph().getCourse().getCourseId())) {
+        if (!permissionService.checkReadPermOfCourse(currentUser, node.getCourseId())) {
             throw new PermissionDeniedException();
         }
 
@@ -109,7 +109,7 @@ public class QuestionService {
                 NodeNotFoundException::new
         );
 
-        long courseId = node.getGraph().getCourse().getCourseId();
+        long courseId = node.getCourseId();
 
         // Current user must have the write permission of the course
         if (!permissionService.checkWritePermOfCourse(currentUser, courseId)) {
@@ -219,7 +219,7 @@ public class QuestionService {
             throw new PermissionDeniedException();
         }
 
-        AnswerEntry answerEntry = new AnswerEntry(currentUser.getId(), question, answer);
+        AnswerEntry answerEntry = new AnswerEntry(currentUser.getUserId(), question, answer);
 
         answerEntryRepository.save(answerEntry);
     }

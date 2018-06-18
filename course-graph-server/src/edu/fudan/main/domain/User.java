@@ -67,11 +67,11 @@ public class User {
         this.password = password;
     }
 
-    public long getId() {
+    public long getUserId() {
         return userId;
     }
 
-    public void setId(Long id) {
+    public void setUserId(Long id) {
         this.userId = id;
     }
 

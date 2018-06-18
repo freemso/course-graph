@@ -35,28 +35,29 @@ public class NodeController {
     @GetMapping("/resources")
     @Authorization
     ResponseEntity<List<ResourceResp>> getResourcesOfNode(@PathVariable String nid,
-                                                    @CurrentUser User currentUser) {
+                                                          @CurrentUser User currentUser) {
         return new ResponseEntity<>(nodeService.getAllResourcesOfNode(currentUser, nid), HttpStatus.OK);
     }
 
     @GetMapping("/lectures")
     @Authorization
     ResponseEntity<List<LectureResp>> getLecturesOfNode(@PathVariable String nid,
-                                                         @CurrentUser User currentUser) {
+                                                        @CurrentUser User currentUser) {
         return new ResponseEntity<>(nodeService.getAllLecturesOfNode(currentUser, nid), HttpStatus.OK);
     }
 
     @GetMapping("/questions")
     @Authorization
     ResponseEntity<List<QuestionResp>> getQuestionsOfNode(@PathVariable String nid,
-                                                         @CurrentUser User currentUser) {
+                                                          @CurrentUser User currentUser) {
         return new ResponseEntity<>(questionService.getAllQuestionsOfNode(currentUser, nid), HttpStatus.OK);
     }
 
     // TODO: post a resource
     @PostMapping("/resources")
-    ResponseEntity<ResourceResp> createResource(@PathVariable String nid,
-                                                @CurrentUser User currentUser,
+    @Authorization
+    ResponseEntity<ResourceResp> createResource(@CurrentUser User currentUser,
+                                                @PathVariable String nid,
                                                 @RequestBody AddResourceReq resourceRequest) {
 //        return new ResponseEntity<>(nodeService.createResource(currentUser, nid, resourceRequest.getTitle(),
 //                resourceRequest.getLink(), resourceRequest.getFile()), HttpStatus.OK);

@@ -53,7 +53,7 @@ public class QuestionResp {
                 // Student can get his own answer
                 for (AnswerEntry answerEntry : question.getAnswerEntryList()) {
                     // Check if there is answer to the question
-                    if (answerEntry.getSubmitterId() == currentUser.getId()) {
+                    if (answerEntry.getSubmitterId() == currentUser.getUserId()) {
                         answer = answerEntry.getContent();
                     }
                 }

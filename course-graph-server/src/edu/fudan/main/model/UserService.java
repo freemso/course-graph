@@ -55,7 +55,7 @@ public class UserService {
         }
 
         // Generate a token
-        TokenEntry tokenEntry = tokenRepository.createToken(user.getId());
+        TokenEntry tokenEntry = tokenRepository.createToken(user.getUserId());
 
         // Generate authentication from this token
         String authentication = tokenRepository.getAuthentication(tokenEntry);
@@ -172,7 +172,7 @@ public class UserService {
             currentUser.setPassword(newPassword);
 
             // Remove authentication token to deleteToken user
-            tokenRepository.deleteToken(currentUser.getId());
+            tokenRepository.deleteToken(currentUser.getUserId());
         }
 
         // Save the result to database
@@ -185,7 +185,7 @@ public class UserService {
      */
     public void deleteUser(User currentUser) {
         // Delete token
-        tokenRepository.deleteToken(currentUser.getId());
+        tokenRepository.deleteToken(currentUser.getUserId());
 
         // Delete user
         userRepository.delete(currentUser);

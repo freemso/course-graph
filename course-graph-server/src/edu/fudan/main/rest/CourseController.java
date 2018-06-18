@@ -8,6 +8,7 @@ import edu.fudan.main.dto.request.CreateGraphReq;
 import edu.fudan.main.dto.request.JoinCourseReq;
 import edu.fudan.main.dto.request.UpdateCourseMetaReq;
 import edu.fudan.main.dto.response.CourseMetaResp;
+import edu.fudan.main.dto.response.CoursePublicResp;
 import edu.fudan.main.dto.response.GraphMetaResp;
 import edu.fudan.main.dto.response.UserPublicResp;
 import edu.fudan.main.model.CourseService;
@@ -42,7 +43,7 @@ public class CourseController {
     }
 
     @GetMapping
-    ResponseEntity<List<CourseMetaResp>> getAllCourses() {
+    ResponseEntity<List<CoursePublicResp>> getAllCourses() {
         return new ResponseEntity<>(courseService.getAllCourses(), HttpStatus.OK);
     }
 
@@ -63,8 +64,10 @@ public class CourseController {
     }
 
     @GetMapping("/{cid}")
-    ResponseEntity<CourseMetaResp> getCourse(@PathVariable long cid) {
-        return new ResponseEntity<>(courseService.getCourse(cid), HttpStatus.OK);
+    @Authorization
+    ResponseEntity<CourseMetaResp> getCourse(@CurrentUser User currentUser,
+                                             @PathVariable long cid) {
+        return new ResponseEntity<>(courseService.getCourse(currentUser, cid), HttpStatus.OK);
     }
 
     @PutMapping("/{cid}")
@@ -77,8 +80,10 @@ public class CourseController {
     }
 
     @GetMapping("/{cid}/students")
-    ResponseEntity<List<UserPublicResp>> getStudentsOfCourse(@PathVariable long cid) {
-        return new ResponseEntity<>(courseService.getAllStudentsOfCourse(cid), HttpStatus.OK);
+    @Authorization
+    ResponseEntity<List<UserPublicResp>> getStudentsOfCourse(@CurrentUser User currentUser,
+                                                             @PathVariable long cid) {
+        return new ResponseEntity<>(courseService.getAllStudentsOfCourse(currentUser, cid), HttpStatus.OK);
     }
 
     @PostMapping("/{cid}/students")

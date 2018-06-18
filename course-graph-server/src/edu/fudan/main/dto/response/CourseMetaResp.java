@@ -17,12 +17,6 @@ public class CourseMetaResp {
     @JsonProperty("teacher_id")
     private long teacherId;
 
-//    @JsonProperty("created_time")
-//    private Date createdTime;
-//
-//    @JsonProperty("modified_time")
-//    private Date modifiedTime;
-
     @JsonProperty("student_num")
     private int studentNum;
 
@@ -34,9 +28,7 @@ public class CourseMetaResp {
         this.id = course.getCourseId();
         this.code = course.getCode();
         this.teacherName = course.getTeacher().getName();
-        this.teacherId = course.getTeacher().getId();
-//        this.createdTime = course.getCreatedTime();
-//        this.modifiedTime = course.getModifiedTime();
+        this.teacherId = course.getTeacher().getUserId();
         this.studentNum = course.getStudents().size();
     }
 
@@ -55,14 +47,6 @@ public class CourseMetaResp {
     public long getTeacherId(){
         return teacherId;
     }
-
-//    public Date getCreatedTime() {
-//        return createdTime;
-//    }
-//
-//    public Date getModifiedTime() {
-//        return modifiedTime;
-//    }
 
     public int getStudentNum() {
         return studentNum;

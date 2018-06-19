@@ -50,7 +50,9 @@ public class Question {
     }
 
     public List<AnswerEntry> getAnswerEntryList() {
-        return answerEntryList;
+        if(answerEntryList == null)
+            return new ArrayList<>();
+        return new ArrayList<>(answerEntryList);
     }
 
     public long getCourseId() {

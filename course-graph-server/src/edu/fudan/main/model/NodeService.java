@@ -1,28 +1,31 @@
 package edu.fudan.main.model;
 
-import edu.fudan.main.config.Constants;
 import edu.fudan.main.domain.*;
 import edu.fudan.main.dto.response.LectureResp;
 import edu.fudan.main.dto.response.ResourceResp;
 import edu.fudan.main.exception.*;
 import edu.fudan.main.repository.*;
+import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
 
 @Service
 @Transactional
 public class NodeService {
 
+    private static final String RESOURCE_PATH = "files/resources";
+
+    private static final String LECTURE_PATH = "files/lecture";
 
     private final NodeRepository nodeRepository;
 
@@ -64,7 +67,7 @@ public class NodeService {
         List<Lecture> lectureList = node.getLectureList();
 
         // Delete questions
-        for (Question question : questionList) {
+        for(Question question : questionList) {
             questionService.deleteQuestion(question.getQuestionId());
         }
         // Delete resources
@@ -114,15 +117,15 @@ public class NodeService {
         // Find deleted nodes and delete them from database
         Set<String> oldIds = new HashSet<>();
         Set<String> newIds = new HashSet<>();
-        for (Node node : oldNodes) {
+        for(Node node : oldNodes) {
             oldIds.add(node.getNodeId());
         }
-        for (Node node : newNodes) {
+        for(Node node : newNodes) {
             newIds.add(node.getNodeId());
         }
 
         oldIds.removeAll(newIds);
-        for (String nodeId : oldIds) {
+        for(String nodeId : oldIds) {
             deleteNode(nodeId);
         }
 
@@ -134,13 +137,13 @@ public class NodeService {
      * Recursively get nodes in this mind-map
      *
      * @param currentRoot the root of the mind-map json object
-     * @param newNodes    a list to save all nodes in this mind-map
+     * @param newNodes a list to save all nodes in this mind-map
      */
     private void getNodesFromMindData(JSONObject currentRoot, Set<Node> newNodes) {
-        Node node = new Node(currentRoot.get("id").toString(), currentRoot.get("topic").toString());
+        Node node = new Node(currentRoot.get("id").toString(),  currentRoot.get("topic").toString());
         newNodes.add(node);
         if (currentRoot.has("children")) {
-            JSONArray children = (JSONArray) currentRoot.get("children");
+            JSONArray children = (JSONArray)currentRoot.get("children");
             for (int i = 0; i < children.length(); i++) {
                 getNodesFromMindData((JSONObject) children.get(i), newNodes);
             }
@@ -148,63 +151,19 @@ public class NodeService {
     }
 
 
-    public List<ResourceResp> getAllResourcesOfNode(User currentUser, String nodeId) {
+    public List<ResourceResp> getAllResourcesOfNode(User currentUser, String nodeId){
 
         Node node = nodeRepository.findById(nodeId).orElseThrow(
                 NodeNotFoundException::new
         );
         List<ResourceResp> resourceResps = new ArrayList<>();
-        for (Resource r : node.getResourceList()) {
+        for(Resource r: node.getResourceList()){
             resourceResps.add(new ResourceResp(r));
         }
         return resourceResps;
     }
 
-    public Resource getResource(long rid) {
-        Resource resource = resourceRepository.findById(rid).orElseThrow(
-                ResourceNotFoundExeception::new
-        );
-        return resource;
-    }
-
-//
-//    public ResourceResp addNewResourceToNode(User currentUser, String nodeId, String title, String link, byte[] file){
-//        //get the node
-//        Node node = nodeRepository.findById(nodeId).orElseThrow(
-//                NodeNotFoundException::new
-//        );
-//
-//        /*check the permission of current user,
-//         *since it needs to set the depth to 2 to get the course, so simply check the user type
-//        */
-//        if(!currentUser.getType().equals(UserType.TEACHER))
-//            throw new PermissionDeniedException();
-//
-//        //for link
-//        if(link != null){
-//            Resource resource = new Resource(RandomIdGenerator.getInstance().generateRandomLongId(resourceRepository),
-//                    title, link, node, ResourceType.URL);
-//            resourceRepository.save(resource);
-//            return new ResourceResp(resource);
-//
-//        }else if(file != null){
-//            String path = RESOURCE_PATH + title;
-//            //save it to local directory
-//            File localFile = new File(path);
-//            try {
-//                FileUtils.writeByteArrayToFile(localFile, file);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            //for file resource, link means the absolute path of this file on the server.
-//            Resource resource = new Resource(RandomIdGenerator.getInstance().generateRandomLongId(resourceRepository),
-//                    title, localFile.getAbsolutePath(), node, ResourceType.FILE);
-//            return new ResourceResp(resource);
-//        }
-//        return null;
-//    }
-
-    public List<ResourceResp> addFileResourcesToNode(User currentUser, String nodeId, MultipartFile file, String description) throws IOException {
+    public ResourceResp addNewResourceToNode(User currentUser, String nodeId, String title, String link, byte[] file){
         //get the node
         Node node = nodeRepository.findById(nodeId).orElseThrow(
                 NodeNotFoundException::new
@@ -213,59 +172,41 @@ public class NodeService {
         /*check the permission of current user,
          *since it needs to set the depth to 2 to get the course, so simply check the user type
         */
-        if (!currentUser.getType().equals(UserType.TEACHER))
-            throw new PermissionDeniedException();
-
-        //save the file to local file system
-        List<ResourceResp> resourceResps = new ArrayList<>();
-
-        //assign a id for each file resource
-        long resourceId = RandomIdGenerator.getInstance().generateRandomLongId(resourceRepository);
-
-        //create a local file and save the file into it
-        Path filePath = Paths.get(Constants.FILE_PATH + resourceId + ".file");
-        File localFile = filePath.toFile();
-        file.transferTo(localFile);
-
-        //create a new resource and save it to the database
-        Resource resource = new Resource(resourceId, description,
-                localFile.getAbsolutePath(), node, ResourceType.FILE, file.getOriginalFilename());
-        resourceRepository.save(resource);
-        resourceResps.add(new ResourceResp(resource));
-        return resourceResps;
-    }
-
-    public ResourceResp addUrlResourceToNode(User currentUser, String nodeId, String link, String title) {
-        //get the node
-        Node node = nodeRepository.findById(nodeId).orElseThrow(
-                NodeNotFoundException::new
-        );
-
-        /*check the permission of current user,
-         *since it needs to set the depth to 2 to get the course, so simply check the user type
-        */
-        if (!currentUser.getType().equals(UserType.TEACHER))
+        if(!currentUser.getType().equals(UserType.TEACHER))
             throw new PermissionDeniedException();
 
         //for link
-        if (link != null) {
+        if(link != null){
             Resource resource = new Resource(RandomIdGenerator.getInstance().generateRandomLongId(resourceRepository),
                     title, link, node, ResourceType.URL);
             resourceRepository.save(resource);
+            return new ResourceResp(resource);
+
+        }else if(file != null){
+            String path = RESOURCE_PATH + title;
+            //save it to local directory
+            File localFile = new File(path);
+            try {
+                FileUtils.writeByteArrayToFile(localFile, file);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            //for file resource, link means the absolute path of this file on the server.
+            Resource resource = new Resource(RandomIdGenerator.getInstance().generateRandomLongId(resourceRepository),
+                    title, localFile.getAbsolutePath(), node, ResourceType.FILE);
             return new ResourceResp(resource);
         }
         return null;
     }
 
-
-    public void deleteResource(User currentUser, long resourceId) {
+    public void deleteResource(User currentUser, long resourceId){
         //get the resource
         Resource resource = resourceRepository.findById(resourceId).orElseThrow(
                 ResourceNotFoundExeception::new
         );
 
         //check permission
-        if (currentUser.getType().equals(UserType.STUDENT))
+        if(currentUser.getType().equals(UserType.STUDENT))
             throw new PermissionDeniedException();
 
         deleteResource(resource);
@@ -274,12 +215,12 @@ public class NodeService {
 
     private void deleteResource(Resource resource) {
         //if resource's type is url, just delete it from database
-        if (resource.getTitle().equals(ResourceType.URL)) {
+        if(resource.getTitle().equals(ResourceType.URL)){
             resourceRepository.delete(resource);
-        } else {
+        }else{
             //get the file by resource's link (absolute file path) and delete the file
             File file = new File(resource.getLink());
-            if (file.exists())
+            if(file.exists())
                 file.delete();
 
             //delete resource from database
@@ -287,29 +228,28 @@ public class NodeService {
         }
     }
 
-    public File downloadFile(long resourceId) throws FileNotFoundException {
+    public FileInputStream downloadFileOfNode(long resourceId) throws FileNotFoundException {
         //check resource type
         Resource resource = resourceRepository.findById(resourceId).orElseThrow(
                 ResourceNotFoundExeception::new
         );
 
-        if (resource.getType().equals(ResourceType.URL))
+        if(resource.getType().equals(ResourceType.URL))
             throw new ResourceNotFoundExeception();
 
         //return a file stream to controller rather than all bytes of the file
         //to handle large files not only small files. when faced with file problems,
         //always steam, never keep fully in memory
-        return new File(resource.getLink());
+        return new FileInputStream(new File(resource.getLink()));
     }
 
 
-    public LectureResp addNewLectureToNode(User currentUser, String nodeId) {
+    public LectureResp addNewLectureToNode(User currentUser, String nodeId){
         //TODO
-
         return null;
     }
 
-    public FileInputStream downloadLecture(long lectureId) {
+    public FileInputStream downloadLecture(long lectureId){
         //TODO
 
         return null;
@@ -321,9 +261,12 @@ public class NodeService {
     }
 
 
-    public void deleteLecture(User currentUser, long lectureId) {
+
+
+
+    public void deleteLecture(User currentUser, long lectureId){
         //check user permission
-        if (currentUser.getType().equals(UserType.STUDENT))
+        if(currentUser.getType().equals(UserType.STUDENT))
             throw new PermissionDeniedException();
 
         deleteLecture(lectureId);
@@ -336,12 +279,13 @@ public class NodeService {
 
         //delete file
         File file = new File(lecture.getLink());
-        if (file.exists())
+        if(file.exists())
             file.delete();
 
         //delete from database
         lectureRepository.delete(lecture);
     }
+
 
 
 }

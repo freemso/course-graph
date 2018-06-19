@@ -34,14 +34,6 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
         if (!(handler instanceof HandlerMethod)) {
             return true;
         }
-        //set cors
-//        response.addHeader("Access-Control-Allow-Origin", "*");
-//        response.addHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS,PUT,DELETE,HEAD");
-//        response.addHeader("Access-Control-Allow-Headers", "S_ID,content-type");
-//        response.addHeader("Access-Control-Max-Age", "3600000");
-//        response.addHeader("Access-Control-Allow-Credentials", "true");
-
-        //
 
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         Method method = handlerMethod.getMethod();
@@ -61,8 +53,6 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
                 return false;
             }
         }
-
-
         return true;
     }
 }

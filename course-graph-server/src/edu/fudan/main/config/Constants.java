@@ -39,7 +39,5 @@ public class Constants {
 
     public static final String EMAIL_REGEX = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$";
 
-    public static final String FILE_PATH = "/Users/xiongzhongzheng/Documents/Resources/Files/";
-
-    public static final String LECTURE_PATH = "/Users/xiongzhongzheng/Documents/Resources/Lectures/";
+    public static final String RESOURCE_PATH = "";
 }

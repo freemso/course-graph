@@ -28,4 +28,7 @@ public enum ResourceType {
         throw new IllegalUserTypeException();
     }
 
+    public String getText() {
+        return text;
+    }
 }

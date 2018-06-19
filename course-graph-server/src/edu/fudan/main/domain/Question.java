@@ -5,6 +5,7 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
 import org.neo4j.ogm.annotation.Relationship;
 
+import javax.validation.constraints.Null;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class Question {
     }
 
     public List<AnswerEntry> getAnswerEntryList() {
-        return answerEntryList;
+        return answerEntryList == null? new ArrayList<>():new ArrayList<>(answerEntryList);
     }
 
     public long getCourseId() {

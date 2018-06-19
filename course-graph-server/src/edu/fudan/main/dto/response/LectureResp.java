@@ -10,6 +10,8 @@ public class LectureResp {
 
     private String link;
 
+    private String fileName;
+
     public LectureResp() {
     }
 
@@ -17,5 +19,21 @@ public class LectureResp {
         this.id = lecture.getLectureId();
         this.title = lecture.getTitle();
         this.link = lecture.getTitle();
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public String getFileName() {
+        return fileName;
     }
 }

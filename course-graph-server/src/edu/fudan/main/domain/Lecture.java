@@ -23,6 +23,13 @@ public class Lecture {
     public Lecture() {
     }
 
+    public Lecture(long lectureId, String title, String link, Node node){
+        this.lectureId = lectureId;
+        this.title = title;
+        this.link = link;
+        this.node = node;
+    }
+
     public Long getLectureId() {
         return lectureId;
     }

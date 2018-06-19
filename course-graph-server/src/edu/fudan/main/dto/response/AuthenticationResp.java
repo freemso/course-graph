@@ -21,4 +21,8 @@ public class AuthenticationResp {
         return authentication;
     }
 
+
+    public UserPublicResp getUser() {
+        return user;
+    }
 }

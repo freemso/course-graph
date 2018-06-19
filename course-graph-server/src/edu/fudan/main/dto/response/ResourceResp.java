@@ -10,6 +10,8 @@ public class ResourceResp {
 
     private String link;
 
+    private String fileName;
+
     public ResourceResp() {
     }
 
@@ -17,5 +19,22 @@ public class ResourceResp {
         this.id = resource.getResourceId();
         this.title = resource.getTitle();
         this.link = resource.getLink();
+        this.fileName = resource.getOriginalFileName();
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public String getLink() {
+        return link;
     }
 }

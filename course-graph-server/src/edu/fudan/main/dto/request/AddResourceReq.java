@@ -14,15 +14,16 @@ public class AddResourceReq {
     String link;
 
 
-    byte[] file;
-
     @NotNull
     ResourceType type;
 
-    public AddResourceReq(@NotBlank String title, @NotBlank String link, byte[] file, @NotNull ResourceType type) {
+    public AddResourceReq(){
+
+    }
+
+    public AddResourceReq(@NotBlank String title, @NotBlank String link, @NotNull ResourceType type) {
         this.title = title;
         this.link = link;
-        this.file = file;
         this.type = type;
     }
 
@@ -34,11 +35,21 @@ public class AddResourceReq {
         return link;
     }
 
-    public byte[] getFile() {
-        return file;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
+    public void setType(ResourceType type) {
+        this.type = type;
     }
 
     public ResourceType getType() {
         return type;
     }
+
+
 }

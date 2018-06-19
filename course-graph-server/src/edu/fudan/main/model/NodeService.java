@@ -239,7 +239,7 @@ public class NodeService {
             resourceRepository.delete(resource);
         } else {
             //get the file by resource's link (absolute file path) and delete the file
-            File file = new File(resource.getLink());
+            File file = new File(Constants.FILE_PATH + resource.getResourceId() + ".file");
             if (file.exists())
                 file.delete();
 
@@ -260,7 +260,7 @@ public class NodeService {
         //return a file stream to controller rather than all bytes of the file
         //to handle large files not only small files. when faced with file problems,
         //always steam, never keep fully in memory
-        return new File(resource.getLink());
+        return new File(Constants.FILE_PATH + resourceId +".file");
     }
 
     public LectureResp addNewLectureToNode(User currentUser, String nodeId, MultipartFile file, String description)  {
@@ -289,7 +289,7 @@ public class NodeService {
         }
 
         //create a new resource and save it to the database
-        Lecture lecture = new Lecture(lectureId, description, localFile.getAbsolutePath(), node);
+        Lecture lecture = new Lecture(lectureId, description, localFile.getAbsolutePath(), node, file.getOriginalFilename());
         lectureRepository.save(lecture);
 
         return new LectureResp(lecture);
@@ -310,7 +310,9 @@ public class NodeService {
         //return a file stream to controller rather than all bytes of the file
         //to handle large files not only small files. when faced with file problems,
         //always steam, never keep fully in memory
-        return new File(lecture.getLink());
+      //  Path path = Paths.get();
+        return new File(Constants.LECTURE_PATH + lectureId +".file");
+        //return new File();
     }
 
 
@@ -342,7 +344,7 @@ public class NodeService {
         );
 
         //delete file
-        File file = new File(lecture.getLink());
+        File file = new File(Constants.LECTURE_PATH + lectureId + ".file");
         if (file.exists())
             file.delete();
         //delete from database

@@ -20,15 +20,20 @@ public class Lecture {
     @Relationship(type = "HAS_LECTURE", direction = Relationship.INCOMING)
     private Node node;
 
+    @Property
+    private String fileName;
+
     public Lecture() {
     }
 
-    public Lecture(long lectureId, String title, String link, Node node){
+    public Lecture(long lectureId, String title, String link, Node node, String fileName){
         this.lectureId = lectureId;
         this.title = title;
         this.link = link;
         this.node = node;
+        this.fileName = fileName;
     }
+
 
     public Long getLectureId() {
         return lectureId;
@@ -46,7 +51,7 @@ public class Lecture {
         return node;
     }
 
-    public void removeRelation() {
-        this.node = null;
+    public String getFileName() {
+        return fileName;
     }
 }

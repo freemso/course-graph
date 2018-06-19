@@ -63,8 +63,8 @@ public class NodeController {
     ResponseEntity<ResourceResp> addResourceToNode(@PathVariable String nid,
                                                    @CurrentUser User currentUser,
                                                    @RequestBody AddResourceReq resourceRequest) {
-        return new ResponseEntity<ResourceResp>(nodeService.addUrlResourceToNode(currentUser, nid, resourceRequest.getTitle(),
-                resourceRequest.getLink()), HttpStatus.OK);
+        return new ResponseEntity<ResourceResp>(nodeService.addUrlResourceToNode(currentUser, nid,
+                resourceRequest.getLink(),resourceRequest.getTitle()), HttpStatus.OK);
     }
 
     @PostMapping("/resources/files")

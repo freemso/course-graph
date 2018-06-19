@@ -18,7 +18,8 @@ public class LectureResp {
     public LectureResp(Lecture lecture) {
         this.id = lecture.getLectureId();
         this.title = lecture.getTitle();
-        this.link = lecture.getTitle();
+        this.link = lecture.getLink();
+        this.fileName = lecture.getFileName();
     }
 
     public long getId() {

@@ -93,7 +93,7 @@ public class QuestionService {
     }
 
     /**
-     * create a new multiple-choice and add it to a course node
+     * create a new question and add it to a course node
      *
      * @param nodeId      id of course node
      * @param description description of the question to be added
@@ -143,17 +143,7 @@ public class QuestionService {
         return new QuestionResp(question, currentUser);
     }
 
-    // Do not support updating question
-//    public QuestionResp updateQuestion(User currentUser, long questionId, String description,
-////                                       List<Choice> choices, String answer) {
-////
-////    }
-
-    private void deleteQuestion(Question question) {
-        // Delete all the answer entries
-//        question.removeAnswers();
-//        questionRepository.save(question);
-
+    void deleteQuestion(Question question) {
         if (question.getQuestionType() == QuestionType.MULTIPLE_CHOICE) {
             QuestionMultipleChoice questionMultipleChoice = questionMultipleChoiceRepository.findById(
                     question.getQuestionId()).orElseThrow(
@@ -165,21 +155,6 @@ public class QuestionService {
         }
 
         questionRepository.delete(question);
-    }
-
-    /**
-     * Delete a question.
-     * For NodeService use.
-     * Do NOT need to check authorization.
-     * @param questionId id of question to be deleted
-     */
-    void deleteQuestion(long questionId) {
-        // First question must exist
-        Question question = questionRepository.findById(questionId, -1).orElseThrow(
-                QuestionNotFoundException::new
-        );
-
-        deleteQuestion(question);
     }
 
     /**

@@ -92,7 +92,7 @@ public class CourseController {
                                                       @PathVariable long cid,
                                                       @Valid @RequestBody JoinCourseReq joinCourseReq) {
         return new ResponseEntity<>(courseService.addStudentToCourse(
-                currentUser, cid, joinCourseReq.getCode()), HttpStatus.OK);
+                currentUser, cid, joinCourseReq.getCode()), HttpStatus.CREATED);
     }
 
     @GetMapping("/{cid}/graphs")

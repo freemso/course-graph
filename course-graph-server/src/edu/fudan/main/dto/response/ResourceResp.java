@@ -11,8 +11,6 @@ public class ResourceResp {
 
     private String link;
 
-    private String fileName;
-
     private ResourceType type;
 
     public ResourceResp() {
@@ -23,7 +21,6 @@ public class ResourceResp {
         this.title = resource.getTitle();
         this.link = resource.getLink();
         this.type = resource.getType();
-        this.fileName = resource.getOriginalFileName();
     }
 
     public long getId() {
@@ -32,10 +29,6 @@ public class ResourceResp {
 
     public String getTitle() {
         return title;
-    }
-
-    public String getFileName() {
-        return fileName;
     }
 
     public String getLink() {

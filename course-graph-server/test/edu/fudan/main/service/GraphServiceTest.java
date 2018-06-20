@@ -324,11 +324,11 @@ public class GraphServiceTest {
 
         // Wrong graph id
         try {
-            graphService.getJsmind(-1);
+            graphService.getJsmind(teacher1, -1);
             fail();
         } catch (GraphNotFoundException ignore){}
 
-        JsmindResp jsmindResp = graphService.getJsmind(graphId);
+        JsmindResp jsmindResp = graphService.getJsmind(teacher1, graphId);
 
         assertEquals(jsmindResp.getJsmind(), JSMIND_BASE);
     }

@@ -2,12 +2,9 @@ package edu.fudan.main.rest;
 
 import edu.fudan.main.annotation.Authorization;
 import edu.fudan.main.annotation.CurrentUser;
-import edu.fudan.main.domain.Resource;
 import edu.fudan.main.domain.User;
 import edu.fudan.main.dto.response.ResourceResp;
-import edu.fudan.main.exception.ResourceIOException;
 import edu.fudan.main.model.NodeService;
-import edu.fudan.main.model.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -15,11 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.List;
 
 @Controller
 @CrossOrigin
@@ -27,7 +19,6 @@ import java.util.List;
 public class ResourceController {
 
     private final NodeService nodeService;
-
 
     @Autowired
     public ResourceController(NodeService nodeService) {
@@ -37,7 +28,7 @@ public class ResourceController {
     @GetMapping
     @Authorization
     ResponseEntity<ResourceResp> getResourceMeta(@CurrentUser User currentUser, @PathVariable long rid) {
-        return new ResponseEntity<ResourceResp>(nodeService.getResourceMeta(rid), HttpStatus.OK);
+        return new ResponseEntity<>(nodeService.getResourceMeta(currentUser, rid), HttpStatus.OK);
     }
 
     @DeleteMapping
@@ -47,30 +38,15 @@ public class ResourceController {
         return new ResponseEntity(null, HttpStatus.OK);
     }
 
-//    @GetMapping("/file")
-//    @Authorization
-//    ResponseEntity<MultipartFile> getResourceFile(@CurrentUser User currentUser, @PathVariable long rid) {
-//        return null;
-//    }
-
-
-    @GetMapping(value = "/file")
+    @GetMapping("/file")
     @Authorization
-    public ResponseEntity<InputStreamResource> downloadFileResource(@CurrentUser User user, @PathVariable long rid) {
-        try {
-            ResourceResp resourceResp = nodeService.getResourceMeta(rid);
-            //set header
-            HttpHeaders headers = new HttpHeaders();
-            headers.add(HttpHeaders.CONTENT_DISPOSITION,
-                    "attachment; filename=\"" + resourceResp.getFileName() + "\"");
-            return new ResponseEntity<InputStreamResource>(
-                    new InputStreamResource(new FileInputStream(nodeService.downloadFile(rid))),
-                    headers,
-                    HttpStatus.OK);
-        } catch (FileNotFoundException e) {
-            throw new ResourceIOException(e.getMessage());
-//            return new ResponseEntity<InputStreamResource>((InputStreamResource) null, HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<InputStreamResource> downloadFileResource(@CurrentUser User currentUser,
+                                                                    @PathVariable long rid) {
+        ResourceResp resourceResp = nodeService.getResourceMeta(currentUser, rid);
+        // Set header
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION,
+                "attachment; filename=\"" + resourceResp.getTitle() + "\"");
+        return new ResponseEntity<>(nodeService.downloadResourceFile(currentUser, rid), headers, HttpStatus.OK);
     }
-
 }

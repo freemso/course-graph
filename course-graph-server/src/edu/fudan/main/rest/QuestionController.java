@@ -40,6 +40,6 @@ public class QuestionController {
     ResponseEntity postAnswer(@CurrentUser User currentUser, @PathVariable long qid,
                               @RequestBody AnswerQuestionReq answerQuestionReq) {
         questionService.createAnswerEntry(currentUser, qid, answerQuestionReq.getAnswer());
-        return new ResponseEntity(null, HttpStatus.OK);
+        return new ResponseEntity(null, HttpStatus.CREATED);
     }
 }

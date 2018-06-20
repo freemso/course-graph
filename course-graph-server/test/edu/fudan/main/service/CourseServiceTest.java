@@ -10,7 +10,6 @@ import edu.fudan.main.exception.*;
 import edu.fudan.main.model.CourseService;
 import edu.fudan.main.model.UserService;
 import edu.fudan.main.repository.CourseRepository;
-import edu.fudan.main.repository.StudentRepository;
 import edu.fudan.main.repository.TeacherRepository;
 import edu.fudan.main.repository.UserRepository;
 import org.junit.After;
@@ -46,11 +45,7 @@ public class CourseServiceTest {
     @Autowired
     private TeacherRepository teacherRepository;
 
-    @Autowired
-    private StudentRepository studentRepository;
-
     private User teacherUser, studentUser;
-
 
     @Before
     public void setup() {
@@ -263,18 +258,18 @@ public class CourseServiceTest {
         assertEquals(anotherStudentCourseList.size(), 2);
 
         // Get all students of a course
-        List<UserPublicResp> studentList = courseService.getAllStudentsOfCourse(courseMetaResp.getId());
+        List<UserPublicResp> studentList = courseService.getAllStudentsOfCourse(teacherUser, courseMetaResp.getId());
         assertNotNull(studentList);
         assertEquals(studentList.size(), 2);
 
         // Get all student of another course
-        List<UserPublicResp> studentListAnother = courseService.getAllStudentsOfCourse(anotherCourseMetaResp.getId());
+        List<UserPublicResp> studentListAnother = courseService.getAllStudentsOfCourse(teacherUser, anotherCourseMetaResp.getId());
         assertNotNull(studentListAnother);
         assertEquals(studentListAnother.size(), 1);
 
         // Course id not exist
         try {
-            courseService.getAllStudentsOfCourse(42);
+            courseService.getAllStudentsOfCourse(teacherUser, 42);
             fail();
         } catch (CourseNotFoundException ignore) {}
     }

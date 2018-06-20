@@ -5,23 +5,22 @@ import edu.fudan.main.domain.ResourceType;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-public class AddResourceReq {
+public class AddUrlResourceReq {
 
     @NotBlank
-    String title;
+    private String title;
 
     @NotBlank
-    String link;
-
+    private String link;
 
     @NotNull
-    ResourceType type;
+    private ResourceType type;
 
-    public AddResourceReq(){
+    public AddUrlResourceReq(){
 
     }
 
-    public AddResourceReq(@NotBlank String title, @NotBlank String link, @NotNull ResourceType type) {
+    public AddUrlResourceReq(@NotBlank String title, @NotBlank String link, @NotNull ResourceType type) {
         this.title = title;
         this.link = link;
         this.type = type;

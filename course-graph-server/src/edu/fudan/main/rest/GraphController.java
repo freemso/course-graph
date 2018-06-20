@@ -56,7 +56,8 @@ public class GraphController {
     ResponseEntity<JsmindResp> updateGraphJsmind(@PathVariable long gid,
                                                  @CurrentUser User currentUser,
                                                  @Valid @RequestBody UpdateJsmindReq updateJsmindReq) {
-        return new ResponseEntity<>(graphService.updateJsmind(currentUser, gid, updateJsmindReq.getJsmind()), HttpStatus.OK);
+        return new ResponseEntity<>(graphService.updateJsmind(currentUser, gid, updateJsmindReq.getJsmind()),
+                HttpStatus.OK);
     }
 
     @DeleteMapping("/{gid}")

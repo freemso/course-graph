@@ -6,8 +6,6 @@ import edu.fudan.main.exception.PermissionDeniedException;
 import edu.fudan.main.model.GraphService;
 import edu.fudan.main.model.QuestionService;
 import edu.fudan.main.repository.*;
-import io.netty.handler.codec.redis.ArrayRedisMessage;
-import org.bouncycastle.crypto.prng.RandomGenerator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

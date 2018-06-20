@@ -1,10 +1,6 @@
 package edu.fudan.main.config;
 
-import edu.fudan.main.repository.UserRepository;
-import edu.fudan.main.rest.AuthorizationInterceptor;
-import edu.fudan.main.rest.CurrentUserMethodArgumentResolver;
 import org.neo4j.ogm.session.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,11 +10,6 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import java.util.List;
 
 @Configuration
 @EnableNeo4jRepositories("edu.fudan.main.repository")

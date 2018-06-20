@@ -3,8 +3,8 @@ package edu.fudan.main.rest;
 import edu.fudan.main.annotation.Authorization;
 import edu.fudan.main.annotation.CurrentUser;
 import edu.fudan.main.domain.User;
-import edu.fudan.main.dto.request.UpdateJsmindReq;
 import edu.fudan.main.dto.request.UpdateGraphMetaReq;
+import edu.fudan.main.dto.request.UpdateJsmindReq;
 import edu.fudan.main.dto.response.GraphMetaResp;
 import edu.fudan.main.dto.response.JsmindResp;
 import edu.fudan.main.model.GraphService;
@@ -29,8 +29,10 @@ public class GraphController {
     }
 
     @GetMapping("/{gid}")
-    ResponseEntity<GraphMetaResp> getGraphMeta(@PathVariable long gid) {
-        return new ResponseEntity<>(graphService.getGraphMeta(gid), HttpStatus.OK);
+    @Authorization
+    ResponseEntity<GraphMetaResp> getGraphMeta(@CurrentUser User currentUser,
+                                               @PathVariable long gid) {
+        return new ResponseEntity<>(graphService.getGraphMeta(currentUser, gid), HttpStatus.OK);
     }
 
     @PutMapping("/{gid}")
@@ -43,8 +45,10 @@ public class GraphController {
     }
 
     @GetMapping("/{gid}/jsmind")
-    ResponseEntity<JsmindResp> getGraphJsmind(@PathVariable long gid) {
-        return new ResponseEntity<>(graphService.getJsmind(gid), HttpStatus.OK);
+    @Authorization
+    ResponseEntity<JsmindResp> getGraphJsmind(@CurrentUser User currentUser,
+                                              @PathVariable long gid) {
+        return new ResponseEntity<>(graphService.getJsmind(currentUser, gid), HttpStatus.OK);
     }
 
     @PutMapping("/{gid}/jsmind")

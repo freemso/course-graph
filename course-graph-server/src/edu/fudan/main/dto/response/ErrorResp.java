@@ -1,7 +1,5 @@
 package edu.fudan.main.dto.response;
 
-import org.neo4j.ogm.annotation.typeconversion.Convert;
-
 import java.util.Date;
 
 

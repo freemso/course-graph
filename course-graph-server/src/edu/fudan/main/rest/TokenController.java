@@ -44,10 +44,10 @@ public class TokenController {
      * @param currentUser, authorized current user
      * @return response with empty body
      */
-    @Authorization
     @DeleteMapping
+    @Authorization
     ResponseEntity logout(@CurrentUser User currentUser) {
-        userService.deleteToken(currentUser.getId());
+        userService.deleteToken(currentUser.getUserId());
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

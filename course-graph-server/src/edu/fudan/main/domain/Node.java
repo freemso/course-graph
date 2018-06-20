@@ -15,9 +15,6 @@ public class Node {
     @Property
     private String title;
 
-    @Relationship(type = "HAS_NODE", direction = Relationship.INCOMING)
-    private Graph graph;
-
     @Relationship(type = "HAS_RESOURCE")
     private List<Resource> resourceList;
 
@@ -27,12 +24,16 @@ public class Node {
     @Relationship(type = "HAS_QUESTION")
     private List<Question> questionList;
 
+    @Property
+    private Long courseId;
+
     public Node() {
     }
 
-    public Node(String id, String title) {
+    public Node(String id, String title, long courseId) {
         this.nodeId = id;
         this.title = title;
+        this.courseId = courseId;
     }
 
     public String getNodeId() {
@@ -41,6 +42,10 @@ public class Node {
 
     public String getTitle() {
         return title;
+    }
+
+    public Long getCourseId() {
+        return courseId;
     }
 
     public List<Resource> getResourceList() {
@@ -53,10 +58,6 @@ public class Node {
 
     public List<Question> getQuestionList() {
         return questionList == null ? new ArrayList<>() : questionList;
-    }
-
-    public Graph getGraph() {
-        return graph;
     }
 
     public void addLecture(Lecture lecture) {
@@ -79,14 +80,6 @@ public class Node {
         }
         this.resourceList.add(resource);
     }
-
-    public void removeRelations() {
-        this.graph = null;
-        this.resourceList = null;
-        this.questionList = null;
-        this.lectureList = null;
-    }
-
 
     @Override
     public boolean equals(Object o) {

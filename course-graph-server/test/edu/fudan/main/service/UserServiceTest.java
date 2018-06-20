@@ -154,7 +154,7 @@ public class UserServiceTest {
         User user = userRepository.findById(1L).orElse(null);
         assertNotNull(user);
         assertEquals(user.getName(), resp.getName());
-        assertEquals(user.getId(), resp.getId());
+        assertEquals(user.getUserId(), resp.getId());
         assertEquals(user.getType(), resp.getType());
 
     }

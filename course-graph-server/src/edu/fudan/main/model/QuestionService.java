@@ -5,7 +5,10 @@ import edu.fudan.main.dto.response.QuestionResp;
 import edu.fudan.main.exception.NodeNotFoundException;
 import edu.fudan.main.exception.PermissionDeniedException;
 import edu.fudan.main.exception.QuestionNotFoundException;
-import edu.fudan.main.repository.*;
+import edu.fudan.main.repository.AnswerEntryRepository;
+import edu.fudan.main.repository.NodeRepository;
+import edu.fudan.main.repository.QuestionMultipleChoiceRepository;
+import edu.fudan.main.repository.QuestionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,7 +57,7 @@ public class QuestionService {
         );
 
         // Check read permission
-        if (!permissionService.checkReadPermOfCourse(currentUser, node.getGraph().getCourse().getCourseId())) {
+        if (!permissionService.checkReadPermOfCourse(currentUser, node.getCourseId())) {
             throw new PermissionDeniedException();
         }
 
@@ -106,7 +109,7 @@ public class QuestionService {
                 NodeNotFoundException::new
         );
 
-        long courseId = node.getGraph().getCourse().getCourseId();
+        long courseId = node.getCourseId();
 
         // Current user must have the write permission of the course
         if (!permissionService.checkWritePermOfCourse(currentUser, courseId)) {
@@ -216,7 +219,7 @@ public class QuestionService {
             throw new PermissionDeniedException();
         }
 
-        AnswerEntry answerEntry = new AnswerEntry(currentUser.getId(), question, answer);
+        AnswerEntry answerEntry = new AnswerEntry(currentUser.getUserId(), question, answer);
 
         answerEntryRepository.save(answerEntry);
     }

@@ -18,14 +18,6 @@ public class Course {
     @Index(unique = true)
     private String code;
 
-    @Property
-    @CreatedDate
-    private Date createdTime;
-
-    @Property
-    @LastModifiedDate
-    private Date modifiedTime;
-
     @Relationship(type = "GRAPH_OF", direction = Relationship.INCOMING)
     private List<Graph> graphList;
 
@@ -47,7 +39,6 @@ public class Course {
 
     public void setName(String name){
         this.name = name;
-        this.modifiedTime = Calendar.getInstance().getTime();
     }
 
     public Long getCourseId() {
@@ -66,14 +57,6 @@ public class Course {
         return code;
     }
 
-    public Date getCreatedTime() {
-        return createdTime;
-    }
-
-    public Date getModifiedTime() {
-        return modifiedTime;
-    }
-
     public List<Graph> getGraphList() {
         return graphList == null ? new ArrayList<>() : graphList;
     }
@@ -84,10 +67,6 @@ public class Course {
 
     public Teacher getTeacher() {
         return teacher;
-    }
-
-    public void removeTeacher() {
-        teacher = null;
     }
 
     public void addAStudent(Student student) {
@@ -103,6 +82,11 @@ public class Course {
         if (this == o) return true;
         if (!(o instanceof Course)) return false;
         return this.courseId.equals(((Course) o).courseId);
+    }
+
+    @Override
+    public int hashCode() {
+        return courseId.hashCode();
     }
 
 //    @Override

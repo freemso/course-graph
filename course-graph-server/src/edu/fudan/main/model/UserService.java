@@ -4,7 +4,6 @@ import edu.fudan.main.domain.*;
 import edu.fudan.main.dto.response.AuthenticationResp;
 import edu.fudan.main.dto.response.UserPrivateResp;
 import edu.fudan.main.dto.response.UserPublicResp;
-import edu.fudan.main.exception.CourseNotFoundException;
 import edu.fudan.main.exception.EmailConflictException;
 import edu.fudan.main.exception.EmailOrPasswordException;
 import edu.fudan.main.exception.UserNotFoundException;
@@ -17,8 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @Transactional
@@ -58,7 +55,7 @@ public class UserService {
         }
 
         // Generate a token
-        TokenEntry tokenEntry = tokenRepository.createToken(user.getId());
+        TokenEntry tokenEntry = tokenRepository.createToken(user.getUserId());
 
         // Generate authentication from this token
         String authentication = tokenRepository.getAuthentication(tokenEntry);
@@ -175,7 +172,7 @@ public class UserService {
             currentUser.setPassword(newPassword);
 
             // Remove authentication token to deleteToken user
-            tokenRepository.deleteToken(currentUser.getId());
+            tokenRepository.deleteToken(currentUser.getUserId());
         }
 
         // Save the result to database
@@ -188,7 +185,7 @@ public class UserService {
      */
     public void deleteUser(User currentUser) {
         // Delete token
-        tokenRepository.deleteToken(currentUser.getId());
+        tokenRepository.deleteToken(currentUser.getUserId());
 
         // Delete user
         userRepository.delete(currentUser);

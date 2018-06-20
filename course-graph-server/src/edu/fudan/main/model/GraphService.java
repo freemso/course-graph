@@ -210,25 +210,37 @@ public class GraphService {
 
     /**
      * Get graph jsmind data
+     * @param currentUser, current login user
      * @param graphId, id of the graph
      * @return jsmind json string
      */
-    public JsmindResp getJsmind(long graphId) {
-        String jsMindData = graphRepository.findById(graphId).orElseThrow(
+    public JsmindResp getJsmind(User currentUser, long graphId) {
+        Graph graph = graphRepository.findById(graphId).orElseThrow(
                 GraphNotFoundException::new
-        ).getJsMindData();
+        );
+
+        if(!permissionService.checkReadPermOfCourse(currentUser, graph.getCourse().getCourseId())) {
+            throw new PermissionDeniedException();
+        }
+
+        String jsMindData = graph.getJsMindData();
         return new JsmindResp(jsMindData);
     }
 
     /**
      * Get meta data of a graph
+     * @param currentUser, current login user
      * @param graphId, id of the graph
      * @return graph meta data
      */
-    public GraphMetaResp getGraphMeta(long graphId) {
+    public GraphMetaResp getGraphMeta(User currentUser, long graphId) {
         Graph graph = graphRepository.findById(graphId).orElseThrow(
                 GraphNotFoundException::new
         );
+
+        if(!permissionService.checkReadPermOfCourse(currentUser, graph.getCourse().getCourseId())) {
+            throw new PermissionDeniedException();
+        }
         return new GraphMetaResp(graph);
     }
 

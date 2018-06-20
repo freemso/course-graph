@@ -15,7 +15,7 @@ public class UserPublicResp {
 
     public UserPublicResp(User user) {
         this.name = user.getName();
-        this.id = user.getId();
+        this.id = user.getUserId();
         this.type = user.getType();
     }
 

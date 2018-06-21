@@ -1,0 +1,18 @@
+<div *ngFor="let lec of lectures; let i = index" class="card box-shadow" style="width: 45rem; margin: 10px;">
+  <div class="card-header">
+    <h2>{{i+1}}. {{lec.title}}</h2>
+  </div>
+
+  <div class="card-body">
+    <p>描述：{{lec.title}}</p>
+    <p>名称：{{lec.fileName}}</p>
+    <button type="button" class="btn btn-primary"
+        fileSaver
+        [method]="'GET'"
+        [fileName]="lec.fileName"
+        [url]="'http://192.168.1.104:8080/lectures/'+lec.id+'/download'"
+        [header]="{Authorization: token}"
+        (success)="onSuc($event)"
+        (error)="onErr($event)">下载</button>
+  </div>
+</div>

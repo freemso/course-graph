@@ -1,0 +1,20 @@
+<div>
+  <div class="jumbotron" style="text-align:center">
+    <h2>思维导图 01</h2>
+  </div>
+
+  <div class="row justify-content-center">
+    <button class="btn btn-md btn-primary" (click)="addNode()">增加</button>
+    <span>&nbsp;</span>
+    <button class="btn btn-md btn-primary" (click)="removeNode()">移除</button>
+    <span>&nbsp;</span>
+
+    <label>背景色：</label>
+    <input type="color" value="value" [(ngModel)]="bgColor" (ngModelChange)="changeColor()">
+    <label>字体色：</label>
+    <input type="color" value="value" [(ngModel)]="fgColor" (ngModelChange)="changeFontColor()">
+    <span>&nbsp;</span>
+  </div>
+
+  <div id="jsmind_container" (click)="checkStatus()"></div>
+</div>

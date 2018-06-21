@@ -1,0 +1,25 @@
+<div *ngFor="let res of resources; let i = index" class="card box-shadow" style="width: 45rem; margin: 10px;">
+  <div class="card-header">
+    <h2>{{i+1}}. {{res.title}}</h2>
+  </div>
+
+  <div *ngIf="res.type=='FILE'" class="card-body">
+    <p>描述：{{res.title}}</p>
+    <p>名称：{{res.fileName}}</p>
+    <button type="button" class="btn btn-primary"
+      fileSaver 
+      [method]="'GET'" 
+      [fileName]="res.fileName"
+      [url]="'http://192.168.1.104:8080/resources/'+res.id+'/file'"
+      [header]="{Authorization: token}"
+      [query]="{ pi: res.id }"
+      (success)="onSuc($event)" 
+      (error)="onErr($event)">下载
+    </button>
+  </div>
+
+  <div *ngIf="res.type=='URL'" class="card-body">
+    <p>描述：{{res.title}}</p>
+    <a href="{{res.link}}">进入</a>
+  </div>
+</div>

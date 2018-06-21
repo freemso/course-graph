@@ -1,0 +1,47 @@
+<body class="text-center">
+  <form class="form-signin" (ngSubmit)="form.form.valid && user.password==passwordAgain && register()" #form="ngForm">
+    <h1 class="h3 mb-3 font-weight-normal">请注册</h1>
+
+    <input type="email" name="email" [(ngModel)]="user.email" #email="ngModel" class="form-control" placeholder="邮箱" required
+      autofocus>
+    <div *ngIf="form.submitted && !email.valid; else elseBlock" class="alert alert-warning">
+      <strong>邮箱不可为空</strong>
+    </div>
+    <ng-template #elseBlock>
+      <br>
+    </ng-template>
+
+    <input type="text" name="username" [(ngModel)]="user.name" #username="ngModel" class="form-control" placeholder="用户名" required>
+    <div *ngIf="form.submitted && !username.valid; else elseBlock" class="alert alert-warning">
+      <strong>用户名不可为空</strong>
+    </div>
+
+    <input type="password" name="password" [(ngModel)]="user.password" #password="ngModel" class="form-control" placeholder="密码"
+      required>
+    <div *ngIf="form.submitted && !password.valid; else elseBlock" class="alert alert-warning">
+      <strong>密码不可为空</strong>
+    </div>
+
+    <input type="password" name="passwordagain" [(ngModel)]="passwordAgain" #confirmPassword="ngModel" class="form-control" placeholder="密码确认"
+      required>
+    <div *ngIf="form.submitted && !confirmPassword.valid" class="alert alert-warning">
+      <strong>请确认密码</strong>
+    </div>
+
+    <div *ngIf="confirmPassword.valid && user.password!=passwordAgain" class="alert alert-warning">
+      <strong>两次密码不一致</strong>
+    </div>
+
+    <div *ngIf="(!form.submitted && !confirmPassword.valid) || (user.password == passwordAgain && passwordAgain!='')">
+      <br>
+    </div>
+
+    <input type="radio" name="usertype" id="teacher" checked="true" (click)="setTypeTec()">教师
+    <input type="radio" name="usertype" id="student" (click)="setTypeStu()">学生
+    <br>
+    <br>
+
+    <input class="btn btn-lg btn-primary btn-block" type="submit" value="注册">
+    <p class="mt-5 mb-3 text-muted">&copy; 2017-2018</p>
+  </form>
+</body>

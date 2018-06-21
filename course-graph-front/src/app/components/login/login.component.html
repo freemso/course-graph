@@ -1,0 +1,26 @@
+<body class="text-center">
+  <form class="form-signin" (ngSubmit)="form.form.valid && login()" #form="ngForm">
+    <h1 class="h3 mb-3 font-weight-normal">请登录</h1>
+    <input type="email" class="form-control" [(ngModel)]="user.email" name="email" #email="ngModel" placeholder="邮箱" required
+      autofocus>
+    <div *ngIf="form.submitted && !email.valid; else elseBlock" class="alert alert-warning">
+      <strong>邮箱不可为空!</strong>
+    </div>
+    <ng-template #elseBlock>
+      <br>
+    </ng-template>
+    <input style="margin: 0" type="password" class="form-control" [(ngModel)]="user.password" name="password" #password="ngModel"
+      placeholder="密码" required>
+    <div *ngIf="form.submitted && !password.valid;else elseBlock" class="alert alert-warning">
+      <strong>密码不可为空!</strong>
+    </div>
+    <!-- <input type="radio" name="usertype" id="teacher" checked="true" (click)="setTypeTec()">教师
+    <input type="radio" name="usertype" id="student" (click)="setTypeStu()">学生
+    <br> -->
+    <!-- <br> -->
+    <input class="btn btn-lg btn-primary btn-block" type="submit" value="登录">
+    
+    <p class="mt-5 mb-3 text-muted">&copy; 2017-2018</p>
+  </form>
+
+</body>

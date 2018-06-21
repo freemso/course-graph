@@ -28,6 +28,7 @@ hs_err_pid*
 .idea/
 course-graph.iml
 course-graph-server/course-graph-server.iml
+course-graph-front/course-graph-front.iml
 
 # Maven target
 course-graph-server/target/
@@ -36,3 +37,7 @@ course-graph-server/target/
 course-graph-server/.settings/
 course-graph-server/.classpath
 course-graph-server/.project
+
+# NPM
+course-graph-front/package-lock.json
+course-graph-front/node_modules/

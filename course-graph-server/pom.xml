@@ -10,6 +10,20 @@
 
     <description>Course project</description>
 
+    <profiles>
+        <profile>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>!myproperty</name>
+                </property>
+            </activation>
+            <properties>
+                <myproperty>some value</myproperty>
+            </properties>
+        </profile>
+    </profiles>
+
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>

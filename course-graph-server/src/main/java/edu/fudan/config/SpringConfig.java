@@ -17,19 +17,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 public class SpringConfig{
 
-    private static final String NEO4J_USERNAME = "neo4j";
-
-    private static final String NEO4J_PASSWORD = "123456";
-
-    private static final String NEO4J_URL = "http://localhost:7474";
-
-
     @Bean
     public org.neo4j.ogm.config.Configuration configuration() {
-        return new org.neo4j.ogm.config.Configuration.Builder()
-                .uri(NEO4J_URL)
-                .credentials(NEO4J_USERNAME, NEO4J_PASSWORD)
-                .build();
+        return new org.neo4j.ogm.config.Configuration.Builder().build();
     }
 
     @Bean

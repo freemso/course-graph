@@ -10,7 +10,7 @@ import {
 @Injectable()
 export class MyHttpService {
 
-    baseURL = 'http://localhost:8080';
+    baseURL = 'http://0.0.0.0:7477';
 
     constructor(
         private http: Http,

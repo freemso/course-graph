@@ -1,9 +1,9 @@
-<div>
-  <div class="jumbotron" style="text-align:center">
-    <h2>思维导图 01</h2>
-  </div>
+<div (click)="checkStatus()">
+  <!-- <div class="jumbotron" style="text-align:center">
+    <h2>{{currentGraphMeta.name}}</h2>
+  </div> -->
 
-  <div class="row justify-content-center">
+  <div *ngIf="curUser.type == 'TEACHER' && node_selected == true" class="row justify-content-center" style="margin-top: 10px">
     <button class="btn btn-md btn-primary" (click)="addNode()">增加</button>
     <span>&nbsp;</span>
     <button class="btn btn-md btn-primary" (click)="removeNode()">移除</button>
@@ -16,5 +16,5 @@
     <span>&nbsp;</span>
   </div>
 
-  <div id="jsmind_container" (click)="checkStatus()"></div>
+  <div id="jsmind_container"></div>
 </div>

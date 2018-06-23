@@ -1,45 +1,50 @@
 import { Injectable } from '@angular/core';
-import { Http, Jsonp, Headers } from '@angular/http';
-// import { Observable } from 'rxjs';
-// import 'rxjs/Rx';
+import { MyHttpService } from './MyHttp.service';
 
 @Injectable()
 export class UserService {
-    private headers = new Headers({ 'Content-Type': 'application/json' });
 
-    constructor(private http: Http) { }
+    constructor(private myHttp: MyHttpService) { }
 
     //POST email, name, password, type
     register(user) {
-        let url = 'http://127.0.0.1:8080/users';
+        let url = '/users';
         let body = JSON.stringify(user);
-
-        this.http.post(url, body, { headers: this.headers }).subscribe(function (data) {
-            console.dir(data);
-            console.log(data['_body']);
-            // localStorage.setItem('currentUsr', JSON.stringify(data));
-        }, function (err) {
-            console.dir(err);
-        });
+        return this.myHttp.post(url, body);
     }
 
-    //DELETE
+    //DELETE 
     delete() {
-        let url = '/account';
+        let url = "/account";
+
+        return this.myHttp.delete(url);
     }
 
     //PUT email, name, password, newPassword
     update(user) {
         let url = '/account';
+        let body = JSON.stringify(user);
+
+        return this.myHttp.put(url, body);
     }
 
     //GET
     getPrivate() {
-        let url = '/account';
+        let url = "/account";
+
+        return this.myHttp.get(url);
     }
 
     //GET
     getPublic() {
         let url = '/users/{uid}';
+    }
+
+    //POST
+    getVerificationCode(email) {
+        let url = "/users/verification_code";
+        let body = JSON.stringify(email);
+
+        return this.myHttp.post(url, body);
     }
 }

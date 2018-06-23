@@ -39,6 +39,7 @@ import { AnswerService } from './services/answer.service';
 import { StorageService } from './services/storage.service';
 import { LectureComponent } from './components/lecture/lecture.component';
 import { ResourceComponent } from './components/resource/resource.component';
+import { ProfileComponent } from './components/profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import { ResourceComponent } from './components/resource/resource.component';
     MindmapComponent,
     LectureComponent,
     ResourceComponent,
+    ProfileComponent,
     HomeworkComponent
   ],
   imports: [

@@ -1,23 +1,35 @@
 import { Injectable } from '@angular/core';
-import { Http, Jsonp, Headers } from '@angular/http';
-// import { Observable } from 'rxjs';
-// import 'rxjs/Rx';
+import { MyHttpService } from './MyHttp.service';
+
 
 @Injectable()
 export class QuestionService {
-    private headers = new Headers({ 'Content-Type': 'application/json' });
 
-    constructor(private http: Http) { }
+    constructor(private myHttp: MyHttpService) { }
 
     //GET
-    listQuestionsOfNode() {
-        let url = '/nodes/{nid}/questions';
+    listQuestionsOfNode(nid) {
+        let url = "/nodes/" + nid + "/questions";
+
+        return this.myHttp.get(url);
     }
 
     //POST name, description
-    addQuestionToNode() {
-        let url = '/nodes/{nid}/questions';
+    addQuestionToNode(nid, newQuestion) {
+        let url = "/nodes/" + nid + "/questions";
+        let body = JSON.stringify(newQuestion);
+
+        return this.myHttp.post(url, body);
     }
+
+    //POST name, description
+    addAnswerToQuestion(qid, answer) {
+        let url = "/questions/" + qid + "/answers";
+        let body = JSON.stringify(answer);
+
+        return this.myHttp.post(url, body);
+    }
+
 
     //GET
     getQuestionData() {
@@ -30,7 +42,9 @@ export class QuestionService {
     }
 
     //DELETE
-    delete() {
-        let url = '/questions/{qid}';
+    delete(qid) {
+        let url = "/questions/" + qid;
+
+        return this.myHttp.delete(url);
     }
 }

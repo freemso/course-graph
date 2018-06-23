@@ -1,3 +1,5 @@
+<app-header></app-header>
+
 <main role="main">
   <div class="jumbotron" style="text-align:center">
     <div class="container">
@@ -45,14 +47,14 @@
 <ng-template #chooseCourseTemplate>
   <div class="modal-header">
     <h4 class="modal-title">可选课程</h4>
-    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+    <button type="button" class="close pull-right" aria-label="Close" (click)="chooseCourseWindowRef.hide()">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body">
     <div *ngFor="let course of choosableCourses; let i = index">
-      <p> {{course.code}} {{course.name}}
-        <button class="btn btn-primary pull-right" (click)="openInputCourseCodeWindow(inputCourseCodeTemplate, course.id)">选课</button>
+      <p> {{course.name}} {{course.teacher_name}}
+        <button class="btn btn-primary pull-right" (click)="openInputCourseCodeWindow(inputCourseCodeTemplate, course.id)" style="float: right;">选课</button>
       </p>
     </div>
   </div>

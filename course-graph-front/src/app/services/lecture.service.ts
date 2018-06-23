@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
-import { Http, Jsonp, Headers } from '@angular/http';
-// import { Observable } from 'rxjs';
-// import 'rxjs/Rx';
+import { MyHttpService } from './MyHttp.service';
+
 
 @Injectable()
 export class LectureService {
-    private headers = new Headers({ 'Content-Type': 'application/json' });
 
-    constructor(private http: Http) { }
+    constructor(private myHttp: MyHttpService) { }
 
     //GET
-    listLecturesOfNode() {
-        let url = '/nodes/{nid}/lectures';
+    listLecturesOfNode(nid) {
+        let url = "/nodes/" + nid + "/lectures";
+
+        return this.myHttp.get(url);
     }
 
     //POST name, description
@@ -30,7 +30,9 @@ export class LectureService {
     }
 
     //DELETE
-    delete() {
-        let url = '/lectures/{lid}';
+    delete(lid) {
+        let url = "/lectures/" + lid;
+
+        return this.myHttp.delete(url);
     }
 }

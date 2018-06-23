@@ -1,37 +1,45 @@
 import { Injectable } from '@angular/core';
-import { Http, Jsonp, Headers } from '@angular/http';
-// import { Observable } from 'rxjs';
-// import 'rxjs/Rx';
+import { MyHttpService } from './MyHttp.service';
+import { textSpanIntersectsWithPosition } from 'typescript';
 
 @Injectable()
 export class GraphService {
-    private headers = new Headers({ 'Content-Type': 'application/json' });
-
-    constructor(private http: Http) { }
+    constructor(private myHttp: MyHttpService) { }
 
     //GET
-    listGraphsOfCourse() {
-        let url = 'courses/{cid}/graphs';
+    listGraphsOfCourse(cid) {
+        let url = "/courses/" + cid + "/graphs";
+
+        return this.myHttp.get(url);
     }
 
     //POST name, description
-    addGraphToCourse() {
-        let url = '/courses/{cid}/graphs';
+    addGraphToCourse(cid, newGraph) {
+        let url = "/courses/" + cid + "/graphs";
+        let body = JSON.stringify(newGraph);
+
+        return this.myHttp.post(url, body);
     }
 
     //GET
-    getGraphData() {
-        let url = '/graph/{gid}';
+    getGraphData(gid) {
+        let url = "/graphs/" + gid + "/jsmind";
+
+        return this.myHttp.get(url);
     }
 
     //PUT name, description
-    updateGraphData() {
-        let url = '/graph/{gid}';
+    updateGraphData(gid, newGraphData) {
+        let url = "/graphs/" + gid + "/jsmind";
+        let body = JSON.stringify(newGraphData);
+
+        return this.myHttp.put(url, body);
     }
 
     //DELETE
-    delete() {
-        let url = '/graphs/{gid}';
+    delete(gid) {
+        let url = '/graphs/' + gid;
+        return this.myHttp.delete(url);
     }
 
 

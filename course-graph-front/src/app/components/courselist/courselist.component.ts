@@ -2,31 +2,23 @@ import { Component, OnInit, TemplateRef } from '@angular/core';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { StorageService } from '../../services/storage.service';
 import { MyHttpService } from '../../services/MyHttp.service';
-import { element } from 'protractor';
-
-
+import { CourseService } from '../../services/course.service';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   selector: 'app-courselist',
   templateUrl: './courselist.component.html',
-  styleUrls: ['./courselist.component.css']
+  styleUrls: ['./courselist.component.css'],
 })
+
 export class CourselistComponent implements OnInit {
   modalRef: BsModalRef;
+  chooseCourseWindowRef: BsModalRef;
   curUser;
 
   myCourses = [];
 
-  choosableCourses = [
-    {
-    "name": "操作系统",
-    "id": 6,
-    "code": "03",
-    "teacher_name": "a wei",
-    "teacher_id ": "17",
-    "student_num": 23
-    }
-  ];
+  choosableCourses = [];
 
   newCourse = {
     "name": "",
@@ -40,18 +32,16 @@ export class CourselistComponent implements OnInit {
 
   constructor(
     private myHttp: MyHttpService,
+    private courseService: CourseService,
     private storage: StorageService,
     private modalService: BsModalService,
+    private alertService: AlertService
   ) {
   }
 
   ngOnInit() {
     this.curUser = this.storage.getItem("curUser");
-    console.log("current user: ");
-    console.log(this.curUser);
-    this.getCourses();
-    console.log("all my courses:");
-    console.log(this.myCourses);
+    this.getMyCourses();
   }
 
   openAddCourseWindow(template: TemplateRef<any>) {
@@ -59,7 +49,8 @@ export class CourselistComponent implements OnInit {
   }
 
   openChooseCourseWindow(template: TemplateRef<any>) {
-    this.modalRef = this.modalService.show(template);
+    this.chooseCourseWindowRef = this.modalService.show(template);
+    this.getChoosableCourses();
   }
 
   openInputCourseCodeWindow(template: TemplateRef<any>, id) {
@@ -77,22 +68,25 @@ export class CourselistComponent implements OnInit {
 
   //发送选课请求，更新myCourses
   chooseCourse() {
+    this.modalRef.hide();
     console.log("begin to choose course:");
 
-    let url="/courses/"+this.choosenCourse.id+"/students";
-    let body = JSON.stringify({"code":this.choosenCourse.code});
+    // let url = "/courses/" + this.choosenCourse.id + "/students";
+    let body = { "code": this.choosenCourse.code };
 
     let _that = this;
-    this.myHttp.post(url, body).subscribe(function (data) {
+    this.courseService.addStudentToCourse(this.choosenCourse.id, body).subscribe(function (suc) {
+      let sucResp = JSON.parse(suc['_body']);
       console.log("choose course resp:");
-      console.log(data);
-      console.log(data['_body']);
-      //更新课程列表
-      _that.getCourses();
+      console.log(sucResp);
+
+      _that.getMyCourses();
       _that.getChoosableCourses();
 
     }, function (err) {
-      console.dir(err);
+      let errResp = JSON.parse(err['_body']);
+      console.log(errResp);
+      alert(errResp.message);
     });
 
     this.choosenCourse = {
@@ -103,27 +97,28 @@ export class CourselistComponent implements OnInit {
 
   cancelAddCourse() {
     this.modalRef.hide();
+    this.newCourse = {
+      "name": "",
+      "code": "",
+    };
   }
 
-  //发送添加请求，更新myCourses
   confirmAddCourse() {
-    //发送请求
-    console.log("begin to add new course:");
+    console.log("add new course:");
     console.log(this.newCourse);
 
-    let url = "/courses";
-    let body = JSON.stringify(this.newCourse);
-
     let _that = this;
-    this.myHttp.post(url, body).subscribe(function (data) {
+    this.courseService.create(this.newCourse).subscribe(function (suc) {
+      let sucResp = JSON.parse(suc['_body']);
       console.log("add course resp:");
-      console.log(data);
-      console.log(data['_body']);
-      //更新课程列表
-      _that.getCourses();
+      console.log(sucResp);
+
+      _that.getMyCourses();
       _that.modalRef.hide();
     }, function (err) {
-      console.dir(err);
+      let errResp = JSON.parse(err['_body']);
+      console.dir(errResp);
+      alert(errResp.message);
     });
 
     this.newCourse = {
@@ -132,37 +127,35 @@ export class CourselistComponent implements OnInit {
     };
   }
 
-  getCourses() {
-    console.log("begin to get courses:");
-    
-    let url = "/account/courses";
-    let body = JSON.stringify(this.newCourse);
-    
+  getMyCourses() {
+    console.log("get my courses:");
+
     let _that = this;
-    this.myHttp.get(url).subscribe(function (data) {
+    this.courseService.listCoursesOfUser().subscribe(function (suc) {
+      let sucResp = JSON.parse(suc['_body']);
       console.log("get courses resp:");
-      console.log(data);
-      console.log(data['_body']);
-      _that.myCourses = JSON.parse(data['_body']);
+      console.log(sucResp);
+      _that.myCourses = sucResp;
     }, function (err) {
-      console.dir(err);
+      let errResp = JSON.parse(err['_body']);
+      console.dir(errResp);
+      alert(errResp.message);
     });
   }
 
-  getChoosableCourses(){
-    console.log("begin to get choosable courses:");
-    
-    let url = "/account/courses";
-    let body = JSON.stringify(this.newCourse);
-    
+  getChoosableCourses() {
+    console.log("get choosable courses:");
+
     let _that = this;
-    this.myHttp.get(url).subscribe(function (data) {
+    this.courseService.getChoosableCourses().subscribe(function (suc) {
+      let sucResp = JSON.parse(suc['_body']);
       console.log("get choosable courses resp:");
-      console.log(data);
-      console.log(data['_body']);
-      _that.choosableCourses = JSON.parse(data['_body']);
+      console.log(sucResp);
+      _that.choosableCourses = sucResp;
     }, function (err) {
-      console.dir(err);
+      let errResp = JSON.parse(err['_body']);
+      console.dir(errResp);
+      alert(errResp.message);
     });
   }
 

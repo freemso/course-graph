@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
 import { StorageService } from '../../services/storage.service';
-import { MyHttpService } from '../../services/MyHttp.service';
-
+import { AuthenticationService } from '../../services/authentication.service';
 
 @Component({
   selector: 'app-login',
@@ -13,13 +12,13 @@ export class LoginComponent implements OnInit {
   user: any = {};
 
   constructor(
-    private myHttp:MyHttpService,
+    private authentication: AuthenticationService,
     private router: Router,
     private storage: StorageService) {
   }
 
   ngOnInit() {
-    if(this.storage.getItem("curUser")){
+    if (this.storage.getItem("curUser")) {
       this.storage.removeItem("curUser");
     }
     this.user = {
@@ -33,32 +32,32 @@ export class LoginComponent implements OnInit {
     console.log(this.user);
 
     //删除上一个token
-    if(this.storage.getItem("token")){
+    if (this.storage.getItem("token")) {
       this.storage.removeItem("token");
-    }
-
-    let url = "/token";
-    let body = JSON.stringify(this.user);
+    };
 
     let _that = this;
-    this.myHttp.post(url, body).subscribe(function (data) {
+    this.authentication.login(this.user).subscribe(function (suc) {
+      let sucResp = JSON.parse(suc['_body']);
       console.log("log in resp:");
-      console.log(data);
-      console.log("got token:");
-      console.log(JSON.parse(data['_body']));
+      console.log(sucResp);
 
       console.log("set token to localStorage: ");
-      let token = JSON.parse(data['_body'])["token"];
+      let token = sucResp.token;
       _that.storage.setItem("token", token);
+
       console.log("log in success, store user");
-      let user = JSON.parse(data['_body'])["user"];
+      let user = sucResp.user;
       console.log(user);
       _that.storage.setItem("curUser", user);
       _that.router.navigate(['courselist']);
 
     }, function (err) {
-      console.dir(err);
+      let errResp = JSON.parse(err['_body']);
+      console.log("login error");
+      console.log(errResp);
+      alert(errResp.message);
     });
-
   }
+
 }

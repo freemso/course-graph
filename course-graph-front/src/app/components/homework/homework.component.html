@@ -1,4 +1,4 @@
-<div *ngFor="let q of questionsWithStatus; let i = index" class="row justify-content-center">
+<div *ngFor="let q of questions; let i = index" class="row justify-content-center">
 
   <div *ngIf="q.questionType=='MULTIPLE_CHOICE'" class="card box-shadow" style="width: 45rem; margin: 10px;">
     <div class="card-header">
@@ -7,17 +7,19 @@
     <div class="card-body">
       <form class="form-ans" (ngSubmit)="form.form.valid && answerQuestion(q)" #form="ngForm">
         <div *ngFor="let op of q.choices; let j=index">
-          <input *ngIf="curUser.type=='STUDENT' && q.answered=='false'" type="radio" name="radiobox" (change)="setAnswer(q, op.key)">{{op.key}}. {{op.value}}
+          <input *ngIf="curUser.type=='STUDENT' && q.answered== false" type="radio" name="radiobox" (change)="setAnswer(q, op.key)"> {{op.key}}. {{op.value}}
         </div>
-        <div *ngIf="curUser.type=='STUDENT'">
-          <input *ngIf=" q.answered=='false'" type="submit" name="confirm" class="btn btn-primary" value="回答">
-          <input *ngIf=" q.answered=='true'" type="button" name="confirmed" class="btn btn-primary" disabled value="已回答: {{q.answer}}">
-        </div>
+        <br>
+        <div *ngIf="curUser.type == 'STUDENT'">
+          <input *ngIf=" q.answered== false" type="submit" name="confirm" class="btn btn-primary" value="回答">
 
+          <input *ngIf=" q.answered== true" type="button" name="confirmed" class="btn btn-primary" disabled value="已回答: {{q.answer}}">
+        </div>
       </form>
+      <button *ngIf="curUser.type == 'TEACHER'" class="btn btn-primary" (click)="deleteQuestion(q.id)">删除</button>
     </div>
     <div *ngIf="curUser.type=='TEACHER'" class="card-footer">
-      正确率：
+      正确率：{{q.correctRatio}}
     </div>
 
   </div>
@@ -27,16 +29,18 @@
       <h2>{{i+1}}. {{q.description}}</h2>
     </div>
     <div class="card-body">
-      <form *ngIf="userType=='STUDENT' && q.answered=='false'" class="form-ans" (ngSubmit)="form.form.valid && answerQuestion(q)"
+      <form *ngIf="curUser.type=='STUDENT' && q.answered == false" class="form-ans" (ngSubmit)="form.form.valid && answerQuestion(q)"
         #form="ngForm">
         <textarea rows="6" cols="63" required name="answer" [(ngModel)]="q.answer"></textarea>
         <br>
+        <br>
         <input type="submit" name="confirm" class="btn btn-primary" value="回答">
       </form>
-      <div *ngIf="curUser.type == 'STUDENT' && q.answered == 'true'">
+      <div *ngIf="curUser.type == 'STUDENT' && q.answered == true">
         <p>{{q.answer}}</p>
         <input type="button" name="confirmed" class="btn btn-primary" disabled value="已回答">
       </div>
+      <button *ngIf="curUser.type == 'TEACHER'" class="btn btn-primary" (click)="deleteQuestion(q.id)">删除</button>
     </div>
   </div>
 

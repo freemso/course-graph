@@ -3,26 +3,24 @@ import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import {
     Http,
-    RequestOptionsArgs,
-    RequestOptions,
     Response,
     Headers
 } from '@angular/http';
 
-const baseURL = 'http://127.0.0.1:8080';
-
 @Injectable()
 export class MyHttpService {
 
+    baseURL = 'http://10.222.174.42:8080';
+
     constructor(
         private http: Http,
-        private storage:StorageService
+        private storage: StorageService
     ) {
     }
 
     mergeToken = () => {
-        let newHeaders = new Headers({"Content-Type": "application/json"});
-        let token:any = this.storage.getItem("token");
+        let newHeaders = new Headers({ "Content-Type": "application/json" });
+        let token: any = this.storage.getItem("token");
         if (token) {
             console.log("token: " + token);
             newHeaders.set("Authorization", token);
@@ -31,27 +29,27 @@ export class MyHttpService {
     };
 
     get(url: string): Observable<Response> {
-        return this.http.get(baseURL+url, {headers: this.mergeToken()});
+        return this.http.get(this.baseURL + url, { headers: this.mergeToken() });
     }
 
     post(url: string, body: any): Observable<Response> {
-        return this.http.post(baseURL+url, body, {headers: this.mergeToken()});
+        return this.http.post(this.baseURL + url, body, { headers: this.mergeToken() });
     }
 
     put(url: string, body: any): Observable<Response> {
-        return this.http.put(baseURL+url, body, {headers: this.mergeToken()});
+        return this.http.put(this.baseURL + url, body, { headers: this.mergeToken() });
     }
 
     delete(url: string): Observable<Response> {
-        return this.http.delete(baseURL+url, {headers: this.mergeToken()});
+        return this.http.delete(this.baseURL + url, { headers: this.mergeToken() });
     }
 
     patch(url: string, body: any): Observable<Response> {
-        return this.http.patch(baseURL+url, body, {headers: this.mergeToken()});
+        return this.http.patch(this.baseURL + url, body, { headers: this.mergeToken() });
     }
 
     head(url: string): Observable<Response> {
-        return this.http.head(baseURL+url, {headers: this.mergeToken()});
+        return this.http.head(this.baseURL + url, { headers: this.mergeToken() });
     }
 
 }

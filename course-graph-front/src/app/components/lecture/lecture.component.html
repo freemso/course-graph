@@ -4,15 +4,9 @@
   </div>
 
   <div class="card-body">
-    <p>描述：{{lec.title}}</p>
-    <p>名称：{{lec.fileName}}</p>
-    <button type="button" class="btn btn-primary"
-        fileSaver
-        [method]="'GET'"
-        [fileName]="lec.fileName"
-        [url]="'http://192.168.1.104:8080/lectures/'+lec.id+'/download'"
-        [header]="{Authorization: token}"
-        (success)="onSuc($event)"
-        (error)="onErr($event)">下载</button>
+    <button type="button" class="btn btn-primary" fileSaver [method]="'GET'" [fileName]="lec.title" [url]="myHttp.baseURL + '/lectures/' + lec.id + '/download'"
+      [header]="{Authorization: token}" (success)="onSuc($event)" (error)="onErr($event)">下载</button>
+
+    <button *ngIf="curUser.type == 'TEACHER'" class="btn btn-primary" (click)="deleteLecture(lec.id)" style="margin-left: 10px">删除</button>
   </div>
 </div>

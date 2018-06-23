@@ -1,3 +1,5 @@
+<app-header></app-header>
+
 <body class="text-center">
   <form class="form-signin" (ngSubmit)="form.form.valid && user.password==passwordAgain && register()" #form="ngForm">
     <h1 class="h3 mb-3 font-weight-normal">请注册</h1>
@@ -36,11 +38,18 @@
       <br>
     </div>
 
+    <input type="text" name="code" [(ngModel)]="user.verificationCode" #verificationCode="ngModel" class="form-control" placeholder="验证码"
+      required>
+    <div *ngIf="form.submitted && !verificationCode.valid; else elseBlock" class="alert alert-warning">
+      <strong>验证码不可为空</strong>
+    </div>
+
     <input type="radio" name="usertype" id="teacher" checked="true" (click)="setTypeTec()">教师
     <input type="radio" name="usertype" id="student" (click)="setTypeStu()">学生
     <br>
     <br>
 
+    <button class="btn btn-lg btn btn-primary btn-block" (click)="getVerificationCode()" [disabled]="disabled">获取验证码</button>
     <input class="btn btn-lg btn-primary btn-block" type="submit" value="注册">
     <p class="mt-5 mb-3 text-muted">&copy; 2017-2018</p>
   </form>

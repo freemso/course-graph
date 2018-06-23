@@ -1,14 +1,11 @@
-import { Component, OnInit, Input, ViewChildren, Output, EventEmitter } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { StorageService } from '../../services/storage.service';
-import { Http, Jsonp, Headers } from '@angular/http';
-import { MyHttpService } from '../../services/MyHttp.service';
-
 
 // 引入jsmind.js文件
 import * as jsMind from '../../jsmind/js/jsmind.js';
 import '../../jsmind/js/jsmind.screenshot.js';
 import '../../jsmind/js/jsmind.draggable.js';
+import { GraphService } from '../../services/graph.service';
 // jsMind的设置参数
 const options = {
   container: 'jsmind_container',
@@ -16,48 +13,7 @@ const options = {
   editable: true
 }
 // 思维导图Mindmap渲染的json文件
-let graghDates: { [key: string]: object; } = {};
-let currentGraphID;
-let mind = {
-  "meta": {
-    "name": "jsMind remote",
-    "author": "hizzgdev@163.com",
-    "version": "0.2"
-  },
-  "format": "node_tree",
-  "data": {
-    "id": "root", "topic": "jsMind", "children": [
-      {
-        "id": "easy", "topic": "Easy", "direction": "left", "children": [
-          { "id": "easy1", "topic": "Easy to show" },
-          { "id": "easy2", "topic": "Easy to edit" },
-          { "id": "easy3", "topic": "Easy to store" },
-          { "id": "easy4", "topic": "Easy to embed" }
-        ]
-      },
-      {
-        "id": "open", "topic": "Open Source", "direction": "right", "children": [
-          { "id": "open1", "topic": "on GitHub", "background‐color": "#eee", "foreground‐color": "blue" },
-          { "id": "open2", "topic": "BSD License" }
-        ]
-      },
-      {
-        "id": "powerful", "topic": "Powerful", "direction": "right", "children": [
-          { "id": "powerful1", "topic": "Base on Javascript" },
-          { "id": "powerful2", "topic": "Base on HTML5" },
-          { "id": "powerful3", "topic": "Depends on you" }
-        ]
-      },
-      {
-        "id": "other", "topic": "test node", "direction": "left", "children": [
-          { "id": "other1", "topic": "I'm from local variable" },
-          { "id": "other2", "topic": "I can do everything" }
-        ]
-      }
-    ]
-  }
-}
-
+let graphData: { [key: string]: object; } = {};
 
 @Component({
   selector: 'app-mindmap',
@@ -68,27 +24,31 @@ let mind = {
 export class MindmapComponent implements OnInit {
   @Input() curNodeId = -1;
   @Output() change: EventEmitter<number> = new EventEmitter<number>();
+  curUser;
+  currentGraphID;
+  node_selected;
+
+
   public title = 'mindmap';
   // mindMap;
   public jm;
   public fgColor = "#ffffff";
   public bgColor = "#000000";
 
-  curUser;
 
   constructor(
-    private http: Http,
-    private myHttp: MyHttpService,
+    private graphService: GraphService,
     private storage: StorageService
-  ){
+  ) {
   }
 
 
   //初始化
   ngOnInit() {
+    this.node_selected = false;
     this.curUser = this.storage.getItem("curUser");
     this.jm = new jsMind(options);
-    if(this.curUser.type=='STUDENT'){
+    if (this.curUser.type == 'STUDENT') {
       this.jm.disable_edit();
     }
   }
@@ -118,19 +78,14 @@ export class MindmapComponent implements OnInit {
   //打印图片
   prtScn() {
     const selected_node = this.jm.get_selected_node(); // as parent of new node
-    if (!selected_node) {
-      alert("请先选中节点");
-      return;
-    }
     this.jm.screenshot.shootDownload();
   }
 
   //创建思维导图
   createGraph(id) {
-    currentGraphID = id;
+    this.currentGraphID = id;
     console.log("create");
     const rootId = "root" + jsMind.util.uuid.newid();
-    console.log(rootId);
 
     const newmindda = {
       "meta": {
@@ -143,7 +98,7 @@ export class MindmapComponent implements OnInit {
         "id": rootId, "topic": "根目录", "children": []
       }
     };
-    graghDates[id] = newmindda;
+    graphData[id] = newmindda;
     this.jm.show(newmindda);
   }
 
@@ -170,12 +125,14 @@ export class MindmapComponent implements OnInit {
   }
 
   //查看节点是否被选中
-  checkStatus() {
+  checkStatus() { 
     const select_node = this.jm.get_selected_node();
     if (null == select_node) {
+      this.node_selected = false;
       this.curNodeId = null;
       console.log("nothing");
     } else {
+      this.node_selected = true;
       this.curNodeId = select_node.id;
       console.log(select_node);
     }
@@ -185,48 +142,53 @@ export class MindmapComponent implements OnInit {
   //保存思维导图
   save() {
     const data = jsMind.format.node_tree.get_data(this.jm.mind);
-    graghDates[currentGraphID] = data;
-    // 将data发送至后台
-    // console.log("save graph:");
-    // console.log(data);
+    graphData[this.currentGraphID] = data;
+    console.log("save graph:");
 
-    let url = "/graphs/" + currentGraphID + "/jsmind";
-    let body = JSON.stringify({ "jsmind": JSON.stringify(data) });
-    // console.log(body);
+    let body = { "jsmind": JSON.stringify(data) };
 
     let _that = this;
-    this.myHttp.put(url, body).subscribe(function (data) {
-      // console.log("save graph resp");
-      // console.log(data['_body']);
+    this.graphService.updateGraphData(this.currentGraphID, body).subscribe(function (suc) {
+      let sucResp = JSON.parse(suc['_body']);
+      console.log("save graph resp");
+      console.log(sucResp);
     }, function (err) {
-      console.dir(err);
+      let errResp = JSON.parse(err['_body']);
+      console.log(errResp);
+      alert(errResp.message);
     });
 
   }
 
+  //clear
+  clear() {
+    this.jm._reset();
+  }
+
   //根据graphID切换思维导图
   getData(graphId) {
-    currentGraphID = graphId;
-    if (graghDates[graphId] == null) {
-      let url = "/graphs/" + currentGraphID + "/jsmind";
-  
+    this.currentGraphID = graphId;
+
+    if (graphData[graphId] == null) {
+
+      console.log("get jsmind");
       let _that = this;
-      this.myHttp.get(url).subscribe(function (data) {
-        // console.log("get jsmind data from server");
-        // console.log('graph id is: ' + graphId);
-        console.log(data['_body']);
-        graghDates[graphId] = JSON.parse(JSON.parse(data['_body']).jsmind); 
-        // console.log(graghDates[graphId]);
-        _that.jm.show(graghDates[graphId]);
+      this.graphService.getGraphData(graphId).subscribe(function (suc) {
+        let sucResp = JSON.parse(suc['_body']);
+        console.log("get jsmind resp");
+        console.log(sucResp);
+
+        graphData[graphId] = JSON.parse(sucResp.jsmind);
+
+        _that.jm.show(graphData[graphId]);
       }, function (err) {
-        console.dir(err);
-        // console.log("ERROR");
+        let errResp = JSON.parse(err['_body']);
+        console.log(errResp);
+        alert(errResp.message);
       });
-      } else {
-      this.jm.show(graghDates[graphId]);
+    } else {
+      this.jm.show(graphData[graphId]);
     }
   }
 
-  //节点添加作业、课件、资源内容
 }
-

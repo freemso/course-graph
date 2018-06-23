@@ -5,16 +5,16 @@ import { LectureComponent } from '../lecture/lecture.component';
 import { FileUploader } from 'ng2-file-upload';
 import { FileItem } from 'ng2-file-upload';
 import { ActivatedRoute, Params } from '@angular/router';
-import { Http, Jsonp, Headers } from '@angular/http';
 import * as jsMind from '../../jsmind/js/jsmind.js';
 
-
 import { StorageService } from '../../services/storage.service';
+import { MyHttpService } from '../../services/MyHttp.service';
+import { QuestionService } from '../../services/question.service';
+
 import * as $ from 'jquery';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { MyHttpService } from '../../services/MyHttp.service';
-import { resource } from 'selenium-webdriver/http';
 import { ResourceComponent } from '../resource/resource.component';
+import { GraphService } from '../../services/graph.service';
 
 @Component({
     selector: 'app-course',
@@ -23,33 +23,16 @@ import { ResourceComponent } from '../resource/resource.component';
 })
 
 export class CourseComponent implements OnInit {
-    serverUrl = "http://192.168.1.104:8080/";
-    curNodeId;
     curUser = this.storage.getItem("curUser");
+    serverUrl = this.myHttp.baseURL;
+    curGraphId;
+    curNodeId;
     courseId;
     sidebarType = 0;
     description = "";
     index = "hello";
 
-    public graphs = [
-        {
-            "name": "思维导图一",
-            "id": 1,
-            "description": "思维导图01"
-        }, {
-            "name": "思维导图二",
-            "id": 2,
-            "description": "思维导图02"
-        }, {
-            "name": "思维导图三",
-            "id": 3,
-            "description": "思维导图03"
-        }, {
-            "name": "思维导图四",
-            "id": 4,
-            "description": "思维导图04"
-        }
-    ];
+    public graphs = [];
     newGraph = {
         name: "",
         description: "",
@@ -61,7 +44,7 @@ export class CourseComponent implements OnInit {
             },
             "format": "node_tree",
             "data": {
-                "id": "root" + jsMind.util.uuid.newid(), "topic": "根目录", "children": []
+                "id": "root" + jsMind.util.uuid.newid(), "topic": "根节点", "children": []
             }
         })
     };
@@ -94,7 +77,7 @@ export class CourseComponent implements OnInit {
 
     lectureContent = {
         uploader: new FileUploader({
-            url: this.serverUrl + "nodes/" + this.curNodeId + "/lectures",
+            url: this.serverUrl + "/nodes/" + this.curNodeId + "/lectures",
             authToken: this.storage.getItem('token'),
             method: "POST",
             itemAlias: "lecture",
@@ -102,10 +85,9 @@ export class CourseComponent implements OnInit {
         })
     };
 
-
     recourcesContent = {
         uploader: new FileUploader({
-            url: this.serverUrl + "nodes/" + this.curNodeId + "/resources/files",
+            url: this.serverUrl + "/nodes/" + this.curNodeId + "/resources/files",
             authToken: this.storage.getItem('token'),
             method: "POST",
             itemAlias: "file",
@@ -116,8 +98,7 @@ export class CourseComponent implements OnInit {
             link: "",
             type: "URL"
         }
-    }
-
+    };
 
     @ViewChild(MindmapComponent) child: MindmapComponent;
     @ViewChild(HomeworkComponent) homework: HomeworkComponent;
@@ -126,7 +107,9 @@ export class CourseComponent implements OnInit {
 
     modalRef: BsModalRef;
 
-    constructor(private http: Http,
+    constructor(
+        private graphService: GraphService,
+        private questionService: QuestionService,
         private myHttp: MyHttpService,
         private routerIonfo: ActivatedRoute,
         private modalService: BsModalService,
@@ -136,19 +119,19 @@ export class CourseComponent implements OnInit {
     ngOnInit() {
         this.courseId = this.routerIonfo.snapshot.queryParams["cid"];
         this.getGraphs();
+        this.curGraphId = null;
 
         this.startJquery();
         this.recourcesContent.uploader.onSuccessItem = this.successItem.bind(this);
         this.recourcesContent.uploader.onAfterAddingFile = this.afterAddFile.bind(this);
         this.recourcesContent.uploader.onBuildItemForm = (fileItem: any, form: any) => {
-            fileItem.url = this.serverUrl + "nodes/" + this.curNodeId + "/resources/files";
-            alert('test');
+            fileItem.url = this.serverUrl + "/nodes/" + this.curNodeId + "/resources/files";
             form.append("description", this.description);
         };
         this.lectureContent.uploader.onSuccessItem = this.successItem.bind(this);
         this.lectureContent.uploader.onAfterAddingFile = this.afterAddFile.bind(this);
         this.lectureContent.uploader.onBuildItemForm = (fileItem: any, form: any) => {
-            fileItem.url = this.serverUrl + "nodes/" + this.curNodeId + "/lectures";
+            fileItem.url = this.serverUrl + "/nodes/" + this.curNodeId + "/lectures";
             alert('test');
             form.append("description", this.description);
         };
@@ -158,7 +141,6 @@ export class CourseComponent implements OnInit {
         // this.child.getData(this.graphs[0].id);
     }
 
-
     setSidebar(type) {
         this.sidebarType = type;
         this.startJquery();
@@ -166,13 +148,13 @@ export class CourseComponent implements OnInit {
             case 0:
                 break;
             case 1:
-                this.homework.getQuestions();
+                this.homework.getQuestions(this.curNodeId);
                 break;
             case 2:
-                this.lecture.getLectures();
+                this.lecture.getLectures(this.curNodeId);
                 break;
             case 3:
-                this.resource.getResources();
+                this.resource.getResources(this.curNodeId);
                 break;
             default:
                 break;
@@ -180,26 +162,20 @@ export class CourseComponent implements OnInit {
     }
 
     prtScn() {
+        if (this.curGraphId == null) {
+            alert("请先选中课程");
+        } else {
         this.child.prtScn();
     }
+}
 
     changeGraph(item) {
-        // console.log(item.id);
         this.child.getData(item.id);
+        this.curGraphId = item.id;
     }
 
-
-    changeStatus(event) {
+    changeStatus(event) {        
         this.curNodeId = event;
-        // this.lectureContent = {
-        //   uploader: new FileUploader({
-        //     url: this.serverUrl + "nodes/" + this.curNodeId + "/lectures",
-        //     authToken: this.storage.getItem('token'),
-        //     method: "POST",
-        //     itemAlias: "lecture",
-        //     autoUpload: false
-        //   })
-        // };
     }
 
     save() {
@@ -245,35 +221,35 @@ export class CourseComponent implements OnInit {
     }
 
     getGraphs() {
-        // console.log("get all graphs:");
-
-        let url = "/courses/" + this.courseId + "/graphs";
+        console.log("get all graphs:");
 
         let _that = this;
-        this.myHttp.get(url).subscribe(function (data) {
-            // console.log("all graph meta_data");
-            // console.log(data['_body']);
-            _that.graphs = JSON.parse(data['_body']);
+        this.graphService.listGraphsOfCourse(this.courseId).subscribe(function (suc) {
+            let sucResp = JSON.parse(suc['_body']);
+            console.log("get graphs resp:");
+            console.log(sucResp);
+            _that.graphs = sucResp;
         }, function (err) {
-            console.dir(err);
+            let errResp = JSON.parse(err['_body']);
+            console.log(errResp);
+            alert(errResp.message);
         });
     }
 
     addNewGraph() {
-        console.log("begin to add graph:");
-        console.log(this.newGraph);
-
-        let url = "/courses/" + this.courseId + "/graphs";
-        let body = JSON.stringify(this.newGraph);
+        // console.log("begin to add graph:");
+        // console.log(this.newGraph);
 
         let _that = this;
-        this.myHttp.post(url, body).subscribe(function (data) {
-            // console.log("new graph meta");
-            // console.log(data['_body']);
-            let jsonData = JSON.parse(data['_body']);
-            _that.graphs.push(jsonData);
-            _that.child.getData(jsonData.id);
+        this.graphService.addGraphToCourse(this.courseId, this.newGraph).subscribe(function (suc) {
+            let sucResp = JSON.parse(suc['_body']);
+            console.log("add graph resp");
+
+            _that.graphs.push(sucResp);
+            _that.child.getData(sucResp.id);
             _that.modalRef.hide();
+
+            //重置
             _that.newGraph = {
                 name: "",
                 description: "",
@@ -285,15 +261,42 @@ export class CourseComponent implements OnInit {
                     },
                     "format": "node_tree",
                     "data": {
-                        "id": "root" + jsMind.util.uuid.newid(), "topic": "根目录", "children": []
+                        "id": "root" + jsMind.util.uuid.newid(), "topic": "根节点", "children": []
                     }
                 })
             };
         }, function (err) {
-            console.dir(err);
+            let errResp = JSON.parse(err['_body']);
+            console.log(errResp);
+            alert(errResp);
         });
     }
 
+    //发送delete请求
+    deleteGraph() {
+        let _that = this;
+        let len = _that.graphs.length;
+        for(var i = 0; i < len; i++){
+            console.log(_that.curGraphId);
+            console.log(_that.graphs[i]);
+            if(_that.graphs[i].id == _that.curGraphId) {
+                _that.graphs.splice(i, 1);
+            }
+        }
+        console.log(this.curGraphId);
+        this.graphService.delete(this.curGraphId).subscribe(function (suc) {
+            _that.curGraphId = null;
+            _that.curNodeId = null;
+            console.log(_that.graphs);
+            
+            // _that.graphs.
+            _that.child.clear();
+        }, function (err) {
+            let errResp = JSON.parse(err['_body']);
+            console.log(errResp);
+            alert(errResp);
+        });
+    }
 
     //作业部分方法--------------------------------------------------------------
     openModal(template: TemplateRef<any>) {
@@ -301,41 +304,35 @@ export class CourseComponent implements OnInit {
     }
 
     addMultichoice() {
-        // console.log("begin to add multichoice questions:");
-        // console.log(this.homeworkContent.newMultichoice);
-
-        let url = "/nodes/" + this.curNodeId + "/questions";
-        let body = JSON.stringify(this.homeworkContent.newMultichoice);
+        console.log("add multichoice question");
 
         let _that = this;
-        this.myHttp.post(url, body).subscribe(function (data) {
-            console.dir(data);
-            // console.log(data['_body']);
+        this.questionService.addQuestionToNode(this.curNodeId, this.homeworkContent.newMultichoice).subscribe(function (suc) {
+            let sucResp = JSON.parse(suc['_body']);
+            console.log("add multichoice resp");
+            console.log(sucResp);
 
-            //刷新子模块问题列表
-            _that.homework.getQuestions();
+            _that.homework.getQuestions(_that.curNodeId);
             _that.modalRef.hide();
         }, function (err) {
-            console.dir(err);
+            let errResp = JSON.parse(err['_body']);
+            console.log(errResp);
+            alert(errResp.message);
         });
 
         this.clearQuestion();
     }
 
     addShortanswer() {
-        // console.log("begin to add shortanswer questions:");
-        // console.log(this.homeworkContent.newShortanswer);
-
-        let url = "/nodes/" + this.curNodeId + "/questions";
-        let body = JSON.stringify(this.homeworkContent.newShortanswer);
+        console.log("add shortanswer question");
 
         let _that = this;
-        this.myHttp.post(url, body).subscribe(function (data) {
-            console.dir(data);
-            // console.log(data['_body']);
+        this.questionService.addQuestionToNode(this.curNodeId, this.homeworkContent.newShortanswer).subscribe(function (suc) {
+            let sucResp = JSON.parse(suc['_body']);
+            console.log("add shortanswer resp");
+            console.log(sucResp);
 
-            //刷新子模块问题列表
-            _that.homework.getQuestions();
+            _that.homework.getQuestions(_that.curNodeId);
             _that.modalRef.hide();
         }, function (err) {
             console.dir(err);
@@ -350,12 +347,7 @@ export class CourseComponent implements OnInit {
     }
 
     setMultiAnswer(choice) {
-        // console.log(choice);
         this.homeworkContent.newMultichoice.answer = choice;
-    }
-
-    setAnswer(ans) {
-        // console.log(ans);
     }
 
     clearQuestion() {
@@ -410,13 +402,12 @@ export class CourseComponent implements OnInit {
         // this.curContent.uploader.options.url = "http://10.222.174.42:8080/nodes/" + this.curNodeId + "/" + this.curContent.formData.type;
         // fileItem.url = "http://10.222.174.42:8080/nodes/" + this.curNodeId + "/" + this.curContent.formData.type;
         if (this.sidebarType == 2) {
-            fileItem.url = this.serverUrl + "nodes/" + this.curNodeId + "/lectures";
+            fileItem.url = this.serverUrl + "/nodes/" + this.curNodeId + "/lectures";
         } else {
-            fileItem.url = this.serverUrl + "nodes/" + this.curNodeId + "/resources/files";
+            fileItem.url = this.serverUrl + "/nodes/" + this.curNodeId + "/resources/files";
         }
         alert("testefasfdadfasfdas");
-        console.log(this.description);
-        form.append("description", this.description);
+        form.append("description", "description");
     }
 
     //增加文件回执
@@ -427,9 +418,11 @@ export class CourseComponent implements OnInit {
     //上传文件成功回执
     successItem(item: FileItem, response: string, status: number): any {
         // 上传文件成功
-        if (status == 200) {
+        if (status == 201) {
             // 上传文件后获取服务器返回的数据
             let tempRes = JSON.parse(response);
+            this.lecture.getLectures(this.curNodeId);
+            this.resource.getResources(this.curNodeId);
         } else {
             // 上传文件后获取服务器返回的数据错误
         }
@@ -454,7 +447,7 @@ export class CourseComponent implements OnInit {
             console.dir(data);
 
             //刷新子模块问题列表
-            _that.resource.getResources();
+            _that.resource.getResources(_that.curNodeId);
             _that.modalRef.hide();
         }, function (err) {
             console.dir(err);

@@ -1,9 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { StorageService } from '../../services/storage.service'
-import { MyHttpService } from '../../services/MyHttp.service';
+import { LectureService } from '../../services/lecture.service';
 
-import { Observable } from 'rxjs';
 import 'rxjs/Rx';
+import { MyHttpService } from '../../services/MyHttp.service';
 
 
 @Component({
@@ -13,6 +13,8 @@ import 'rxjs/Rx';
 })
 export class LectureComponent implements OnInit {
   @Input() curNodeId;
+  curUser = this.storage.getItem("curUser");
+  nid;
   token = this.storage.getItem('token');
 
   lectures = [];
@@ -20,27 +22,45 @@ export class LectureComponent implements OnInit {
 
   constructor(
     private storage: StorageService,
-    private myHttp: MyHttpService) {}
+    private myHttp: MyHttpService,
+    private lectureService: LectureService) {
+  }
 
   ngOnInit() {
   }
 
-  getLectures() {
+  getLectures(nid) {
+    this.nid = nid;
     console.log("get lectures");
 
-    let url = "/nodes/" + this.curNodeId + "/lectures";
-
     let _that = this;
-    this.myHttp.get(url).subscribe(function (data) {
+    this.lectureService.listLecturesOfNode(nid).subscribe(function (suc) {
+      let sucResp = JSON.parse(suc['_body']);
       console.log("get lectures resp");
-      console.log(data);
-      console.log(data['_body']);
-      _that.lectures = JSON.parse(data['_body']);
+      console.log(sucResp);
+      _that.lectures = sucResp;
     }, function (err) {
-      console.dir(err);
+      let errResp = JSON.parse(err['_body']);
+      console.log(errResp);
+      alert(errResp);
     });
+    console.log(this.lectures);
   }
 
+  deleteLecture(lid) {
+    console.log("delete lecture");
+
+    let _that = this;
+    this.lectureService.delete(lid).subscribe(function (suc) {
+      console.log("delete lecture resp");
+      console.log(suc);
+      _that.getLectures(_that.nid);
+    }, function (err) {
+      let errResp = JSON.parse(err['_body']);
+      console.log(errResp);
+      alert(errResp);
+    });
+  }
 
   onSuc(e) {
     alert("success");
@@ -49,7 +69,7 @@ export class LectureComponent implements OnInit {
 
   onErr(e) {
     console.log(this.curNodeId);
-    alert("failer");
+    alert("fail");
     console.log(e);
   }
 

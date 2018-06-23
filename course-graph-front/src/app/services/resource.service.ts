@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
-import { Http, Jsonp, Headers } from '@angular/http';
-// import { Observable } from 'rxjs';
-// import 'rxjs/Rx';
+import { MyHttpService } from './MyHttp.service';
+
 
 @Injectable()
 export class ResourceService {
-    private headers = new Headers({ 'Content-Type': 'application/json' });
 
-    constructor(private http: Http) { }
+    constructor(private myHttp: MyHttpService) { }
 
     //GET
-    listResourcesOfNode() {
-        let url = '/nodes/{nid}/resources';
+    listResourcesOfNode(nid) {
+        let url = "/nodes/" + nid + "/resources";
+
+        return this.myHttp.get(url);
     }
 
     //POST name, description
@@ -29,7 +29,9 @@ export class ResourceService {
     }
 
     //DELETE
-    delete() {
-        let url = '/resources/{rid}';
+    delete(rid) {
+        let url = "/resources/" + rid;
+
+        return this.myHttp.delete(url);
     }
 }

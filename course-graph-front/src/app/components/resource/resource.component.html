@@ -4,22 +4,22 @@
   </div>
 
   <div *ngIf="res.type=='FILE'" class="card-body">
-    <p>描述：{{res.title}}</p>
-    <p>名称：{{res.fileName}}</p>
     <button type="button" class="btn btn-primary"
       fileSaver 
       [method]="'GET'" 
-      [fileName]="res.fileName"
-      [url]="'http://192.168.1.104:8080/resources/'+res.id+'/file'"
+      [fileName]="res.title"
+      [url]="myHttp.baseURL + '/resources/' + res.id + '/file'"
       [header]="{Authorization: token}"
       [query]="{ pi: res.id }"
       (success)="onSuc($event)" 
       (error)="onErr($event)">下载
     </button>
+    <button *ngIf="curUser.type == 'TEACHER'" class="btn btn-primary" (click)="deleteResource(res.id)" style="margin-left: 10px">删除</button>
   </div>
 
   <div *ngIf="res.type=='URL'" class="card-body">
     <p>描述：{{res.title}}</p>
     <a href="{{res.link}}">进入</a>
+    <button *ngIf="curUser.type == 'TEACHER'" class="btn btn-primary" (click)="deleteResource(res.id)" style="margin-left: 10px">删除</button>
   </div>
 </div>

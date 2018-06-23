@@ -9,7 +9,7 @@ import { UserService } from '../../services/user.service';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
-
+  disabled: boolean = false;
   user: any = {};
   passwordAgain: string;
 
@@ -23,7 +23,8 @@ export class RegisterComponent implements OnInit {
       email: '',
       name: '',
       password: '',
-      type: 'TEACHER'
+      type: 'TEACHER',
+      verificationCode: ''
     };
   }
 
@@ -35,13 +36,43 @@ export class RegisterComponent implements OnInit {
     this.user.type = 'TEACHER';
   }
 
+  getVerificationCode() {
+    console.log("get verification code");
+    let body = { email: this.user.email };
+    console.log(body);
+
+    let _that = this;
+
+    this.userservice.getVerificationCode(body).subscribe(function (suc) {
+      console.log(suc);
+      let sucResp = (suc['_body']);
+      console.log("verification code resp:");
+      console.log(sucResp);
+      _that.disabled = true;
+    }, function (err) {
+      let errResp = JSON.parse(err['_body']);
+      console.log(errResp);
+      alert(errResp.message);
+    });
+  }
+
   register() {
     console.log("begin to register user: ");
     console.log(this.user);
-    this.router.navigate(['login']);
 
     //与服务器端通信，确认是否注册成功
-    this.userservice.register(this.user);
+    let _that = this;
+    this.userservice.register(this.user).subscribe(function (suc) {
+      let sucResp = JSON.parse(suc['_body']);
+      console.log("register resp:");
+      console.log(sucResp);
 
+      _that.router.navigate(['login']);
+    }, function (err) {
+      let errResp = JSON.parse(err['_body']);
+      console.log(errResp);
+      alert(errResp.message);
+    });
   }
+
 }

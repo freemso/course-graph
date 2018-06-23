@@ -19,7 +19,10 @@ public class SpringConfig{
 
     @Bean
     public org.neo4j.ogm.config.Configuration configuration() {
-        return new org.neo4j.ogm.config.Configuration.Builder().build();
+        return new org.neo4j.ogm.config.Configuration.Builder()
+                .credentials("neo4j", "123456")
+                .uri("http://0.0.0.0:7475")
+                .build();
     }
 
     @Bean

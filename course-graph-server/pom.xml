@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<groupId>main.java.fudan.ss</groupId>
-	<artifactId>course-graph-server</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+    <groupId>main.java.fudan.ss</groupId>
+    <artifactId>course-graph-server</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
-	<description>Course project</description>
+    <description>Course project</description>
 
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.0.2.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.0.2.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>1.9</java.version>
-	</properties>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+    </properties>
 
     <repositories>
         <repository>
@@ -34,7 +34,7 @@
         </repository>
     </repositories>
 
-	<dependencies>
+    <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -42,10 +42,10 @@
         </dependency>
 
         <!--<dependency>-->
-            <!--<groupId>org.neo4j.test</groupId>-->
-            <!--<artifactId>neo4j-harness</artifactId>-->
-            <!--<version>3.2.5</version>-->
-            <!--<scope>test</scope>-->
+        <!--<groupId>org.neo4j.test</groupId>-->
+        <!--<artifactId>neo4j-harness</artifactId>-->
+        <!--<version>3.2.5</version>-->
+        <!--<scope>test</scope>-->
         <!--</dependency>-->
 
         <dependency>
@@ -68,10 +68,10 @@
         </dependency>
 
         <!--<dependency>-->
-            <!--<groupId>org.neo4j</groupId>-->
-            <!--<artifactId>neo4j-ogm-embedded-driver</artifactId>-->
-            <!--<version>${neo4j-ogm.version}</version>-->
-            <!--<scope>test</scope>-->
+        <!--<groupId>org.neo4j</groupId>-->
+        <!--<artifactId>neo4j-ogm-embedded-driver</artifactId>-->
+        <!--<version>${neo4j-ogm.version}</version>-->
+        <!--<scope>test</scope>-->
         <!--</dependency>-->
 
         <dependency>
@@ -99,7 +99,6 @@
         </dependency>
 
 
-
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-redis</artifactId>
@@ -107,15 +106,15 @@
         </dependency>
 
         <!--<dependency>-->
-            <!--<groupId>org.springframework.data</groupId>-->
-            <!--<artifactId>spring-boot-starter-data-neo4j</artifactId>-->
-            <!--<version>2.0.2.RELEASE</version>-->
+        <!--<groupId>org.springframework.data</groupId>-->
+        <!--<artifactId>spring-boot-starter-data-neo4j</artifactId>-->
+        <!--<version>2.0.2.RELEASE</version>-->
         <!--</dependency>-->
 
         <!--<dependency>-->
-            <!--<groupId>org.springframework.data</groupId>-->
-            <!--<artifactId>spring-boot-starter-data-redis</artifactId>-->
-            <!--<version>2.0.2.RELEASE</version>-->
+        <!--<groupId>org.springframework.data</groupId>-->
+        <!--<artifactId>spring-boot-starter-data-redis</artifactId>-->
+        <!--<version>2.0.2.RELEASE</version>-->
         <!--</dependency>-->
 
         <dependency>
@@ -140,9 +139,9 @@
         </dependency>
 
         <!--<dependency>-->
-            <!--<groupId>org.neo4j</groupId>-->
-            <!--<artifactId>neo4j-ogm-bolt-driver</artifactId>-->
-            <!--<version>${neo4j-ogm.version}</version>-->
+        <!--<groupId>org.neo4j</groupId>-->
+        <!--<artifactId>neo4j-ogm-bolt-driver</artifactId>-->
+        <!--<version>${neo4j-ogm.version}</version>-->
         <!--</dependency>-->
 
         <dependency>
@@ -181,13 +180,12 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <!--<configuration>-->
-                    <!--<mainClass>main.java.edu.fudan.Application</mainClass>-->
+                <!--<mainClass>main.java.edu.fudan.Application</mainClass>-->
                 <!--</configuration>-->
 
             </plugin>
         </plugins>
     </build>
-
 
 
 </project>

@@ -46,16 +46,16 @@ public class MvcConfig implements WebMvcConfigurer {
         };
     }
 
-    @Bean
-    public WebMvcConfigurer resourceConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addResourceHandlers(ResourceHandlerRegistry registry) {
-                registry.addResourceHandler("/**")
-                        .addResourceLocations("file:"+ Constants.FILE_PATH, Constants.LECTURE_PATH);
-            }
-        };
-    }
+//    @Bean
+//    public WebMvcConfigurer resourceConfigurer() {
+//        return new WebMvcConfigurer() {
+//            @Override
+//            public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//                registry.addResourceHandler("/**")
+//                        .addResourceLocations("file:"+ Constants.FILE_PATH, Constants.LECTURE_PATH);
+//            }
+//        };
+//    }
 
 
 }

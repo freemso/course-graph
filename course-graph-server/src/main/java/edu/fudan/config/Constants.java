@@ -1,5 +1,10 @@
 package edu.fudan.config;
 
+import edu.fudan.Application;
+
+import java.io.File;
+import java.net.URISyntaxException;
+
 public class Constants {
 
     /**
@@ -39,7 +44,7 @@ public class Constants {
 
     public static final String EMAIL_REGEX = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$";
 
-    public static final String FILE_PATH = "/home/Resources/Files/";
+    public static final String FILE_PATH =  "/Users/freemso/Resources/Files/";
 
-    public static final String LECTURE_PATH = "/home/Resources/Lectures/";
+    public static final String LECTURE_PATH = "/Users/freemso/Resources/Lectures/";
 }

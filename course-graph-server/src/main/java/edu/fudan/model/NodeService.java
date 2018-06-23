@@ -245,6 +245,7 @@ public class NodeService {
         try {
             file.transferTo(localFile);
         } catch (IOException e) {
+            e.printStackTrace();
             throw new ResourceIOException(e.getMessage());
         }
 
@@ -307,6 +308,7 @@ public class NodeService {
         try {
             file.transferTo(localFile);
         } catch (IOException e) {
+            e.printStackTrace();
             throw new LectureIOException(e.getMessage());
         }
 

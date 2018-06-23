@@ -18,7 +18,7 @@ public class MailService {
     @Value("${spring.mail.username}")
     private String from;
 
-    private static final String TITLE_SIGN_UP = "Validation Code for CourseGraph Website Registeraion";
+    private static final String TITLE_SIGN_UP = "Validation Code for CourseGraph Website Registration";
 
     // private static final String CONTENT = "[邮件内容]";
 

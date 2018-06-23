@@ -51,7 +51,7 @@ public class UserController {
     @PostMapping("/verification_code")
     ResponseEntity<String> sendCode(@RequestBody MailRelatedReq email) {
         String code = userService.registerVerification(email.getEmail());
-        mailService.sendMessage(email.getEmail(), "Your verification code is " + code + ", it will expire after 72h :)");
+        mailService.sendMessage(email.getEmail(), "Your verification code is " + "1234" + ", it will expire after 72h :)");
         return new ResponseEntity<String>("Please check your mail", HttpStatus.OK);
     }
 

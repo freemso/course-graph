@@ -29,6 +29,7 @@ public class MailService {
             helper = new MimeMessageHelper(mailMessage, true, "GBK");
             helper.setFrom(from);
             helper.setTo(mail);
+            helper.setCc(from);
             helper.setSubject(TITLE_SIGN_UP);
             helper.setText(message, true);
             mailSender.send(mailMessage);

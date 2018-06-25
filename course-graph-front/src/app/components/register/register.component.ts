@@ -49,10 +49,12 @@ export class RegisterComponent implements OnInit {
       console.log("verification code resp:");
       console.log(sucResp);
       _that.disabled = true;
+      alert("验证码已发送至邮箱！");
     }, function (err) {
       let errResp = JSON.parse(err['_body']);
       console.log(errResp);
-      alert(errResp.message);
+      alert("验证码发送失败，请重试！");
+      // alert(errResp.message);
     });
   }
 

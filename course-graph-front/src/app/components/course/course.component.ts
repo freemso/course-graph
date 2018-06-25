@@ -132,7 +132,7 @@ export class CourseComponent implements OnInit {
         this.lectureContent.uploader.onAfterAddingFile = this.afterAddFile.bind(this);
         this.lectureContent.uploader.onBuildItemForm = (fileItem: any, form: any) => {
             fileItem.url = this.serverUrl + "/nodes/" + this.curNodeId + "/lectures";
-            alert('test');
+            // alert('test');
             form.append("description", this.description);
         };
         // this.uploader.onSuccessItem = this.successItem.bind(this);
@@ -148,12 +148,15 @@ export class CourseComponent implements OnInit {
             case 0:
                 break;
             case 1:
+                this.child.save();
                 this.homework.getQuestions(this.curNodeId);
                 break;
             case 2:
+                this.child.save();
                 this.lecture.getLectures(this.curNodeId);
                 break;
             case 3:
+                this.child.save();
                 this.resource.getResources(this.curNodeId);
                 break;
             default:

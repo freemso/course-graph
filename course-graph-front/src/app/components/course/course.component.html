@@ -188,9 +188,9 @@
                                     <div class="card-body">
                                         <input #firstdiv type="file" ng2FileSelect [uploader]="lectureContent.uploader" />
                                         <!--             <button (click)="fileSelect()">选择文件</button>           -->
-                                        <button class="btn btn-secondary" style="margin-left: 20px" (click)="fileAllUp(uploader)">全部上传</button>
-                                        <button class="btn btn-secondary" style="margin-left: 20px" (click)="fileAllCancel(uploader)">全部取消</button>
-                                        <button class="btn btn-secondary" style="margin-left: 20px" (click)="fileAllDelete(uploader)">清除列表</button>
+                                        <button class="btn btn-secondary" style="margin-left: 20px" (click)="fileAllUp(lectureContent.uploader)">全部上传</button>
+                                        <button class="btn btn-secondary" style="margin-left: 20px" (click)="fileAllCancel(lectureContent.uploader)">全部取消</button>
+                                        <button class="btn btn-secondary" style="margin-left: 20px" (click)="fileAllDelete(lectureContent.uploader)">清除列表</button>
 
                                     </div>
                                 </div>

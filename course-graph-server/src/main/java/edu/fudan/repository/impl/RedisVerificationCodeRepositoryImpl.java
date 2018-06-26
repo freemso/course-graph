@@ -21,11 +21,20 @@ public class RedisVerificationCodeRepositoryImpl implements VerificationCodeRepo
 
     @Override
     public String createVerificationCode(String email) {
-        // 使用uuid作为验证码
-        String code = UUID.randomUUID().toString();
+//        // 使用uuid作为验证码
+//        String code = UUID.randomUUID().toString();
+        // Use 6 digit code for verification
+        String code = generateRandomVerCode();
         // 存储到redis并设置过期时间
         redis.boundValueOps(email).set(code, Application.TOKEN_EXPIRES_HOUR, TimeUnit.HOURS);
         return code;
+    }
+
+    private String generateRandomVerCode() {
+        // 6 digit code
+        long lower = (long) Math.pow(10, 6);
+        long upper = (long) Math.pow(10, 6 + 1);
+        return String.valueOf(lower + (long) (Math.random() * (upper - lower)));
     }
 
     @Override

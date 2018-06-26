@@ -1,8 +1,6 @@
 package edu.fudan.dto.response;
 
 import edu.fudan.domain.*;
-import edu.fudan.domain.*;
-import edu.fudan.domain.*;
 
 import java.util.Collections;
 import java.util.List;

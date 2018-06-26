@@ -1,11 +1,11 @@
 package edu.fudan.rest;
 
 
-import edu.fudan.dto.response.AuthenticationResp;
 import edu.fudan.annotation.Authorization;
 import edu.fudan.annotation.CurrentUser;
 import edu.fudan.domain.User;
 import edu.fudan.dto.request.LoginReq;
+import edu.fudan.dto.response.AuthenticationResp;
 import edu.fudan.model.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

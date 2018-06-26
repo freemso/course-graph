@@ -2,7 +2,7 @@ package edu.fudan.dto.request;
 
 
 
-import edu.fudan.config.Constants;
+import edu.fudan.Application;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -20,11 +20,11 @@ public class UpdateUserReq {
     @Email
     private String email;
 
-    @Pattern(regexp = Constants.PASSWORD_REGEX, message = "invalid password.")
+    @Pattern(regexp = Application.PASSWORD_REGEX, message = "invalid password.")
     @NotBlank
     private String password;
 
-    @Pattern(regexp = Constants.PASSWORD_REGEX, message = "invalid new password.")
+    @Pattern(regexp = Application.PASSWORD_REGEX, message = "invalid new password.")
     private String newPassword;
 
     public UpdateUserReq() {

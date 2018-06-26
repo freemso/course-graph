@@ -1,8 +1,8 @@
 package edu.fudan.repository.impl;
 
-import edu.fudan.config.Constants;
-import edu.fudan.repository.TokenRepository;
+import edu.fudan.Application;
 import edu.fudan.domain.TokenEntry;
+import edu.fudan.repository.TokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
@@ -28,7 +28,7 @@ public class RedisTokenRepositoryImpl implements TokenRepository {
         String token = UUID.randomUUID().toString().replace("-", "");
         TokenEntry tokenEntry = new TokenEntry(userId, token);
         // 存储到redis并设置过期时间
-        redis.boundValueOps(userId).set(token, Constants.TOKEN_EXPIRES_HOUR, TimeUnit.HOURS);
+        redis.boundValueOps(userId).set(token, Application.TOKEN_EXPIRES_HOUR, TimeUnit.HOURS);
         return tokenEntry;
     }
 
@@ -61,7 +61,7 @@ public class RedisTokenRepositoryImpl implements TokenRepository {
         }
 
         // 如果验证成功，说明此用户进行了一次有效操作，延长token的过期时间
-        redis.boundValueOps(tokenEntry.getId()).expire(Constants.TOKEN_EXPIRES_HOUR, TimeUnit.HOURS);
+        redis.boundValueOps(tokenEntry.getId()).expire(Application.TOKEN_EXPIRES_HOUR, TimeUnit.HOURS);
         return true;
     }
 

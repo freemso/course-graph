@@ -1,9 +1,9 @@
 package edu.fudan.model;
 
-import  edu.fudan.domain.Course;
+import edu.fudan.domain.Course;
+import edu.fudan.domain.User;
 import edu.fudan.exception.CourseNotFoundException;
 import edu.fudan.repository.CourseRepository;
-import edu.fudan.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

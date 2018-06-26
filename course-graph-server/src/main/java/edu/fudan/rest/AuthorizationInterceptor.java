@@ -1,9 +1,9 @@
 package edu.fudan.rest;
 
+import edu.fudan.Application;
 import edu.fudan.annotation.Authorization;
-import edu.fudan.config.Constants;
-import edu.fudan.repository.TokenRepository;
 import edu.fudan.domain.TokenEntry;
+import edu.fudan.repository.TokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -44,12 +44,12 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         Method method = handlerMethod.getMethod();
         // Get authorization field from header
-        String authorization = request.getHeader(Constants.AUTHORIZATION);
+        String authorization = request.getHeader(Application.AUTHORIZATION);
         // Check the token
         TokenEntry tokenEntry = tokenRepository.getToken(authorization);
         if (tokenRepository.checkToken(tokenEntry)) {
             // Passed. Save current user id in request for future use
-            request.setAttribute(Constants.CURRENT_USER_ID, tokenEntry.getId());
+            request.setAttribute(Application.CURRENT_USER_ID, tokenEntry.getId());
             return true;
         } else {
             // Failed.

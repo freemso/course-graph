@@ -2,17 +2,16 @@ package edu.fudan.model;
 
 import edu.fudan.domain.*;
 import edu.fudan.dto.response.AuthenticationResp;
-import edu.fudan.exception.EmailConflictException;
-import edu.fudan.exception.EmailOrPasswordException;
-import edu.fudan.repository.CourseRepository;
-import edu.fudan.repository.UserRepository;
-import edu.fudan.repository.VerificationCodeRepository;
-
 import edu.fudan.dto.response.UserPrivateResp;
 import edu.fudan.dto.response.UserPublicResp;
+import edu.fudan.exception.EmailConflictException;
+import edu.fudan.exception.EmailOrPasswordException;
 import edu.fudan.exception.InvalidVerificationCodeException;
 import edu.fudan.exception.UserNotFoundException;
+import edu.fudan.repository.CourseRepository;
 import edu.fudan.repository.TokenRepository;
+import edu.fudan.repository.UserRepository;
+import edu.fudan.repository.VerificationCodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -28,16 +27,13 @@ public class UserService {
 
     private final TokenRepository tokenRepository;
 
-    private final CourseRepository courseRepository;
-
     private final VerificationCodeRepository verificationCodeRepository;
 
     @Autowired
     public UserService(UserRepository userRepository, TokenRepository tokenRepository,
-                       CourseRepository courseRepository, VerificationCodeRepository verificationCodeRepository) {
+                       VerificationCodeRepository verificationCodeRepository) {
         this.userRepository = userRepository;
         this.tokenRepository = tokenRepository;
-        this.courseRepository = courseRepository;
         this.verificationCodeRepository = verificationCodeRepository;
     }
 

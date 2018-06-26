@@ -3,7 +3,7 @@ package edu.fudan.model;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.stereotype.Service;
 
-import static edu.fudan.config.Constants.ID_LENGTH;
+import static edu.fudan.Application.ID_LENGTH;
 
 @Service
 class RandomIdGenerator {

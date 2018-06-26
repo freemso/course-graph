@@ -41,3 +41,4 @@ course-graph-server/.project
 # NPM
 course-graph-front/package-lock.json
 course-graph-front/node_modules/
+/course-graph-server/src/main/resources/application.properties

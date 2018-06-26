@@ -1,8 +1,8 @@
 package edu.fudan.repository.impl;
 
-import edu.fudan.config.Constants;
-import edu.fudan.repository.VerificationCodeRepository;
+import edu.fudan.Application;
 import edu.fudan.exception.InvalidVerificationCodeException;
+import edu.fudan.repository.VerificationCodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
@@ -24,7 +24,7 @@ public class RedisVerificationCodeRepositoryImpl implements VerificationCodeRepo
         // 使用uuid作为验证码
         String code = UUID.randomUUID().toString();
         // 存储到redis并设置过期时间
-        redis.boundValueOps(email).set(code, Constants.TOKEN_EXPIRES_HOUR, TimeUnit.HOURS);
+        redis.boundValueOps(email).set(code, Application.TOKEN_EXPIRES_HOUR, TimeUnit.HOURS);
         return code;
     }
 

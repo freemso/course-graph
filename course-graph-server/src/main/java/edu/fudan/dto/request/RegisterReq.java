@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-import static edu.fudan.config.Constants.PASSWORD_REGEX;
+import static edu.fudan.Application.PASSWORD_REGEX;
 
 public class RegisterReq {
 

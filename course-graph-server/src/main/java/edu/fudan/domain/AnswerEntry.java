@@ -1,5 +1,5 @@
 package edu.fudan.domain;
-import edu.fudan.domain.Question;
+
 import org.neo4j.ogm.annotation.*;
 
 @NodeEntity

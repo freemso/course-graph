@@ -1,6 +1,5 @@
 package edu.fudan.model;
 
-import edu.fudan.config.Constants;
 import edu.fudan.domain.*;
 import edu.fudan.dto.response.LectureResp;
 import edu.fudan.dto.response.ResourceResp;
@@ -9,14 +8,11 @@ import edu.fudan.repository.GraphRepository;
 import edu.fudan.repository.LectureRepository;
 import edu.fudan.repository.NodeRepository;
 import edu.fudan.repository.ResourceRepository;
-import edu.fudan.domain.*;
-import edu.fudan.exception.*;
-import edu.fudan.domain.*;
-import edu.fudan.exception.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +33,6 @@ import java.util.Set;
 @Transactional
 public class NodeService {
 
-
     private final NodeRepository nodeRepository;
 
     private final GraphRepository graphRepository;
@@ -50,6 +45,11 @@ public class NodeService {
 
     private final QuestionService questionService;
 
+    @Value("${file.dir.path}")
+    private String fileDirPath;
+
+    @Value("${lecture.dir.path}")
+    private String lectureDirPath;
 
     @Autowired
     public NodeService(NodeRepository nodeRepository,
@@ -240,7 +240,7 @@ public class NodeService {
 
         // Save the file to local file system
         // Create a local file and save the file into it
-        Path filePath = Paths.get(Constants.FILE_PATH + resourceId + ".file");
+        Path filePath = Paths.get(fileDirPath + resourceId + ".file");
         File localFile = filePath.toFile();
         try {
             file.transferTo(localFile);
@@ -303,7 +303,7 @@ public class NodeService {
         long lectureId = RandomIdGenerator.getInstance().generateRandomLongId(lectureRepository);
 
         // Create a local file and save the file into it
-        Path filePath = Paths.get(Constants.LECTURE_PATH + lectureId + ".file");
+        Path filePath = Paths.get(lectureDirPath + lectureId + ".file");
         File localFile = filePath.toFile();
         try {
             file.transferTo(localFile);
@@ -346,7 +346,7 @@ public class NodeService {
         if (resource.getType() == ResourceType.FILE) {
             // If resource is file, delete the file in file system
             // Get the file by resource's link (absolute file path) and delete the file
-            File file = new File(Constants.FILE_PATH + resource.getResourceId() + ".file");
+            File file = new File(fileDirPath + resource.getResourceId() + ".file");
             if (file.exists() && !file.delete()) {
                 // File exists but deletion is NOT successful
                 throw new ResourceIOException();
@@ -372,7 +372,7 @@ public class NodeService {
 
     private void deleteLecture(Lecture lecture) {
         // Delete file
-        File file = new File(Constants.LECTURE_PATH + lecture.getLectureId() + ".file");
+        File file = new File(lectureDirPath + lecture.getLectureId() + ".file");
         if (file.exists() && !file.delete()) {
             // File exists but deletion is NOT successful
             throw new LectureIOException();
@@ -399,7 +399,7 @@ public class NodeService {
         //return a file stream to controller rather than all bytes of the file
         //to handle large files not only small files. when faced with file problems,
         //always steam, never keep fully in memory
-        File resourceFile = new File(Constants.FILE_PATH + resourceId + ".file");
+        File resourceFile = new File(fileDirPath + resourceId + ".file");
 
         try {
             return new InputStreamResource(new FileInputStream(resourceFile));
@@ -422,7 +422,7 @@ public class NodeService {
         //return a file stream to controller rather than all bytes of the file
         //to handle large files not only small files. when faced with file problems,
         //always steam, never keep fully in memory
-        File lectureFile = new File(Constants.LECTURE_PATH + lectureId + ".file");
+        File lectureFile = new File(lectureDirPath + lectureId + ".file");
 
         try {
             return new InputStreamResource(new FileInputStream(lectureFile));

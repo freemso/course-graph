@@ -1,8 +1,8 @@
 package edu.fudan.rest;
 
+import edu.fudan.Application;
 import edu.fudan.annotation.Authorization;
 import edu.fudan.annotation.CurrentUser;
-import edu.fudan.config.Constants;
 import edu.fudan.domain.User;
 import edu.fudan.dto.request.MailRelatedReq;
 import edu.fudan.dto.request.RegisterReq;
@@ -85,7 +85,7 @@ public class UserController {
 
     @PostMapping("/reset_password")
     @Authorization
-    ResponseEntity resetPassword(@CurrentUser User user, @RequestParam("password") @Pattern(regexp = Constants.PASSWORD_REGEX) String password) {
+    ResponseEntity resetPassword(@CurrentUser User user, @RequestParam("password") @Pattern(regexp = Application.PASSWORD_REGEX) String password) {
         userService.resetPassword(user, password);
         return new ResponseEntity(null, HttpStatus.OK);
     }

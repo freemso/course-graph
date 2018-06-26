@@ -2,7 +2,6 @@ package edu.fudan.model;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -14,8 +13,7 @@ import java.util.Properties;
 @Service
 public class MailService {
 
-    @Autowired
-    private JavaMailSenderImpl mailSender;
+    private final JavaMailSenderImpl mailSender;
 
     @Value("${spring.mail.username}")
     private String from;
@@ -30,6 +28,11 @@ public class MailService {
     private boolean startlls_required;
 
     private static final String TITLE_SIGN_UP = "Validation Code for CourseGraph Website Registration";
+
+    @Autowired
+    public MailService(JavaMailSenderImpl mailSender) {
+        this.mailSender = mailSender;
+    }
 
     // private static final String CONTENT = "[邮件内容]";
 

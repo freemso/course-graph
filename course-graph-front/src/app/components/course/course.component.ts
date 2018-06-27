@@ -148,15 +148,21 @@ export class CourseComponent implements OnInit {
             case 0:
                 break;
             case 1:
-                this.child.save();
+              if (this.curUser.type === 'TEACHER') {
+                  this.child.save();
+              }
                 this.homework.getQuestions(this.curNodeId);
                 break;
             case 2:
-                this.child.save();
+              if (this.curUser.type === 'TEACHER') {
+                  this.child.save();
+                         }
                 this.lecture.getLectures(this.curNodeId);
                 break;
             case 3:
-                this.child.save();
+              if (this.curUser.type === 'TEACHER') {
+                  this.child.save();
+                }
                 this.resource.getResources(this.curNodeId);
                 break;
             default:
@@ -177,12 +183,14 @@ export class CourseComponent implements OnInit {
         this.curGraphId = item.id;
     }
 
-    changeStatus(event) {        
+    changeStatus(event) {
         this.curNodeId = event;
     }
 
     save() {
-        this.child.save();
+      let result = this.child.save();
+          alert("当前思维导图已保存");
+
     }
 
     startJquery() {
@@ -191,18 +199,18 @@ export class CourseComponent implements OnInit {
             $('.nav-item>a').on('click', function () {
                 if (!$('.my-nav').hasClass('nav-mini')) {
                     if ($(this).next().css('display') == "none") {
-                        //展开未展开
+                        // 展开未展开
                         $('.nav-item').children('ul').slideUp(300);
                         $(this).next('ul').slideDown(300);
                         $(this).parent('li').addClass('nav-show').siblings('li').removeClass('nav-show');
                     } else {
-                        //收缩已展开
+                        // 收缩已展开
                         $(this).next('ul').slideUp(300);
                         $('.nav-item.nav-show').removeClass('nav-show');
                     }
                 }
             });
-            //nav-mini切换
+            // nav-mini切换
             $('#mini').on('click', function () {
                 if (!$('.my-nav').hasClass('nav-mini')) {
                     $('.nav-item.nav-show').removeClass('nav-show');
@@ -270,7 +278,7 @@ export class CourseComponent implements OnInit {
             };
         }, function (err) {
             let errResp = JSON.parse(err['_body']);
-            console.log(errResp);
+            console.log(errResp.message);
             alert(errResp);
         });
     }
@@ -291,13 +299,14 @@ export class CourseComponent implements OnInit {
             _that.curGraphId = null;
             _that.curNodeId = null;
             console.log(_that.graphs);
-            
+
             // _that.graphs.
             _that.child.clear();
+            alert("删除当前思维导图成功");
         }, function (err) {
             let errResp = JSON.parse(err['_body']);
             console.log(errResp);
-            alert(errResp);
+          alert("删除当前思维导图失败");
         });
     }
 

@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { StorageService } from '../../services/storage.service';
+// import {} from 'jsmind';
 
 // 引入jsmind.js文件
 import * as jsMind from '../../jsmind/js/jsmind.js';
@@ -125,7 +126,7 @@ export class MindmapComponent implements OnInit {
   }
 
   //查看节点是否被选中
-  checkStatus() { 
+  checkStatus() {
     const select_node = this.jm.get_selected_node();
     if (null == select_node) {
       this.node_selected = false;
@@ -141,23 +142,25 @@ export class MindmapComponent implements OnInit {
 
   //保存思维导图
   save() {
-    const data = jsMind.format.node_tree.get_data(this.jm.mind);
-    graphData[this.currentGraphID] = data;
-    console.log("save graph:");
+      const data = jsMind.format.node_tree.get_data(this.jm.mind);
+      graphData[this.currentGraphID] = data;
+      console.log("save graph:");
 
-    let body = { "jsmind": JSON.stringify(data) };
+      let body = {"jsmind": JSON.stringify(data)};
 
-    let _that = this;
-    this.graphService.updateGraphData(this.currentGraphID, body).subscribe(function (suc) {
-      let sucResp = JSON.parse(suc['_body']);
-      console.log("save graph resp");
-      console.log(sucResp);
-    }, function (err) {
-      let errResp = JSON.parse(err['_body']);
-      console.log(errResp);
-      alert(errResp.message);
-    });
-
+      let _that = this;
+      this.graphService.updateGraphData(this.currentGraphID, body).subscribe(function (suc) {
+        let sucResp = JSON.parse(suc['_body']);
+        console.log("save graph resp");
+        console.log(sucResp);
+        // alert("已保存当前思维导图");
+        return true;
+      }, function (err) {
+        let errResp = JSON.parse(err['_body']);
+        console.log(errResp);
+        // alert("当前思维导图保存失败");
+        return false;
+      });
   }
 
   //clear
@@ -190,5 +193,4 @@ export class MindmapComponent implements OnInit {
       this.jm.show(graphData[graphId]);
     }
   }
-
 }

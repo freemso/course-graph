@@ -13,6 +13,13 @@ export class RegisterComponent implements OnInit {
   user: any = {};
   passwordAgain: string;
 
+  mailAllowed = false;
+  nameAllowed = false;
+  pwdAllowed = false;
+  againAllowed = false;
+  verCodeAllowed = true;
+
+
   constructor(
     private router: Router,
     private userservice: UserService) {
@@ -26,6 +33,56 @@ export class RegisterComponent implements OnInit {
       type: 'TEACHER',
       verificationCode: ''
     };
+  }
+
+  checkMail(e) {
+    // 匹配字符串
+    const pattern = '^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*\\.[a-zA-Z0-9]{2,6}$';
+    const n = this.user.email.search(pattern);
+    console.log(n);
+    if (n == -1) {
+      this.mailAllowed = false;
+    } else {
+      this.mailAllowed = true;
+    }
+  }
+  checkName(e) {
+    // 匹配字符串
+    if (this.user.name == "") {
+      this.nameAllowed = false;
+    } else {
+      this.nameAllowed = true;
+    }
+  }
+  checkPwd(e) {
+    // 匹配字符串
+    const pattern = '^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$';
+    const n = this.user.password.search(pattern);
+    console.log(n);
+    if (n === -1) {
+      this.pwdAllowed = false;
+    } else {
+      this.pwdAllowed = true;
+    }
+  }
+  checkAgain(e) {
+    // 匹配字符串
+    if (this.user.password == this.passwordAgain){
+      this.againAllowed = true;
+    } else {
+      this.againAllowed = false;
+    }
+  }
+
+  checkVerCode(e) {
+    // 匹配字符串
+    if (this.disabled) {
+      if (this.user.verificationCode == ""){
+        this.verCodeAllowed = false;
+      } else {
+        this.verCodeAllowed = true;
+      }
+    }
   }
 
   setTypeStu() {
@@ -49,6 +106,7 @@ export class RegisterComponent implements OnInit {
       console.log("verification code resp:");
       console.log(sucResp);
       _that.disabled = true;
+      _that.verCodeAllowed = false;
       alert("验证码已发送至邮箱！");
     }, function (err) {
       let errResp = JSON.parse(err['_body']);
@@ -68,7 +126,7 @@ export class RegisterComponent implements OnInit {
       let sucResp = JSON.parse(suc['_body']);
       console.log("register resp:");
       console.log(sucResp);
-
+      alert("注册成功");
       _that.router.navigate(['login']);
     }, function (err) {
       let errResp = JSON.parse(err['_body']);

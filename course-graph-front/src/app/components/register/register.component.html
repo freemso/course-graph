@@ -4,33 +4,33 @@
   <form class="form-signin" (ngSubmit)="form.form.valid && user.password==passwordAgain && register()" #form="ngForm">
     <h1 class="h3 mb-3 font-weight-normal">请注册</h1>
 
-    <input type="email" name="email" [(ngModel)]="user.email" #email="ngModel" class="form-control" placeholder="邮箱" required
+    <input type="email" name="email" [(ngModel)]="user.email" #email="ngModel" class="form-control" placeholder="邮箱" (ngModelChange)="checkMail($event)" required
       autofocus>
-    <div *ngIf="form.submitted && !email.valid; else elseBlock" class="alert alert-warning">
-      <strong>邮箱不可为空</strong>
+    <div *ngIf="!mailAllowed; else elseBlock" class="alert alert-warning">
+      <strong>邮箱格式不正确</strong>
     </div>
     <ng-template #elseBlock>
       <br>
     </ng-template>
 
-    <input type="text" name="username" [(ngModel)]="user.name" #username="ngModel" class="form-control" placeholder="用户名" required>
-    <div *ngIf="form.submitted && !username.valid; else elseBlock" class="alert alert-warning">
+    <input type="text" name="username" [(ngModel)]="user.name" #username="ngModel" class="form-control" placeholder="用户名" (ngModelChange)="checkName($event)" required>
+    <div *ngIf="!nameAllowed; else elseBlock" class="alert alert-warning">
       <strong>用户名不可为空</strong>
     </div>
 
-    <input type="password" name="password" [(ngModel)]="user.password" #password="ngModel" class="form-control" placeholder="密码"
+    <input type="password" name="password" [(ngModel)]="user.password" #password="ngModel" class="form-control" placeholder="密码" (ngModelChange)="checkPwd($event)"
       required>
-    <div *ngIf="form.submitted && !password.valid; else elseBlock" class="alert alert-warning">
-      <strong>密码不可为空</strong>
+    <div *ngIf="!pwdAllowed; else elseBlock" class="alert alert-warning" style="height: 60px">
+      <strong style="font-size: 10px">密码需包含大、小写字母、数字、特殊字符（@#$%^&+=），且长度不小于8位</strong>
     </div>
 
-    <input type="password" name="passwordagain" [(ngModel)]="passwordAgain" #confirmPassword="ngModel" class="form-control" placeholder="密码确认"
+    <input type="password" name="passwordagain" [(ngModel)]="passwordAgain" #confirmPassword="ngModel" class="form-control" placeholder="密码确认" (ngModelChange)="checkAgain($event)"
       required>
-    <div *ngIf="form.submitted && !confirmPassword.valid" class="alert alert-warning">
-      <strong>请确认密码</strong>
-    </div>
+    <!--<div *ngIf="!againAllowed" class="alert alert-warning">-->
+      <!--<strong>请确认密码</strong>-->
+    <!--</div>-->
 
-    <div *ngIf="confirmPassword.valid && user.password!=passwordAgain" class="alert alert-warning">
+    <div *ngIf="!againAllowed" class="alert alert-warning">
       <strong>两次密码不一致</strong>
     </div>
 
@@ -38,10 +38,13 @@
       <br>
     </div>
 
-    <input type="text" name="code" [(ngModel)]="user.verificationCode" #verificationCode="ngModel" class="form-control" placeholder="验证码"
+    <input type="text" name="code" [(ngModel)]="user.verificationCode" #verificationCode="ngModel" class="form-control" placeholder="验证码" (ngModelChange)="checkVerCode($event)"
       required>
-    <div *ngIf="form.submitted && !verificationCode.valid; else elseBlock" class="alert alert-warning">
+    <div *ngIf="!verCodeAllowed; else elseBlock" class="alert alert-warning">
       <strong>验证码不可为空</strong>
+    </div>
+    <div *ngIf="!disabled; else elseBlock" class="alert alert-warning">
+      <strong>请获取验证码</strong>
     </div>
 
     <input type="radio" name="usertype" id="teacher" checked="true" (click)="setTypeTec()">教师

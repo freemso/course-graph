@@ -12,6 +12,7 @@ import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { CommonModule } from '@angular/common';
 import { FileUploadModule } from 'ng2-file-upload';
 import { FileSaverModule } from 'ngx-filesaver';
+// import {} from 'jsmind';
 
 
 
@@ -66,7 +67,8 @@ import { ProfileComponent } from './components/profile/profile.component';
     AccordionModule.forRoot(),
     CommonModule,
     FileUploadModule,
-    FileSaverModule
+    FileSaverModule,
+
   ],
   providers: [
     MyHttpService,

@@ -54,7 +54,7 @@
                         </div>
                     </ng-template>
                 </li>
-                <li *ngIf="curUser.type=='TEACHER'" class="nav-item">
+                <li *ngIf="curUser.type=='TEACHER' && curGraphId != null" class="nav-item">
                     <a href="javascript:;" (click)="save()">
                         <i class="my-icon nav-icon icon_3"></i>
                         <span>保存修改</span>
@@ -216,7 +216,7 @@
                                             <tbody>
                                                 <tr *ngFor="let item of lectureContent.uploader.queue">
                                                     <td>
-                                                        <strong>{{item.file.name}}</strong>></td>                                           
+                                                        <strong>{{item.file.name}}</strong>></td>
                                                     <td>
                                                         <span>{{ item.file.size/1024/1024 | number:'.2' }} MB</span>
                                                     </td>

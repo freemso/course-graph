@@ -114,7 +114,7 @@ export class RegisterComponent implements OnInit {
         }, function (err) {
             let errResp = JSON.parse(err['_body']);
             console.log(errResp);
-            alert("验证码发送失败，请重试！");
+            alert(errResp.message);
             // alert(errResp.message);
         });
     }

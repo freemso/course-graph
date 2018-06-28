@@ -1,11 +1,12 @@
-import { Injectable } from '@angular/core';
-import { MyHttpService } from './MyHttp.service';
+import {Injectable} from '@angular/core';
+import {MyHttpService} from './MyHttp.service';
 
 
 @Injectable()
 export class CourseService {
 
-    constructor(private myHttp: MyHttpService) { }
+    constructor(private myHttp: MyHttpService) {
+    }
 
     //POST name, code, teacher_id
     create(newCourse) {
@@ -51,7 +52,7 @@ export class CourseService {
 
     //POST uid
     addStudentToCourse(cid, code) {
-        let url = "/courses/"+cid+"/students";
+        let url = "/courses/" + cid + "/students";
         let body = JSON.stringify(code);
 
         return this.myHttp.post(url, body);

@@ -1,50 +1,55 @@
 <app-header></app-header>
 
 <body class="text-center">
-  <form class="form-signin" (ngSubmit)="form.form.valid && user.password==passwordAgain && register()" #form="ngForm">
+<form class="form-signin" (ngSubmit)="form.form.valid && user.password==passwordAgain && register()" #form="ngForm">
     <h1 class="h3 mb-3 font-weight-normal">请注册</h1>
 
-    <input type="email" name="email" [(ngModel)]="user.email" #email="ngModel" class="form-control" placeholder="邮箱" (ngModelChange)="checkMail($event)" required
-      autofocus>
+    <input type="email" name="email" [(ngModel)]="user.email" #email="ngModel" class="form-control" placeholder="邮箱"
+           (ngModelChange)="checkMail($event)" required
+           autofocus>
     <div *ngIf="!mailAllowed; else elseBlock" class="alert alert-warning">
-      <strong>邮箱格式不正确</strong>
+        <strong>邮箱格式不正确</strong>
     </div>
     <ng-template #elseBlock>
-      <br>
+        <br>
     </ng-template>
 
-    <input type="text" name="username" [(ngModel)]="user.name" #username="ngModel" class="form-control" placeholder="用户名" (ngModelChange)="checkName($event)" required>
+    <input type="text" name="username" [(ngModel)]="user.name" #username="ngModel" class="form-control"
+           placeholder="用户名" (ngModelChange)="checkName($event)" required>
     <div *ngIf="!nameAllowed; else elseBlock" class="alert alert-warning">
-      <strong>用户名不可为空</strong>
+        <strong>用户名不可为空</strong>
     </div>
 
-    <input type="password" name="password" [(ngModel)]="user.password" #password="ngModel" class="form-control" placeholder="密码" (ngModelChange)="checkPwd($event)"
-      required>
+    <input type="password" name="password" [(ngModel)]="user.password" #password="ngModel" class="form-control"
+           placeholder="密码" (ngModelChange)="checkPwd($event)"
+           required>
     <div *ngIf="!pwdAllowed; else elseBlock" class="alert alert-warning" style="height: 60px">
-      <strong style="font-size: 10px">密码需包含大、小写字母、数字、特殊字符（@#$%^&+=），且长度不小于8位</strong>
+        <strong style="font-size: 10px">密码需包含大、小写字母、数字、特殊字符（@#$%^&+=），且长度不小于8位</strong>
     </div>
 
-    <input type="password" name="passwordagain" [(ngModel)]="passwordAgain" #confirmPassword="ngModel" class="form-control" placeholder="密码确认" (ngModelChange)="checkAgain($event)"
-      required>
+    <input type="password" name="passwordagain" [(ngModel)]="passwordAgain" #confirmPassword="ngModel"
+           class="form-control" placeholder="密码确认" (ngModelChange)="checkAgain($event)"
+           required>
     <!--<div *ngIf="!againAllowed" class="alert alert-warning">-->
-      <!--<strong>请确认密码</strong>-->
+    <!--<strong>请确认密码</strong>-->
     <!--</div>-->
 
     <div *ngIf="!againAllowed" class="alert alert-warning">
-      <strong>两次密码不一致</strong>
+        <strong>两次密码不一致</strong>
     </div>
 
     <div *ngIf="(!form.submitted && !confirmPassword.valid) || (user.password == passwordAgain && passwordAgain!='')">
-      <br>
+        <br>
     </div>
 
-    <input type="text" name="code" [(ngModel)]="user.verificationCode" #verificationCode="ngModel" class="form-control" placeholder="验证码" (ngModelChange)="checkVerCode($event)"
-      required>
+    <input type="text" name="code" [(ngModel)]="user.verificationCode" #verificationCode="ngModel" class="form-control"
+           placeholder="验证码" (ngModelChange)="checkVerCode($event)"
+           required>
     <div *ngIf="!verCodeAllowed; else elseBlock" class="alert alert-warning">
-      <strong>验证码不可为空</strong>
+        <strong>验证码不可为空</strong>
     </div>
     <div *ngIf="!disabled; else elseBlock" class="alert alert-warning">
-      <strong>请获取验证码</strong>
+        <strong>请获取验证码</strong>
     </div>
 
     <input type="radio" name="usertype" id="teacher" checked="true" (click)="setTypeTec()">教师
@@ -52,8 +57,9 @@
     <br>
     <br>
 
-    <button class="btn btn-lg btn btn-primary btn-block" (click)="getVerificationCode()" [disabled]="disabled">获取验证码</button>
+    <button class="btn btn-lg btn btn-primary btn-block" (click)="getVerificationCode()" [disabled]="disabled">获取验证码
+    </button>
     <input class="btn btn-lg btn-primary btn-block" type="submit" value="注册">
     <p class="mt-5 mb-3 text-muted">&copy; 2017-2018</p>
-  </form>
+</form>
 </body>

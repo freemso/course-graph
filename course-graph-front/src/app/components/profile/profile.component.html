@@ -1,34 +1,37 @@
 <app-header></app-header>
 
 <div class="row justify-content-center">
-  <div class="card box-shadow" style="width: 25rem; margin-top: 50px;">
-    <div class="card-header">
-      <h2 class="my-0 font-weight-normal">{{curUser.name}}</h2>
+    <div class="card box-shadow" style="width: 25rem; margin-top: 50px;">
+        <div class="card-header">
+            <h2 class="my-0 font-weight-normal">{{curUser.name}}</h2>
+        </div>
+        <div class="card-body">
+            <p class="card-title pricing-card-title">账号类型：{{profile.type}}</p>
+            <p class="card-title pricing-card-title">账户ID：{{profile.id}}</p>
+            <p class="card-title pricing-card-title">邮箱：{{profile.email}}</p>
+            <button class="btn btn-primary" (click)="openModifyWindow(modifyTemplate)">修改密码</button>
+        </div>
     </div>
-    <div class="card-body">
-      <p class="card-title pricing-card-title">账号类型：{{profile.type}}</p>
-      <p class="card-title pricing-card-title">账户ID：{{profile.id}}</p>
-      <p class="card-title pricing-card-title">邮箱：{{profile.email}}</p>
-      <button class="btn btn-primary" (click)="openModifyWindow(modifyTemplate)">修改密码</button>
-    </div>
-  </div>
 </div>
 
 <ng-template #modifyTemplate>
-  <div class="modal-header">
-    <h4 class="modal-title pull-left">修改密码</h4>
-    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <form (ngSubmit)="form.form.valid && confirmModify()" #form="ngForm">
-      <input type="password" id="oldPassword" name="oldPassword" [(ngModel)]="newProfile.password" class="form-control" placeholder="原密码" required autofocus>
-      <br>
-      <input type="password" id="newPassword" name="newPassword" [(ngModel)]="newProfile.newPassword" class="form-control" placeholder="新密码" required>
-      <br>
-      <input type="button" class="btn btn-default" popover="Vivamus sagittis" value="取消" (click)="cancelModify()">
-      <input type="submit" class="btn btn-primary" tooltip="Vivamus sagittis" value="确认" style="margin-left: 10px">
-    </form>
-  </div>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">修改密码</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form (ngSubmit)="form.form.valid && confirmModify()" #form="ngForm">
+            <input type="password" id="oldPassword" name="oldPassword" [(ngModel)]="newProfile.password"
+                   class="form-control" placeholder="原密码" required autofocus>
+            <br>
+            <input type="password" id="newPassword" name="newPassword" [(ngModel)]="newProfile.newPassword"
+                   class="form-control" placeholder="新密码" required>
+            <br>
+            <input type="button" class="btn btn-default" popover="Vivamus sagittis" value="取消" (click)="cancelModify()">
+            <input type="submit" class="btn btn-primary" tooltip="Vivamus sagittis" value="确认"
+                   style="margin-left: 10px">
+        </form>
+    </div>
 </ng-template>

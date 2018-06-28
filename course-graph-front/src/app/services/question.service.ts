@@ -1,11 +1,12 @@
-import { Injectable } from '@angular/core';
-import { MyHttpService } from './MyHttp.service';
+import {Injectable} from '@angular/core';
+import {MyHttpService} from './MyHttp.service';
 
 
 @Injectable()
 export class QuestionService {
 
-    constructor(private myHttp: MyHttpService) { }
+    constructor(private myHttp: MyHttpService) {
+    }
 
     //GET
     listQuestionsOfNode(nid) {

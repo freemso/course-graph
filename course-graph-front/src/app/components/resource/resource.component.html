@@ -1,25 +1,29 @@
 <div *ngFor="let res of resources; let i = index" class="card box-shadow" style="width: 45rem; margin: 10px;">
-  <div class="card-header">
-    <h2>{{i+1}}. {{res.title}}</h2>
-  </div>
+    <div class="card-header">
+        <h2>{{i+1}}. {{res.title}}</h2>
+    </div>
 
-  <div *ngIf="res.type=='FILE'" class="card-body">
-    <button type="button" class="btn btn-primary"
-      fileSaver 
-      [method]="'GET'" 
-      [fileName]="res.title"
-      [url]="myHttp.baseURL + '/resources/' + res.id + '/file'"
-      [header]="{Authorization: token}"
-      [query]="{ pi: res.id }"
-      (success)="onSuc($event)" 
-      (error)="onErr($event)">下载
-    </button>
-    <button *ngIf="curUser.type == 'TEACHER'" class="btn btn-primary" (click)="deleteResource(res.id)" style="margin-left: 10px">删除</button>
-  </div>
+    <div *ngIf="res.type=='FILE'" class="card-body">
+        <button type="button" class="btn btn-primary"
+                fileSaver
+                [method]="'GET'"
+                [fileName]="res.title"
+                [url]="myHttp.baseURL + '/resources/' + res.id + '/file'"
+                [header]="{Authorization: token}"
+                [query]="{ pi: res.id }"
+                (success)="onSuc($event)"
+                (error)="onErr($event)">下载
+        </button>
+        <button *ngIf="curUser.type == 'TEACHER'" class="btn btn-primary" (click)="deleteResource(res.id)"
+                style="margin-left: 10px">删除
+        </button>
+    </div>
 
-  <div *ngIf="res.type=='URL'" class="card-body">
-    <p>描述：{{res.title}}</p>
-    <a href="{{res.link}}">进入</a>
-    <button *ngIf="curUser.type == 'TEACHER'" class="btn btn-primary" (click)="deleteResource(res.id)" style="margin-left: 10px">删除</button>
-  </div>
+    <div *ngIf="res.type=='URL'" class="card-body">
+        <p>描述：{{res.title}}</p>
+        <a href="{{res.link}}">进入</a>
+        <button *ngIf="curUser.type == 'TEACHER'" class="btn btn-primary" (click)="deleteResource(res.id)"
+                style="margin-left: 10px">删除
+        </button>
+    </div>
 </div>

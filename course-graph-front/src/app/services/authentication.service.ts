@@ -1,10 +1,11 @@
-import { Injectable } from '@angular/core';
-import { MyHttpService } from './MyHttp.service';
+import {Injectable} from '@angular/core';
+import {MyHttpService} from './MyHttp.service';
 
 
 @Injectable()
 export class AuthenticationService {
-    constructor(private myHttp: MyHttpService) { }
+    constructor(private myHttp: MyHttpService) {
+    }
 
     //POST email, password
     login(user) {

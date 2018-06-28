@@ -1,20 +1,19 @@
-import { Component, OnInit, ViewChild, TemplateRef, ElementRef, AfterViewInit } from '@angular/core';
-import { MindmapComponent } from '../mindmap/mindmap.component';
-import { HomeworkComponent } from '../homework/homework.component';
-import { LectureComponent } from '../lecture/lecture.component';
-import { FileUploader } from 'ng2-file-upload';
-import { FileItem } from 'ng2-file-upload';
-import { ActivatedRoute, Params } from '@angular/router';
+import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {MindmapComponent} from '../mindmap/mindmap.component';
+import {HomeworkComponent} from '../homework/homework.component';
+import {LectureComponent} from '../lecture/lecture.component';
+import {FileItem, FileUploader} from 'ng2-file-upload';
+import {ActivatedRoute} from '@angular/router';
 import jsMind from 'jsmind/js/jsmind.js';
 
-import { StorageService } from '../../services/storage.service';
-import { MyHttpService } from '../../services/MyHttp.service';
-import { QuestionService } from '../../services/question.service';
+import {StorageService} from '../../services/storage.service';
+import {MyHttpService} from '../../services/MyHttp.service';
+import {QuestionService} from '../../services/question.service';
 
 import * as $ from 'jquery';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { ResourceComponent } from '../resource/resource.component';
-import { GraphService } from '../../services/graph.service';
+import {BsModalRef, BsModalService} from 'ngx-bootstrap/modal';
+import {ResourceComponent} from '../resource/resource.component';
+import {GraphService} from '../../services/graph.service';
 
 @Component({
     selector: 'app-course',
@@ -148,20 +147,20 @@ export class CourseComponent implements OnInit {
             case 0:
                 break;
             case 1:
-              if (this.curUser.type === 'TEACHER') {
-                  this.child.save();
-              }
+                if (this.curUser.type === 'TEACHER') {
+                    this.child.save();
+                }
                 this.homework.getQuestions(this.curNodeId);
                 break;
             case 2:
-              if (this.curUser.type === 'TEACHER') {
-                  this.child.save();
-                         }
+                if (this.curUser.type === 'TEACHER') {
+                    this.child.save();
+                }
                 this.lecture.getLectures(this.curNodeId);
                 break;
             case 3:
-              if (this.curUser.type === 'TEACHER') {
-                  this.child.save();
+                if (this.curUser.type === 'TEACHER') {
+                    this.child.save();
                 }
                 this.resource.getResources(this.curNodeId);
                 break;
@@ -174,9 +173,9 @@ export class CourseComponent implements OnInit {
         if (this.curGraphId == null) {
             alert("请先选中课程");
         } else {
-        this.child.prtScn();
+            this.child.prtScn();
+        }
     }
-}
 
     changeGraph(item) {
         this.child.getData(item.id);
@@ -188,8 +187,8 @@ export class CourseComponent implements OnInit {
     }
 
     save() {
-      let result = this.child.save();
-          alert("当前思维导图已保存");
+        let result = this.child.save();
+        alert("当前思维导图已保存");
 
     }
 
@@ -287,10 +286,10 @@ export class CourseComponent implements OnInit {
     deleteGraph() {
         let _that = this;
         let len = _that.graphs.length;
-        for(var i = 0; i < len; i++){
+        for (var i = 0; i < len; i++) {
             console.log(_that.curGraphId);
             console.log(_that.graphs[i]);
-            if(_that.graphs[i].id == _that.curGraphId) {
+            if (_that.graphs[i].id == _that.curGraphId) {
                 _that.graphs.splice(i, 1);
             }
         }
@@ -306,7 +305,7 @@ export class CourseComponent implements OnInit {
         }, function (err) {
             let errResp = JSON.parse(err['_body']);
             console.log(errResp);
-          alert("删除当前思维导图失败");
+            alert("删除当前思维导图失败");
         });
     }
 

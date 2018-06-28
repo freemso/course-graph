@@ -1,15 +1,15 @@
-import { Injectable } from '@angular/core';
-import { Component, TemplateRef } from '@angular/core';
-import { BsModalService } from 'ngx-bootstrap/modal';
-import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
+import {Injectable} from '@angular/core';
+import {BsModalService} from 'ngx-bootstrap/modal';
+import {BsModalRef} from 'ngx-bootstrap/modal/bs-modal-ref.service';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 
 export class AlertService {
 
- template: `
+    template:
+`
   <ng-template>
     <div class="modal-header">
       <h4 class="modal-title pull-left">错误</h4>
@@ -22,20 +22,21 @@ export class AlertService {
     </div>
   </ng-template>`
 
-  modalRef: BsModalRef;
+    modalRef: BsModalRef;
 
-  config = {
-    backdrop: true,
-    ignoreBackdropClick: false
-  };
+    config = {
+        backdrop: true,
+        ignoreBackdropClick: false
+    };
 
-  message = "lalala";
+    message = "lalala";
 
-  constructor(private modalService: BsModalService) { }
+    constructor(private modalService: BsModalService) {
+    }
 
-  showAlert(message: string) {
-    this.message = message;
-    this.modalRef = this.modalService.show(this.template, this.config);
-    alert(this.message);
-  }
+    showAlert(message: string) {
+        this.message = message;
+        this.modalRef = this.modalService.show(this.template, this.config);
+        alert(this.message);
+    }
 }

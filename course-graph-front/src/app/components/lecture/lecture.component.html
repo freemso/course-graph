@@ -1,12 +1,16 @@
 <div *ngFor="let lec of lectures; let i = index" class="card box-shadow" style="width: 45rem; margin: 10px;">
-  <div class="card-header">
-    <h2>{{i+1}}. {{lec.title}}</h2>
-  </div>
+    <div class="card-header">
+        <h2>{{i+1}}. {{lec.title}}</h2>
+    </div>
 
-  <div class="card-body">
-    <button type="button" class="btn btn-primary" fileSaver [method]="'GET'" [fileName]="lec.title" [url]="myHttp.baseURL + '/lectures/' + lec.id + '/download'"
-      [header]="{Authorization: token}" (success)="onSuc($event)" (error)="onErr($event)">下载</button>
+    <div class="card-body">
+        <button type="button" class="btn btn-primary" fileSaver [method]="'GET'" [fileName]="lec.title"
+                [url]="myHttp.baseURL + '/lectures/' + lec.id + '/download'"
+                [header]="{Authorization: token}" (success)="onSuc($event)" (error)="onErr($event)">下载
+        </button>
 
-    <button *ngIf="curUser.type == 'TEACHER'" class="btn btn-primary" (click)="deleteLecture(lec.id)" style="margin-left: 10px">删除</button>
-  </div>
+        <button *ngIf="curUser.type == 'TEACHER'" class="btn btn-primary" (click)="deleteLecture(lec.id)"
+                style="margin-left: 10px">删除
+        </button>
+    </div>
 </div>

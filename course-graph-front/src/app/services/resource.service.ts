@@ -1,11 +1,12 @@
-import { Injectable } from '@angular/core';
-import { MyHttpService } from './MyHttp.service';
+import {Injectable} from '@angular/core';
+import {MyHttpService} from './MyHttp.service';
 
 
 @Injectable()
 export class ResourceService {
 
-    constructor(private myHttp: MyHttpService) { }
+    constructor(private myHttp: MyHttpService) {
+    }
 
     //GET
     listResourcesOfNode(nid) {
@@ -18,6 +19,7 @@ export class ResourceService {
     addResourceToNode() {
         let url = '/nodes/{nid}/resources';
     }
+
     //GET
     getResourceData() {
         let url = '/resources/{rid}';

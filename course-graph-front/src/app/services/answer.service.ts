@@ -1,13 +1,14 @@
-import { Injectable } from '@angular/core';
-import { Http, Jsonp, Headers } from '@angular/http';
+import {Injectable} from '@angular/core';
+import {Headers, Http} from '@angular/http';
 // import { Observable } from 'rxjs';
 // import 'rxjs/Rx';
 
 @Injectable()
 export class AnswerService {
-    private headers = new Headers({ 'Content-Type': 'application/json' });
+    private headers = new Headers({'Content-Type': 'application/json'});
 
-    constructor(private http: Http) { }
+    constructor(private http: Http) {
+    }
 
     //GET
     listAnswersOfQuestion() {

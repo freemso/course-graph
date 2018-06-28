@@ -1,19 +1,21 @@
 .container {
-  max-width: 960px;
+    max-width: 960px;
 }
 
 .pricing-header {
-  max-width: 700px;
+    max-width: 700px;
 }
 
 .card {
-  width: 20rem;
-  margin: 10px;
+    width: 20rem;
+    margin: 10px;
 }
 
-.row{
- text-align: center;
- padding-left: 13%;
+.row {
+    text-align: center;
+    padding-left: 13%;
 }
 
-.box-shadow { box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05); }
+.box-shadow {
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}

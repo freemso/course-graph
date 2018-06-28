@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { MyHttpService } from './MyHttp.service';
-import { textSpanIntersectsWithPosition } from 'typescript';
+import {Injectable} from '@angular/core';
+import {MyHttpService} from './MyHttp.service';
 
 @Injectable()
 export class GraphService {
-    constructor(private myHttp: MyHttpService) { }
+    constructor(private myHttp: MyHttpService) {
+    }
 
     //GET
     listGraphsOfCourse(cid) {
@@ -41,8 +41,6 @@ export class GraphService {
         let url = '/graphs/' + gid;
         return this.myHttp.delete(url);
     }
-
-
 
 
 }

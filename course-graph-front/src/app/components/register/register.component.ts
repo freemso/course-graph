@@ -1,138 +1,141 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, NavigationExtras } from '@angular/router';
-import { UserService } from '../../services/user.service';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {UserService} from '../../services/user.service';
 
 
 @Component({
-  selector: 'app-register',
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css']
+    selector: 'app-register',
+    templateUrl: './register.component.html',
+    styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
-  disabled: boolean = false;
-  user: any = {};
-  passwordAgain: string;
+    disabled: boolean = false;
+    user: any = {};
+    passwordAgain: string;
 
-  mailAllowed = false;
-  nameAllowed = false;
-  pwdAllowed = false;
-  againAllowed = false;
-  verCodeAllowed = true;
+    mailAllowed = false;
+    nameAllowed = false;
+    pwdAllowed = false;
+    againAllowed = false;
+    verCodeAllowed = true;
 
 
-  constructor(
-    private router: Router,
-    private userservice: UserService) {
-  }
-
-  ngOnInit() {
-    this.user = {
-      email: '',
-      name: '',
-      password: '',
-      type: 'TEACHER',
-      verificationCode: ''
-    };
-  }
-
-  checkMail(e) {
-    // 匹配字符串
-    const pattern = '^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*\\.[a-zA-Z0-9]{2,6}$';
-    const n = this.user.email.search(pattern);
-    console.log(n);
-    if (n == -1) {
-      this.mailAllowed = false;
-    } else {
-      this.mailAllowed = true;
+    constructor(
+        private router: Router,
+        private userservice: UserService) {
     }
-  }
-  checkName(e) {
-    // 匹配字符串
-    if (this.user.name == "") {
-      this.nameAllowed = false;
-    } else {
-      this.nameAllowed = true;
+
+    ngOnInit() {
+        this.user = {
+            email: '',
+            name: '',
+            password: '',
+            type: 'TEACHER',
+            verificationCode: ''
+        };
     }
-  }
-  checkPwd(e) {
-    // 匹配字符串
-    const pattern = '^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$';
-    const n = this.user.password.search(pattern);
-    console.log(n);
-    if (n === -1) {
-      this.pwdAllowed = false;
-    } else {
-      this.pwdAllowed = true;
+
+    checkMail(e) {
+        // 匹配字符串
+        const pattern = '^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*\\.[a-zA-Z0-9]{2,6}$';
+        const n = this.user.email.search(pattern);
+        console.log(n);
+        if (n == -1) {
+            this.mailAllowed = false;
+        } else {
+            this.mailAllowed = true;
+        }
     }
-  }
-  checkAgain(e) {
-    // 匹配字符串
-    if (this.user.password == this.passwordAgain){
-      this.againAllowed = true;
-    } else {
-      this.againAllowed = false;
+
+    checkName(e) {
+        // 匹配字符串
+        if (this.user.name == "") {
+            this.nameAllowed = false;
+        } else {
+            this.nameAllowed = true;
+        }
     }
-  }
 
-  checkVerCode(e) {
-    // 匹配字符串
-    if (this.disabled) {
-      if (this.user.verificationCode == ""){
-        this.verCodeAllowed = false;
-      } else {
-        this.verCodeAllowed = true;
-      }
+    checkPwd(e) {
+        // 匹配字符串
+        const pattern = '^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$';
+        const n = this.user.password.search(pattern);
+        console.log(n);
+        if (n === -1) {
+            this.pwdAllowed = false;
+        } else {
+            this.pwdAllowed = true;
+        }
     }
-  }
 
-  setTypeStu() {
-    this.user.type = 'STUDENT';
-  }
+    checkAgain(e) {
+        // 匹配字符串
+        if (this.user.password == this.passwordAgain) {
+            this.againAllowed = true;
+        } else {
+            this.againAllowed = false;
+        }
+    }
 
-  setTypeTec() {
-    this.user.type = 'TEACHER';
-  }
+    checkVerCode(e) {
+        // 匹配字符串
+        if (this.disabled) {
+            if (this.user.verificationCode == "") {
+                this.verCodeAllowed = false;
+            } else {
+                this.verCodeAllowed = true;
+            }
+        }
+    }
 
-  getVerificationCode() {
-    console.log("get verification code");
-    let body = { email: this.user.email };
-    console.log(body);
+    setTypeStu() {
+        this.user.type = 'STUDENT';
+    }
 
-    let _that = this;
+    setTypeTec() {
+        this.user.type = 'TEACHER';
+    }
 
-    this.userservice.getVerificationCode(body).subscribe(function (suc) {
-      console.log(suc);
-      let sucResp = (suc['_body']);
-      console.log("verification code resp:");
-      console.log(sucResp);
-      _that.disabled = true;
-      _that.verCodeAllowed = false;
-      alert("验证码已发送至邮箱！");
-    }, function (err) {
-      let errResp = JSON.parse(err['_body']);
-      console.log(errResp);
-      alert("验证码发送失败，请重试！");
-      // alert(errResp.message);
-    });
-  }
+    getVerificationCode() {
+        console.log("get verification code");
+        let body = {email: this.user.email};
+        console.log(body);
 
-  register() {
-    console.log("begin to register user: ");
-    console.log(this.user);
+        let _that = this;
 
-    //与服务器端通信，确认是否注册成功
-    let _that = this;
-    this.userservice.register(this.user).subscribe(function (suc) {
-      let sucResp = JSON.parse(suc['_body']);
-      console.log("register resp:");
-      console.log(sucResp);
-      alert("注册成功");
-      _that.router.navigate(['login']);
-    }, function (err) {
-      let errResp = JSON.parse(err['_body']);
-      console.log(errResp);
-      alert(errResp.message);
-    });
-  }
+        this.userservice.getVerificationCode(body).subscribe(function (suc) {
+            console.log(suc);
+            let sucResp = (suc['_body']);
+            console.log("verification code resp:");
+            console.log(sucResp);
+            _that.disabled = true;
+            _that.verCodeAllowed = false;
+            alert("验证码已发送至邮箱！");
+        }, function (err) {
+            let errResp = JSON.parse(err['_body']);
+            console.log(errResp);
+            alert("验证码发送失败，请重试！");
+            // alert(errResp.message);
+        });
+    }
+
+    register() {
+        console.log("begin to register user: ");
+        console.log(this.user);
+
+        //与服务器端通信，确认是否注册成功
+        let _that = this;
+        this.userservice.register(this.user).subscribe(function (suc) {
+            let sucResp = JSON.parse(suc['_body']);
+            console.log("register resp:");
+            console.log(sucResp);
+            alert("注册成功");
+            _that.router.navigate(['login']);
+        }, function (err) {
+            let errResp = JSON.parse(err['_body']);
+            console.log(errResp);
+            alert(errResp.message);
+        });
+    }
 
 }

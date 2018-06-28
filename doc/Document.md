@@ -4,7 +4,7 @@
 
 下图给出了用户操作网站的一个完整的流程，图中对于区分用户类型的操作，在流程图中会特别标注出用户的类型。具体的流程如下：
 
-![](./pictures_in _document/flowchart.png)
+![](pictures_in _document/flowchart.png)
 
 ## 功能分析
 

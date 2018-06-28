@@ -4,7 +4,6 @@ import * as jsMind from 'jsmind/js/jsmind.js';
 import 'jsmind/js/jsmind.screenshot.js';
 import 'jsmind/js/jsmind.draggable.js';
 import {GraphService} from '../../services/graph.service';
-// import {} from 'jsmind';
 // jsMind的设置参数
 const options = {
     container: 'jsmind_container',

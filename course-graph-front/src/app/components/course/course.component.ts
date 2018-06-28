@@ -4,7 +4,7 @@ import {HomeworkComponent} from '../homework/homework.component';
 import {LectureComponent} from '../lecture/lecture.component';
 import {FileItem, FileUploader} from 'ng2-file-upload';
 import {ActivatedRoute} from '@angular/router';
-import * as jsMind from 'jsmind/js/jsmind.js';
+import * as jsMind from '../../jsmind/js/jsmind.js';
 
 import {StorageService} from '../../services/storage.service';
 import {MyHttpService} from '../../services/MyHttp.service';

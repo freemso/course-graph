@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {StorageService} from '../../services/storage.service';
-import * as jsMind from 'jsmind/js/jsmind';
+import * as jsMind from 'jsmind/js/jsmind.js';
 import 'jsmind/js/jsmind.screenshot.js';
 import 'jsmind/js/jsmind.draggable.js';
 import {GraphService} from '../../services/graph.service';

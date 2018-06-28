@@ -56,7 +56,7 @@ service 和 repository 之间的类关系如下：
 
 此次项目我们使用了 Neo4j 和 Redis 这两个数据库。其中 Neo4j 是我们的主力数据库用于网站的数据存储和管理，而 Redis 数据库主要是用于用户权限验证服务和邮箱验证码服务，关于两个数据库具体的设计可以参见下文数据库设计部分。这里给出我们在使用 Neo4j 数据库时所设计的 ER 图。
 
-![](images/er_graph.png)
+![](images/ER_Graph.png)
 
 主要的 Entity 有user，course， graph，node，question，lecture，resource。其中 user 分为两种类型，student 和 teacher，question 也分为两种类型 short answer question 和 multiple-choice question。学生和老师和课程的关系分别是 learn 和 teach。一个课程可以和多个 graph 节点相连，即可以有多张思维导图。graph 节点存储了图的基本信息以及思维导图的信息，和一个 graph 相连接的是思维导图里的课程节点 node，每一个课程节点都与其课件（lecture），资源（resource），问题（question）节点相连接。
 

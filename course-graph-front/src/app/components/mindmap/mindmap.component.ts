@@ -3,16 +3,16 @@ import { StorageService } from '../../services/storage.service';
 // import {} from 'jsmind';
 
 // 引入jsmind.js文件
-import * as jsMind from '../../jsmind/js/jsmind.js';
-import '../../jsmind/js/jsmind.screenshot.js';
-import '../../jsmind/js/jsmind.draggable.js';
+import jsMind from 'jsmind/js/jsmind';
+import '../../../assets/jsmind.screenshot.js';
+import '../../../assets/jsmind.draggable.js';
 import { GraphService } from '../../services/graph.service';
 // jsMind的设置参数
 const options = {
   container: 'jsmind_container',
   theme: 'greensea',
   editable: true
-}
+};
 // 思维导图Mindmap渲染的json文件
 let graphData: { [key: string]: object; } = {};
 
@@ -78,7 +78,6 @@ export class MindmapComponent implements OnInit {
 
   //打印图片
   prtScn() {
-    const selected_node = this.jm.get_selected_node(); // as parent of new node
     this.jm.screenshot.shootDownload();
   }
 

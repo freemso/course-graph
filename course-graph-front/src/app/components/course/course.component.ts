@@ -5,7 +5,7 @@ import { LectureComponent } from '../lecture/lecture.component';
 import { FileUploader } from 'ng2-file-upload';
 import { FileItem } from 'ng2-file-upload';
 import { ActivatedRoute, Params } from '@angular/router';
-import * as jsMind from '../../jsmind/js/jsmind.js';
+import jsMind from 'jsmind/js/jsmind.js';
 
 import { StorageService } from '../../services/storage.service';
 import { MyHttpService } from '../../services/MyHttp.service';

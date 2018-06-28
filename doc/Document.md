@@ -16,21 +16,15 @@
 
 ### 课程导图相关功能
 
-课程导图是系统提供的主要功能之一。下面给出了用户从登录到查看以及编辑思维导图的一个完成流程：![](./pictures_in _document/coursegraph_flow.png)
+课程导图是系统提供的主要功能之一。下面给出了用户从登录到查看以及编辑思维导图的一个完成流程：
 
-
-
-
+![](./pictures_in _document/coursegraph_flow.png)
 
 ### 文件资源相关功能
 
 用户在选中课程节点后，可以针对该课程节点的文件资源进行一系列操作。学生可以下课文件资源，而教师可以上传文件资源，下图给出了文件资源相关操作的一个完整流程：
 
-
-
 ![](./pictures_in _document/resource_flow.png)
-
-
 
 ### 作业问题相关功能
 
@@ -87,7 +81,7 @@ service 和 repository之间的类关系如下：
 -register.component
 ```
 
-###页面间交互
+### 页面间交互
 #### 路由配置
 
 - 在Angular中，页面之间的跳转可以使用传统的做法，但使用路由是一个更灵活的做法。
@@ -100,13 +94,13 @@ service 和 repository之间的类关系如下：
 - 在模板中通过selector引用组件内容时，可以在标签内填写要传递的字段，相应地，在子组件中通过@Input注解接收对应值。这一方式应用在了course组件与其四个子组件之间，子组件根据父组件提供的node id向后端请求数据。
 - 通过a标签的router-link在组件间跳转时，可以使用queryParams属性承载要传递的数据，相应地在接收传值的模块里能够通过ActivatedRoute模块提供的routerIonfo.snapshot.queryParams方法得到数据。这一方式应用在courselist组件与course组件之间，后者需要前者提供的course id向后端请求数据。
 
-###与后端交互
+### 与后端交互
 #### 服务注入
 
 - 能够复用的代码抽取出来封装成service是一个较好的选择，能够降低耦合度。比如项目中的StorageService用于向浏览器的localStorage中读写条目，使用时只需要在组件中注入即可（也可以new一个实例，但是效率不高，不推荐）。
 - 对于数据的获取和处理（与后端交互）也应封装成service，比如基于Http模块包装的MyHttpService在每一个请求头部加入用于身份验证的token，同时能够方便地更改后端服务的api请求地址。此外，将每个页面向后端获取数据的操作内聚成一个service（如UserService，CourseService）。
 
-###关键功能实现
+### 关键功能实现
 
 #### 表单实时验证
 
@@ -134,9 +128,17 @@ service 和 repository之间的类关系如下：
   使用方法：在html文件中添加下载文件的按钮，在按钮中声明filesaver，并绑定method、url、header等参数，设置成功与失败的回调函数。在ts文件中只需要实现两种回调函数即可。
 
 ## 后端开发
-后端主要使用了 Spring Boot 框架，Neo4j 数据库和 Redis 内存数据库。
+本项目的后端提供了一个面向前端的 REST 服务。在技术栈上，主要使用了 Spring Boot 框架，Neo4j 数据库和 Redis 内存数据库。
 
 ### 项目结构说明
+后端项目的目录结构如下：
+
+```
+- course-graph-server/
+    
+
+```
+
 
 ### 关键功能实现细节
 

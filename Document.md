@@ -4,7 +4,7 @@
 
 下图给出了用户操作网站的一个完整的流程，图中对于区分用户类型的操作，在流程图中会特别标注出用户的类型。具体的流程如下：
 
-![](pictures_in _document/flowchart.png)
+![](images/flowchart.png)
 
 ## 功能分析
 
@@ -12,33 +12,33 @@
 
 该系统的用户为学生和老师。系统提供给用户的功能主要是两个方面：个人信息相关功能（注册，登录等），课程相关功能（查看思维导图，课件，作业等）。对于学生和老师，提供的功能会有所区别，但都覆盖这两个方面。具体的功能可以参考下面的用例图：
 
-![](./pictures_in _document/use_case.png)
+![](images/use_case.png)
 
 ### 课程导图相关功能
 
 课程导图是系统提供的主要功能之一。下面给出了用户从登录到查看以及编辑思维导图的一个完成流程：
 
-![](./pictures_in _document/coursegraph_flow.png)
+![](images/coursegraph_flow.png)
 
 ### 文件资源相关功能
 
 用户在选中课程节点后，可以针对该课程节点的文件资源进行一系列操作。学生可以下课文件资源，而教师可以上传文件资源，下图给出了文件资源相关操作的一个完整流程：
 
-![](./pictures_in _document/resource_flow.png)
+![](images/resource_flow.png)
 
 ### 作业问题相关功能
 
 学生可以回答课程节点的问题，而教师可以添加问题，下面给出一个问题相关的操作流程：
 
-![](./pictures_in _document/student_question_flow.png)
+![](images/student_question_flow.png)
 
-![](./pictures_in _document/teacher_question_flow.png)
+![](images/teacher_question_flow.png)
 
 ## 总体架构
 
 ### 结构图
 
-![](./pictures_in _document/architecture.png)
+![](images/architecture.png)
 
 后端在接收到前端发送的请求后会首先经过 Authorization Interceptor 层，进行权限验证，验证方式是检查 HTTP 请求头部的 `Authorization` 字段的 token 数据，通过验证后，进入到 Current User Resolver 解析层，通过 token 信息获取对应的用户信息。在经历拦截解析后，后端会根据请求的 URL 将请求传给对应的 controller，controller 调用对应 service 层处理请求；service 层通过 spring data 层与后端数据库进行交互，在对数据进行操作时会对当前用户进行权限检查(Permission check)，如学生不能修改课程数据。Service 层在执行过程中如果出现异常，系统会进入 Exception Handler，将异常处理的结果返回给前端。
 
@@ -46,17 +46,17 @@
 
 controller 和 service 的类图如下：
 
-![](./pictures_in _document/controller_service_class_graph.png)
+![](images/controller_service_class_graph.png)
 
 service 和 repository 之间的类关系如下：
 
-![](./pictures_in _document/service_repository_class_graph.png)
+![](images/service_repository_class_graph.png)
 
 ### 数据库架构
 
 此次项目我们使用了 Neo4j 和 Redis 这两个数据库。其中 Neo4j 是我们的主力数据库用于网站的数据存储和管理，而 Redis 数据库主要是用于用户权限验证服务和邮箱验证码服务，关于两个数据库具体的设计可以参见下文数据库设计部分。这里给出我们在使用 Neo4j 数据库时所设计的 ER 图。
 
-![](./pictures_in _document/ER_graph.png)
+![](images/ER_graph.png)
 
 主要的 Entity 有user，course， graph，node，question，lecture，resource。其中 user 分为两种类型，student 和 teacher，question 也分为两种类型 short answer question 和 multiple-choice question。学生和老师和课程的关系分别是 learn 和 teach。一个课程可以和多个 graph 节点相连，即可以有多张思维导图。graph 节点存储了图的基本信息以及思维导图的信息，和一个 graph 相连接的是思维导图里的课程节点 node，每一个课程节点都与其课件（lecture），资源（resource），问题（question）节点相连接。
 
